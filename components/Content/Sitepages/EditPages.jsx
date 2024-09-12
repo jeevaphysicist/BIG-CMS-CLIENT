@@ -5,7 +5,7 @@ import RequiredSymbol from "../RequiredSymbol";
 import About from "./About";
 import Offers from "./Offers";
 import { FiSave } from "react-icons/fi";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
 
@@ -119,7 +119,7 @@ const EditPages = ({ handleSitepage }) => {
         <section className="w-full md:px-8 px-4 py-8  space-y-6">
           <div className="w-full min-h-[60vh] flex flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <ImageUpload onImageSelect={handleImageSelect} />
+              <DragAndDropImage onImageSelect={handleImageSelect} />
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="file"

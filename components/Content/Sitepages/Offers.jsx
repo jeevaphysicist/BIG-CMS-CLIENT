@@ -4,7 +4,7 @@ import { Button, Input, Textarea } from "@nextui-org/react";
 import updates from "../../../assets/updates.svg";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 
 const Offers = ({ handleSitepage }) => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -71,7 +71,7 @@ const Offers = ({ handleSitepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/updates.svg'} alt="content" />
+                <img src={"/images/updates.svg"} alt="content" />
               </div>
             </div>
           </div>
@@ -88,7 +88,7 @@ const Offers = ({ handleSitepage }) => {
                     Banner
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
+                  <DragAndDropImage onImageSelect={handleImageSelect} />
                   {imagePreview && (
                     <img src={imagePreview} alt="banner image" />
                   )}
@@ -127,6 +127,7 @@ const Offers = ({ handleSitepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >

@@ -1,25 +1,51 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import giftImg from "../../../assets/image 11.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const Gifts = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    gift1: "",
+    gift2: "",
+  });
+  const [formData, setFormData] = useState({
+    gift1: "",
+    title1: "",
+    redirectionLink1: "",
+    gift2: "",
+    title2: "",
+    redirectionLink2: "",
+  });
 
-  const handleImageSelect = (file) => {
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageSelect = (file, giftkey) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [giftkey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [giftkey]: file }));
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
   };
 
   return (
     <Fragment>
-      <section className="w-full md:h-full">
+      <form onSubmit={handleSubmit} className="w-full md:h-full">
         <div className="w-full md:px-8 px-2 md:h-full  md:flex md:flex-row-reverse gap-6">
           {/* Guideleines */}
           <div className="md:w-[40%] md:h-full pt-10">
@@ -40,7 +66,7 @@ const Gifts = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 11.png'} alt="category" />
+                <img src={"/images/image 11.png"} alt="category" />
               </div>
             </div>
           </div>
@@ -57,9 +83,12 @@ const Gifts = ({ handleHomepage }) => {
                     Gift 1
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="gift1"
+                    onImageSelect={(file) => handleImageSelect(file, "gift1")}
+                  />
+                  {imagePreview.gift1 && (
+                    <img src={imagePreview.gift1} alt="gift image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -77,6 +106,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="title1"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -94,6 +125,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="redirectionLink1"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -108,9 +141,12 @@ const Gifts = ({ handleHomepage }) => {
                     Gift 2
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="gift2"
+                    onImageSelect={(file) => handleImageSelect(file, "gift2")}
+                  />
+                  {imagePreview.gift2 && (
+                    <img src={imagePreview.gift2} alt="gift image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -128,6 +164,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="title2"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -145,6 +183,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="redirectionLink2"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -163,13 +203,14 @@ const Gifts = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

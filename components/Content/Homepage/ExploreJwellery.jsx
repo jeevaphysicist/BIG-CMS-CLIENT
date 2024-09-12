@@ -1,14 +1,31 @@
 /* eslint-disable react/prop-types */
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
-import exploreJwel from "../../../assets/image 7.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const ExploreJwellery = ({ handleHomepage }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    callToAction: "",
+    callToActionLink: "",
+  });
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full h-full md:flex md:flex-row-reverse gap-6">
           {/* Guideleines */}
           <div className="md:w-[40%] h-full pt-10">
@@ -28,7 +45,7 @@ const ExploreJwellery = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 7.png'} alt="content" />
+                <img src={"/images/image 7.png"} alt="content" />
               </div>
             </div>
           </div>
@@ -51,6 +68,8 @@ const ExploreJwellery = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
+                  name="title"
+                  onChange={handleFormChange}
                 />
               </div>
               <div className="flex flex-col gap-3">
@@ -68,6 +87,8 @@ const ExploreJwellery = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
+                  name="description"
+                  onChange={handleFormChange}
                 />
               </div>
               <div className="flex flex-col gap-3">
@@ -85,6 +106,8 @@ const ExploreJwellery = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
+                  name="callToAction"
+                  onChange={handleFormChange}
                 />
               </div>
               <div className="flex flex-col gap-3">
@@ -102,6 +125,8 @@ const ExploreJwellery = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
+                  name="callToActionLink"
+                  onChange={handleFormChange}
                 />
               </div>
             </div>
@@ -119,13 +144,14 @@ const ExploreJwellery = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

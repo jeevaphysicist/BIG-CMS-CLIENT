@@ -1,13 +1,13 @@
-'use client'
-import DragAndDropImage from '@/components/Content/DragDropImage'
-import React, { Fragment } from 'react'
+"use client";
+import DragAndDropImage from "@/components/Content/DragDropImage";
+import React, { Fragment } from "react";
 
 const page = () => {
   return (
     <Fragment>
-        <DragAndDropImage />
+      <DragAndDropImage />
     </Fragment>
-  )
-}
+  );
+};
 
-export default page
+export default page;

@@ -1,33 +1,64 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
 import { Button, Input, Switch } from "@nextui-org/react";
-import banner2 from "../../../assets/image 2.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import DragAndDropImage from "../DragDropImage";
 
 const Herosection = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const [formData,setFormData]= useState({
-         
+  const [imagePreview, setImagePreview] = useState({
+    banner1: "",
+    banner2: "",
+  });
+  const [formData, setFormData] = useState({
+    banner1: "",
+    banner1Title: "",
+    banner1Description: "",
+    banner2: "",
+    banner2Title: "",
+    banner2Description: "",
+    bannerContent: "",
+    enableTimer: false,
+    enableButton: false,
+    days: "",
+    hours: "",
+    minutes: "",
+    seconds: "",
   });
 
-  const handleChange = (e)=>{
-       let  {name,value} = e.target.value; 
-  }
-
-  const handleImageSelect = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
+  const handleSwitchChange = (field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: !prevData[field],
+    }));
+  };
+
+  const handleImageSelect = (file, bannerkey) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
 
   return (
     <Fragment>
-      <section className="w-full md:px-8 px-2 space-y-6">
+      <form onSubmit={handleSubmit} className="w-full md:px-8 px-2 space-y-6">
         {/* Banner 1 */}
         <div className="w-[100%] md:flex md:flex-row-reverse gap-8">
           <div className="md:w-[40%] h-full py-5 md:pt-10">
@@ -45,7 +76,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 1.png'} alt="banner1" />
+                <img src={"/images/image 1.png"} alt="banner1" />
               </div>
             </div>
           </div>
@@ -58,11 +89,13 @@ const Herosection = ({ handleHomepage }) => {
                 Banner 1
                 <RequiredSymbol />
               </label>
-              <ImageUpload
-                onImageSelect={handleImageSelect}
-                label="Banner Image"
+              <DragAndDropImage
+                id="banner1"
+                onImageSelect={(file) => handleImageSelect(file, "banner1")}
               />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              {imagePreview.banner1 && (
+                <img src={imagePreview.banner1} alt="banner image" />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -74,11 +107,13 @@ const Herosection = ({ handleHomepage }) => {
               </label>
               <Input
                 type="text"
+                name="banner1Title"
                 id="banner_title"
                 placeholder="Engagement Rings"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -92,10 +127,12 @@ const Herosection = ({ handleHomepage }) => {
               <Input
                 type="text"
                 id="banner_desc"
+                name="banner1Description"
                 placeholder="Start the journey toward finding your perfect ring"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -106,70 +143,84 @@ const Herosection = ({ handleHomepage }) => {
                 >
                   Enable Timer
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableTimer}
+                  onChange={() => handleSwitchChange("enableTimer")}
+                  aria-label="Enable Timer"
+                />
               </div>
-              <div className="w-full flex justify-between md:gap-4 gap-2">
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Days
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                  />
+              {formData.enableTimer && (
+                <div className="w-full flex justify-between md:gap-4 gap-2">
+                  <div className="grid gap-2">
+                    <label
+                      htmlFor="days"
+                      className="md:text-[18px] text-[16px] gilroy-medium"
+                    >
+                      Days
+                    </label>
+                    <Input
+                      type="text"
+                      id="banner_desc"
+                      variant="bordered"
+                      size="lg"
+                      radius="sm"
+                      name="days"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label
+                      htmlFor="days"
+                      className="md:text-[18px] text-[16px] gilroy-medium"
+                    >
+                      Hours
+                    </label>
+                    <Input
+                      type="text"
+                      id="banner_desc"
+                      variant="bordered"
+                      size="lg"
+                      radius="sm"
+                      name="hours"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label
+                      htmlFor="days"
+                      className="md:text-[18px] text-[16px] gilroy-medium"
+                    >
+                      Minutes
+                    </label>
+                    <Input
+                      type="text"
+                      id="banner_desc"
+                      variant="bordered"
+                      size="lg"
+                      radius="sm"
+                      name="minutes"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label
+                      htmlFor="days"
+                      className="md:text-[18px] text-[16px] gilroy-medium"
+                    >
+                      Seconds
+                    </label>
+                    <Input
+                      type="text"
+                      id="banner_desc"
+                      variant="bordered"
+                      size="lg"
+                      radius="sm"
+                      name="seconds"
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Hours
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Minutes
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Seconds
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                  />
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -190,7 +241,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 2.png'} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="banner2" />
               </div>
             </div>
           </div>
@@ -203,11 +254,13 @@ const Herosection = ({ handleHomepage }) => {
                 Banner 2
                 <RequiredSymbol />
               </label>
-              <ImageUpload
-                onImageSelect={handleImageSelect}
-                label="Banner Image"
+              <DragAndDropImage
+                id="banner2"
+                onImageSelect={(file) => handleImageSelect(file, "banner2")}
               />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              {imagePreview.banner2 && (
+                <img src={imagePreview.banner2} alt="banner image" />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -220,10 +273,12 @@ const Herosection = ({ handleHomepage }) => {
               <Input
                 type="text"
                 id="banner_title1"
+                name="banner2Title"
                 placeholder="Valentines Day"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -237,10 +292,12 @@ const Herosection = ({ handleHomepage }) => {
               <Input
                 type="text"
                 id="banner_desc1"
+                name="banner2Description"
                 placeholder="Enjoy the added benefit of obtaining free shipping within United"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -248,7 +305,11 @@ const Herosection = ({ handleHomepage }) => {
                 <label htmlFor="timer" className="text-[18px] gilroy-medium">
                   Enable Button
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableButton}
+                  onChange={() => handleSwitchChange("enableButton")}
+                  aria-label="Enable Button"
+                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
@@ -264,6 +325,8 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="bannerContent"
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -279,13 +342,14 @@ const Herosection = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

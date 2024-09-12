@@ -1,23 +1,55 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const ContentBox = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    icon1: "",
+    icon2: "",
+    icon3: "",
+    icon4: "",
+  });
+  const [formData, setFormData] = useState({
+    icon1: "",
+    icon1Title: "",
+    icon1Description: "",
+    icon2: "",
+    icon2Title: "",
+    icon2Description: "",
+    icon3: "",
+    icon3Title: "",
+    icon3Description: "",
+    icon4: "",
+    icon4Title: "",
+    icon4Description: "",
+  });
 
-  const handleImageSelect = (file) => {
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleImageSelect = (file, iconkey) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [iconkey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [iconkey]: file }));
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-[65vh]">
+      <form onSubmit={handleSubmit} className="w-full md:h-[65vh]">
         <div className="w-full md:px-8  px-2  h-full md:flex md:flex-row-reverse gap-6">
           {/* Guideleines */}
           <div className="md:w-[40%] h-full sticky">
@@ -38,8 +70,16 @@ const ContentBox = ({ handleHomepage }) => {
                 </div>
               </div>
               <div className="w-full flex justify-between items-center">
-                <img src={'/images/image 4.png'} alt="content" className="w-[55%]" />
-                <img src={'/images/content2.svg'} alt="content2" className="w-[35%]" />
+                <img
+                  src={"/images/image 4.png"}
+                  alt="content"
+                  className="w-[55%]"
+                />
+                <img
+                  src={"/images/content2.svg"}
+                  alt="content2"
+                  className="w-[35%]"
+                />
               </div>
             </div>
           </div>
@@ -56,9 +96,12 @@ const ContentBox = ({ handleHomepage }) => {
                     Icon 1
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="icon1"
+                    onImageSelect={(file) => handleImageSelect(file, "icon1")}
+                  />
+                  {imagePreview.icon1 && (
+                    <img src={imagePreview.icon1} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -76,6 +119,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon1Title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -93,6 +138,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon1Description"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -108,9 +155,12 @@ const ContentBox = ({ handleHomepage }) => {
                     Icon 2
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="icon2"
+                    onImageSelect={(file) => handleImageSelect(file, "icon2")}
+                  />
+                  {imagePreview.icon2 && (
+                    <img src={imagePreview.icon2} alt="icon image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -128,6 +178,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon2Title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -145,6 +197,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon2Description"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -160,9 +214,12 @@ const ContentBox = ({ handleHomepage }) => {
                     Icon 3
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="icon3"
+                    onImageSelect={(file) => handleImageSelect(file, "icon3")}
+                  />
+                  {imagePreview.icon3 && (
+                    <img src={imagePreview.icon3} alt="icon image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -180,6 +237,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon3Title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -197,6 +256,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon3Description"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -212,9 +273,12 @@ const ContentBox = ({ handleHomepage }) => {
                     Icon 4
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="icon4"
+                    onImageSelect={(file) => handleImageSelect(file, "icon4")}
+                  />
+                  {imagePreview.icon4 && (
+                    <img src={imagePreview.icon4} alt="icon image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -232,6 +296,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon4Title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -249,6 +315,8 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="icon4Description"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -267,13 +335,14 @@ const ContentBox = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

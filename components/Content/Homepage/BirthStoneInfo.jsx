@@ -1,24 +1,56 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
-import birthStoneImg from "../../../assets/image 13.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import DragAndDropImage from "../DragDropImage";
 
 const BirthStoneInfo = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    banner: "",
+    selectionImage: "",
+  });
+  const [formData, setFormData] = useState({
+    sectionTitle: "",
+    sectionDescription: "",
+    month: "",
+    banner: "",
+    selectionImage: "",
+    title: "",
+    description: "",
+    readMoreLink: "",
+    productLink: "",
+  });
 
-  const handleImageSelect = (file) => {
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageSelect = (file, bannerkey) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
@@ -36,6 +68,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionTitle"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -53,6 +87,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionDescription"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -74,7 +110,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 13.png'} alt="birthstone" />
+                <img src={"/images/image 13.png"} alt="birthstone" />
               </div>
             </div>
           </div>
@@ -98,19 +134,21 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="month"
+                    onChange={handleFormChange}
                   >
-                    <SelectItem>January</SelectItem>
-                    <SelectItem>Febraury</SelectItem>
-                    <SelectItem>March</SelectItem>
-                    <SelectItem>April</SelectItem>
-                    <SelectItem>May</SelectItem>
-                    <SelectItem>June</SelectItem>
-                    <SelectItem>July</SelectItem>
-                    <SelectItem>August</SelectItem>
-                    <SelectItem>September</SelectItem>
-                    <SelectItem>October</SelectItem>
-                    <SelectItem>November</SelectItem>
-                    <SelectItem>December</SelectItem>
+                    <SelectItem value="January">January</SelectItem>
+                    <SelectItem value="Febraury">Febraury</SelectItem>
+                    <SelectItem value="March">March</SelectItem>
+                    <SelectItem value="April">April</SelectItem>
+                    <SelectItem value="May">May</SelectItem>
+                    <SelectItem value="January">June</SelectItem>
+                    <SelectItem value="June">July</SelectItem>
+                    <SelectItem value="August">August</SelectItem>
+                    <SelectItem value="September">September</SelectItem>
+                    <SelectItem value="October">October</SelectItem>
+                    <SelectItem value="November">November</SelectItem>
+                    <SelectItem value="December">December</SelectItem>
                   </Select>
                 </div>
                 <div className="flex flex-col gap-3">
@@ -121,9 +159,12 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     Birthstone Banner
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="banner"
+                    onImageSelect={(file) => handleImageSelect(file, "banner")}
+                  />
+                  {imagePreview.banner && (
+                    <img src={imagePreview.banner} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -134,9 +175,14 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     Selection Image
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="selectionImage"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "selectionImage")
+                    }
+                  />
+                  {imagePreview.selectionImage && (
+                    <img src={imagePreview.selectionImage} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -154,6 +200,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -171,6 +219,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="description"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="w-full flex md:gap-4 gap-2">
@@ -187,6 +237,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                       variant="bordered"
                       size="lg"
                       radius="sm"
+                      name="readMoreLink"
+                      onChange={handleFormChange}
                     />
                   </div>
                   <div className="w-full space-y-2">
@@ -202,6 +254,8 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                       variant="bordered"
                       size="lg"
                       radius="sm"
+                      name="productLink"
+                      onChange={handleFormChange}
                     />
                   </div>
                 </div>
@@ -221,13 +275,14 @@ const BirthStoneInfo = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

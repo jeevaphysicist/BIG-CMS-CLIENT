@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import recommendedImg from "../../../assets/image 5.png";
 import { FiSave } from "react-icons/fi";
@@ -8,17 +8,43 @@ import RequiredSymbol from "../RequiredSymbol";
 
 const Recommended = ({ handleHomepage }) => {
   const [imagePreview, setImagePreview] = useState(null);
+  const [formData, setFormData] = useState({
+    sectionTitle: "",
+    sectionDescription: "",
+    banner: "",
+    title: "",
+    description: "",
+  });
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleImageSelect = (file) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview(blobUrl);
+      setFormData((prevData) => ({
+        ...prevData,
+        banner: blobUrl,
+      }));
     };
     reader.readAsDataURL(file);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
@@ -36,6 +62,8 @@ const Recommended = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionTitle"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -53,6 +81,8 @@ const Recommended = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionDescription"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -74,7 +104,7 @@ const Recommended = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 5.png'} alt="content" />
+                <img src={"/images/image 5.png"} alt="content" />
               </div>
             </div>
           </div>
@@ -91,7 +121,10 @@ const Recommended = ({ handleHomepage }) => {
                     Banner
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
+                  <DragAndDropImage
+                    id="banner"
+                    onImageSelect={(file) => handleImageSelect(file)}
+                  />
                   {imagePreview && (
                     <img src={imagePreview} alt="banner image" />
                   )}
@@ -111,6 +144,8 @@ const Recommended = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="title"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -128,6 +163,8 @@ const Recommended = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="description"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -146,13 +183,14 @@ const Recommended = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

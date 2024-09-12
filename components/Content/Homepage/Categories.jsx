@@ -1,24 +1,62 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const Categories = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    category1: "",
+    category2: "",
+    category3: "",
+    category4: "",
+    category5: "",
+  });
 
-  const handleImageSelect = (file) => {
+  const [formData, setFormData] = useState({
+    category1: "",
+    Title1: "",
+    callToAction1: "",
+    category2: "",
+    Title2: "",
+    callToAction2: "",
+    category3: "",
+    Title3: "",
+    callToAction3: "",
+    category4: "",
+    Title4: "",
+    callToAction4: "",
+    category5: "",
+    Title5: "",
+    callToAction5: "",
+  });
+
+  // Handle form input changes for text fields
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  // Handle image selection and store it directly in formData
+  const handleImageSelect = (file, categoryKey) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [categoryKey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [categoryKey]: file }));
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
   };
 
   return (
     <Fragment>
-      <section className="w-full h-full">
+      <form onSubmit={handleSubmit} className="w-full h-full">
         <div className="w-full md:px-8 px-2 h-full  md:flex md:flex-row-reverse gap-6">
           {/* Guideleines */}
           <div className="md:w-[40%] h-full pt-10">
@@ -36,7 +74,7 @@ const Categories = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 3.png'} alt="category" />
+                <img src={"/images/image 3.png"} alt="category" />
               </div>
             </div>
           </div>
@@ -53,9 +91,14 @@ const Categories = ({ handleHomepage }) => {
                     Category 1
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="category1"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "category1")
+                    }
+                  />
+                  {imagePreview.category1 && (
+                    <img src={imagePreview.category1} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -73,6 +116,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="Title1"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -90,6 +135,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToAction1"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -105,9 +152,14 @@ const Categories = ({ handleHomepage }) => {
                     Category 2
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="category2"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "category2")
+                    }
+                  />
+                  {imagePreview.category2 && (
+                    <img src={imagePreview.category2} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -125,6 +177,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="Title2"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -142,6 +196,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToAction2"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -157,9 +213,14 @@ const Categories = ({ handleHomepage }) => {
                     Category 3
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="category image" />
+                  <DragAndDropImage
+                    id="category3"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "category3")
+                    }
+                  />
+                  {imagePreview.category3 && (
+                    <img src={imagePreview.category3} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -177,6 +238,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="Title3"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -194,6 +257,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToAction3"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -209,9 +274,14 @@ const Categories = ({ handleHomepage }) => {
                     Category 4
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="category image" />
+                  <DragAndDropImage
+                    id="category4"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "category4")
+                    }
+                  />
+                  {imagePreview.category4 && (
+                    <img src={imagePreview.category4} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -229,6 +299,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="Title4"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -246,6 +318,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToAction4"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -260,9 +334,14 @@ const Categories = ({ handleHomepage }) => {
                     Category 5
                     <RequiredSymbol />
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="category image" />
+                  <DragAndDropImage
+                    id="category5"
+                    onImageSelect={(file) =>
+                      handleImageSelect(file, "category5")
+                    }
+                  />
+                  {imagePreview.category5 && (
+                    <img src={imagePreview.category5} alt="banner image" />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -280,6 +359,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="Title5"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -297,6 +378,8 @@ const Categories = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToAction5"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -315,13 +398,14 @@ const Categories = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

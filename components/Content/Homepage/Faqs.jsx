@@ -15,14 +15,40 @@ import { FaPlus } from "react-icons/fa";
 
 const Faqs = ({ handleHomepage }) => {
   const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    questions: [{ question: "", answer: "" }],
+  });
 
   const addNewQuestion = () => {
     setQuestions([...questions, { question: "", answer: "" }]);
   };
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleQuestionChange = (index, field, value) => {
+    const updatedQuestions = questions.map((q, i) =>
+      i === index ? { ...q, [field]: value } : q
+    );
+    setQuestions(updatedQuestions);
+    setFormData((prevData) => ({ ...prevData, questions: updatedQuestions }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
@@ -40,6 +66,8 @@ const Faqs = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="title"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -59,7 +87,7 @@ const Faqs = ({ handleHomepage }) => {
                   </p>
                 </div>
               </div>
-              <img src={'/images/image 17.png'} alt="faqs" />
+              <img src={"/images/image 17.png"} alt="faqs" />
             </div>
           </div>
           {/* Form */}
@@ -82,6 +110,8 @@ const Faqs = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="category"
+                    onChange={handleFormChange}
                   >
                     <SelectItem>Genaral</SelectItem>
                   </Select>
@@ -117,6 +147,13 @@ const Faqs = ({ handleHomepage }) => {
                         value={que.question}
                         size="lg"
                         radius="sm"
+                        onChange={(e) =>
+                          handleQuestionChange(
+                            index,
+                            "question",
+                            e.target.value
+                          )
+                        }
                       />
                     </div>
                     <div className="flex flex-col gap-3">
@@ -135,6 +172,9 @@ const Faqs = ({ handleHomepage }) => {
                         variant="bordered"
                         size="lg"
                         radius="sm"
+                        onChange={(e) =>
+                          handleQuestionChange(index, "answer", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -155,13 +195,14 @@ const Faqs = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

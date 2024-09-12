@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Switch } from "@nextui-org/react";
 import banner1 from "../../../assets/image 12.png";
 import banner2 from "../../../assets/image 2.png";
@@ -8,18 +8,68 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const Offers = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    banner1: "",
+    banner2: "",
+    banner3: "",
+  });
+  const [formData, setFormData] = useState({
+    banner1: "",
+    banner1Title: "",
+    banner1Description: "",
+    banner1Link: "",
+    banner2: "",
+    banner2Title: "",
+    banner2Description: "",
+    banner2Content: "",
+    buttonLink1: "",
+    banner3: "",
+    banner3Title: "",
+    banner3Description: "",
+    banner3Content: "",
+    buttonLink2: "",
+    enableButton: false,
+    enableCoupon: false,
+    code: "",
+    additionalDiscount: "",
+  });
 
-  const handleImageSelect = (file) => {
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSwitchChange = (field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: !prevData[field],
+    }));
+  };
+
+  const handleImageSelect = (file, bannerkey) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
+      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         {/* Banner 1 */}
         <div className="w-[100%] md:flex md:flex-row-reverse gap-8">
           <div className="md:w-[40%] h-full py-5 md:pt-10">
@@ -37,7 +87,7 @@ const Offers = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 12.png'} alt="banner1" />
+                <img src={"/images/image 12.png"} alt="banner1" />
               </div>
             </div>
           </div>
@@ -50,8 +100,13 @@ const Offers = ({ handleHomepage }) => {
                 Banner 1
                 <RequiredSymbol />
               </label>
-              <ImageUpload onImageSelect={handleImageSelect} />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              <DragAndDropImage
+                id="banner1"
+                onImageSelect={(file) => handleImageSelect(file, "banner1")}
+              />
+              {imagePreview.banner1 && (
+                <img src={imagePreview.banner1} alt="banner image" />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -68,6 +123,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner1Title"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -85,6 +142,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner1Description"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -102,6 +161,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner1Link"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -112,7 +173,11 @@ const Offers = ({ handleHomepage }) => {
                 >
                   Enable Coupon
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableTimer}
+                  onChange={() => handleSwitchChange("enableCoupon")}
+                  aria-label="Enable Coupon"
+                />
               </div>
               <div className="w-full md:flex md:gap-4 gap-2 space-y-4 md:space-y-0">
                 <div className="w-full space-y-2">
@@ -128,6 +193,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="code"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="w-full space-y-2">
@@ -144,6 +211,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="additionalDiscount"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -166,7 +235,7 @@ const Offers = ({ handleHomepage }) => {
               </div>
             </div>
             <div>
-              <img src={'/images/image 2.png'} alt="banner2" />
+              <img src={"/images/image 2.png"} alt="banner2" />
             </div>
           </div>
           <div className="md:w-[60%] flex flex-col gap-4">
@@ -178,8 +247,13 @@ const Offers = ({ handleHomepage }) => {
                 Banner 2
                 <RequiredSymbol />
               </label>
-              <ImageUpload onImageSelect={handleImageSelect} />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              <DragAndDropImage
+                id="banner2"
+                onImageSelect={(file) => handleImageSelect(file, "banner2")}
+              />
+              {imagePreview.banner2 && (
+                <img src={imagePreview.banner2} alt="banner image" />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -196,6 +270,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner2Title"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -213,6 +289,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner2Description"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -220,7 +298,11 @@ const Offers = ({ handleHomepage }) => {
                 <label htmlFor="timer" className="text-[18px] gilroy-medium">
                   Enable Button
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableTimer}
+                  onChange={() => handleSwitchChange("enableButton")}
+                  aria-label="Enable Button"
+                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
@@ -236,6 +318,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner2Content"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -252,6 +336,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="buttonLink1"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -274,7 +360,7 @@ const Offers = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 2.png'} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="banner2" />
               </div>
             </div>
           </div>
@@ -287,8 +373,13 @@ const Offers = ({ handleHomepage }) => {
                 Banner 3
                 <RequiredSymbol />
               </label>
-              <ImageUpload onImageSelect={handleImageSelect} />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              <DragAndDropImage
+                id="banner3"
+                onImageSelect={(file) => handleImageSelect(file, "banner3")}
+              />
+              {imagePreview.banner3 && (
+                <img src={imagePreview.banner3} alt="banner image" />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -305,6 +396,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner3Title"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -322,6 +415,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner3Description"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -329,7 +424,11 @@ const Offers = ({ handleHomepage }) => {
                 <label htmlFor="timer" className="text-[18px] gilroy-medium">
                   Enable Button
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableTimer}
+                  onChange={() => handleSwitchChange("enableButton")}
+                  aria-label="Enable Button"
+                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
@@ -345,6 +444,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="banner3Content"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -361,6 +462,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="buttonLink2"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -376,13 +479,14 @@ const Offers = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

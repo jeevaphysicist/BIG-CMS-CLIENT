@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import Herosection from "./Herosection";
 import ContentBox from "./ContentBox";
 import Categories from "./Categories";
-import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import Recommended from "./Recommended";
 import ExploreGemstones from "./ExploreGemstones";
 import ExploreJwellery from "./ExploreJwellery";
@@ -19,8 +19,6 @@ import Faqs from "./Faqs";
 import ContentSection from "./ContentSection";
 import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
-import { FiSave } from "react-icons/fi";
-import RequiredSymbol from "../RequiredSymbol";
 import SeoAttributes from "../SeoAttributes";
 
 const EditSections = ({ handleHomepage }) => {
@@ -28,7 +26,11 @@ const EditSections = ({ handleHomepage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
 
   const handleChange = (tab) => {
-        setActiveTab(tab);
+    setActiveTab(tab);
+  };
+
+  const handleSeoSubmit = (formData) => {
+    console.log("Submitting data for Homepage", formData);
   };
 
   return (
@@ -174,8 +176,7 @@ const EditSections = ({ handleHomepage }) => {
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes handler={handleHomepage} />
-
+        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleHomepage} />
       )}
     </Fragment>
   );

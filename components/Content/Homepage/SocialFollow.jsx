@@ -1,23 +1,47 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 
 const SocialFollow = ({ handleHomepage }) => {
   const [imagePreview, setImagePreview] = useState(null);
+  const [formData, setFormData] = useState({
+    sectionTitle: "",
+    description: "",
+    thumbnail: "",
+  });
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleImageSelect = (file) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      const blobUrl = URL.createObjectURL(file);
+      setImagePreview(blobUrl);
+      setFormData((prevData) => ({
+        ...prevData,
+        banner: blobUrl,
+      }));
     };
     reader.readAsDataURL(file);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
@@ -35,6 +59,8 @@ const SocialFollow = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionTitle"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -53,6 +79,8 @@ const SocialFollow = ({ handleHomepage }) => {
                 placeholder="For daily Gemstone goodness and exclusive deals. Sparkle awaits join us today!"
                 size="lg"
                 radius="sm"
+                name="description"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -63,8 +91,11 @@ const SocialFollow = ({ handleHomepage }) => {
                 Add Social Media Thumbnail Images
                 <RequiredSymbol />
               </label>
-              <ImageUpload onImageSelect={handleImageSelect} />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              <DragAndDropImage
+                id="thumbnail"
+                onImageSelect={(file) => handleImageSelect(file)}
+              />
+              {imagePreview && <img src={imagePreview} alt="thumbnail image" />}
             </div>
           </div>
         </div>
@@ -80,13 +111,14 @@ const SocialFollow = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

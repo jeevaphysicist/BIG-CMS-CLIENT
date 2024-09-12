@@ -5,7 +5,6 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 
-
 const About = ({ handleSitepage }) => {
   const [content, setContent] = useState("");
 
@@ -13,7 +12,7 @@ const About = ({ handleSitepage }) => {
     // console.log("content---->", content);
     setContent(content);
   };
-  
+
   return (
     <Fragment>
       <section className="w-full md:px-8 px-2 space-y-6">
@@ -80,7 +79,7 @@ const About = ({ handleSitepage }) => {
                 <RequiredSymbol />
               </label>
               {/* Text editor */}
-               <TextEditor handleContentChange={handleProcedureContentChange} />
+              <TextEditor handleContentChange={handleProcedureContentChange} />
             </div>
           </div>
         </div>
@@ -96,6 +95,7 @@ const About = ({ handleSitepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
