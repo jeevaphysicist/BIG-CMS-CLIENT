@@ -55,7 +55,7 @@ const DragAndDropImage = ({ id, onImageSelect, label }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onClick={() => document.getElementById(`${id}`).click()}
+      // onClick={() => document.getElementById(`${id}`).click()}
     >
       <label
         htmlFor={`${id}`}
