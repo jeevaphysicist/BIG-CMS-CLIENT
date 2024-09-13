@@ -3,7 +3,7 @@ import "./DragDropImage.css";
 import { FiUploadCloud } from "react-icons/fi";
 import { PiHandGrabbing } from "react-icons/pi";
 
-const DragAndDropImage = ({ id, onImageSelect, label }) => {
+const DragAndDropImage = ({ id, onImageSelect, label ,accept,width,height }) => {
   const [dragging, setDragging] = useState(false);
 
   const handleDragOver = (event) => {
@@ -27,11 +27,11 @@ const DragAndDropImage = ({ id, onImageSelect, label }) => {
 
   const handleFiles = (files) => {
     const file = files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (onImageSelect) {
-          onImageSelect(file);
+          onImageSelect(file,width,height,id);
         }
       };
       reader.readAsDataURL(file);
@@ -74,12 +74,12 @@ const DragAndDropImage = ({ id, onImageSelect, label }) => {
           </span>
           &nbsp;or drag & drop {label} <br />
           <span className="text-[12px]">
-            SVG, PNG, JPG or GIF (max. 800x400px)
+            SVG, PNG, JPG or GIF (max. {`${width}x${height}px`})
           </span>
         </div>
         <input
           type="file"
-          accept="image/*"
+          accept={accept}
           id={`${id}`}
           onChange={handleFileInputChange}
           className="hidden"
