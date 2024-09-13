@@ -12,6 +12,7 @@ import faqImg from "../../../assets/image 17.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Faqs = ({ handleHomepage }) => {
   const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
@@ -21,13 +22,11 @@ const Faqs = ({ handleHomepage }) => {
     questions: [{ question: "", answer: "" }],
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const addNewQuestion = () => {
     setQuestions([...questions, { question: "", answer: "" }]);
-  };
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleQuestionChange = (index, field, value) => {
@@ -38,8 +37,60 @@ const Faqs = ({ handleHomepage }) => {
     setFormData((prevData) => ({ ...prevData, questions: updatedQuestions }));
   };
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleImageSelect = async (file, width, height, banner) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Section Title is required";
+      has = true;
+    }
+    if (formData.category === "" || formData.category === null) {
+      newerrors.category = "Category is required";
+      has = true;
+    }
+    formData.questions.forEach((questionObj, index) => {
+      if (!questionObj.question) {
+        newerrors[`question_${index}`] = "Question is required";
+        has = true;
+      }
+      if (!questionObj.answer) {
+        newerrors[`answer_${index}`] = "Answer is required";
+        has = true;
+      }
+    });
+
+    setError(newerrors);
+    return has;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -58,6 +109,11 @@ const Faqs = ({ handleHomepage }) => {
               >
                 Section Title
                 <RequiredSymbol />
+                {errors.sectionTitle && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.sectionTitle}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -102,6 +158,11 @@ const Faqs = ({ handleHomepage }) => {
                   >
                     Select the Category
                     <RequiredSymbol />
+                    {errors.category && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category}
+                      </span>
+                    )}
                   </label>
                   <Select
                     type="text"
@@ -138,6 +199,11 @@ const Faqs = ({ handleHomepage }) => {
                       >
                         Question {index + 1}
                         <RequiredSymbol />
+                        {errors[`question_${index}`] && (
+                          <span className="font-regular text-[12px] text-red-600">
+                            {errors[`question_${index}`]}
+                          </span>
+                        )}
                       </label>
                       <Input
                         type="text"
@@ -163,6 +229,11 @@ const Faqs = ({ handleHomepage }) => {
                       >
                         Answer {index + 1}
                         <RequiredSymbol />
+                        {errors[`answer_${index}`] && (
+                          <span className="font-regular text-[12px] text-red-600">
+                            {errors[`answer_${index}`]}
+                          </span>
+                        )}
                       </label>
                       <Textarea
                         type="text"
@@ -187,6 +258,7 @@ const Faqs = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

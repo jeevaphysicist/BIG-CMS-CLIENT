@@ -35,7 +35,7 @@ const EditSections = ({ handleHomepage }) => {
 
   return (
     <Fragment>
-      <div className="w-full md:h-28  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 border-b-1.5 sticky top-0 z-30 bg-white justify-between">
+      <div className="w-full md:h-28  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 border-b-1.5 sticky top-0 z-40 bg-white justify-between">
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
@@ -75,7 +75,7 @@ const EditSections = ({ handleHomepage }) => {
       </div>
       {activeTab === "generalInfo" && (
         <section>
-          <div className="w-full md:px-4 px-2 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-20 bg-white">
+          <div className="w-full md:px-4 px-2 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-40 bg-white">
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>

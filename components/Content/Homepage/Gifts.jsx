@@ -5,12 +5,10 @@ import { Button, Input } from "@nextui-org/react";
 import giftImg from "../../../assets/image 11.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const Gifts = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    gift1: "",
-    gift2: "",
-  });
   const [formData, setFormData] = useState({
     gift1: "",
     title1: "",
@@ -20,26 +18,74 @@ const Gifts = ({ handleHomepage }) => {
     redirectionLink2: "",
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = (file, giftkey) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [giftkey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [giftkey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+  const handleImageSelect = async (file, width, height, giftkey) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [giftkey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.gift1 === "" || formData.gift1 === null) {
+      newerrors.gift1 = "Gift 1 is required";
+      has = true;
+    }
+    if (formData.gift2 === "" || formData.gift2 === null) {
+      newerrors.gift2 = "Gift 2 is required";
+      has = true;
+    }
+    if (formData.title1 === "" || formData.title1 === null) {
+      newerrors.title1 = "Title is required";
+      has = true;
+    }
+    if (formData.title2 === "" || formData.title2 === null) {
+      newerrors.title2 = "Title is required";
+      has = true;
+    }
+    if (
+      formData.redirectionLink1 === "" ||
+      formData.redirectionLink1 === null
+    ) {
+      newerrors.redirectionLink1 = "Redirection Link is required";
+      has = true;
+    }
+    if (
+      formData.redirectionLink2 === "" ||
+      formData.redirectionLink2 === null
+    ) {
+      newerrors.redirectionLink2 = "Redirection Link is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -82,14 +128,20 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Gift 1
                     <RequiredSymbol />
+                    {errors.gift1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.gift1}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="gift1"
-                    onImageSelect={(file) => handleImageSelect(file, "gift1")}
+                    label="gift"
+                    accept={`images/*`}
+                    width={487}
+                    height={410}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.gift1 && (
-                    <img src={imagePreview.gift1} alt="gift image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -98,6 +150,11 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title1}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -117,6 +174,11 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Redirection Link
                     <RequiredSymbol />
+                    {errors.redirectionLink1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.redirectionLink1}
+                      </span>
+                    )}{" "}
                   </label>
                   <Input
                     type="text"
@@ -140,14 +202,20 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Gift 2
                     <RequiredSymbol />
+                    {errors.gift2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.gift2}
+                      </span>
+                    )}{" "}
                   </label>
                   <DragAndDropImage
                     id="gift2"
-                    onImageSelect={(file) => handleImageSelect(file, "gift2")}
+                    label="gift"
+                    accept={`images/*`}
+                    width={487}
+                    height={410}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.gift2 && (
-                    <img src={imagePreview.gift2} alt="gift image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -156,6 +224,11 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title2}
+                      </span>
+                    )}{" "}
                   </label>
                   <Input
                     type="text"
@@ -175,6 +248,11 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Redirection Link
                     <RequiredSymbol />
+                    {errors.redirectionLink2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.redirectionLink2}
+                      </span>
+                    )}{" "}
                   </label>
                   <Input
                     type="text"
@@ -195,6 +273,7 @@ const Gifts = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

@@ -3,8 +3,16 @@ import "./DragDropImage.css";
 import { FiUploadCloud } from "react-icons/fi";
 import { PiHandGrabbing } from "react-icons/pi";
 
-const DragAndDropImage = ({ id, onImageSelect, label ,accept,width,height }) => {
+const DragAndDropImage = ({
+  id,
+  onImageSelect,
+  label,
+  accept,
+  width,
+  height,
+}) => {
   const [dragging, setDragging] = useState(false);
+  const [image, setImage] = useState(null);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -31,8 +39,9 @@ const DragAndDropImage = ({ id, onImageSelect, label ,accept,width,height }) => 
       const reader = new FileReader();
       reader.onload = (e) => {
         if (onImageSelect) {
-          onImageSelect(file,width,height,id);
+          onImageSelect(file, width, height, id);
         }
+        setImage(e.target.result);
       };
       reader.readAsDataURL(file);
     } else {
@@ -64,17 +73,17 @@ const DragAndDropImage = ({ id, onImageSelect, label ,accept,width,height }) => 
         <div className="border-2 p-2 w-10 h-10 rounded-[8px] grid place-content-center">
           <FiUploadCloud className="text-[#475467] hover:text-violet-500" />
         </div>
-        <div className="image-icon absolute bottom-4 right-4 opacity-0 z-40">
+        <div className="image-icon absolute bottom-4 right-4 opacity-0 z-30">
           <img src="/images/jpg-icon.svg" alt="" className="w-10" />
         </div>
-        <PiHandGrabbing className="absolute image-icon bottom-2 right-2 text-xl opacity-0 z-50" />
+        <PiHandGrabbing className="absolute image-icon bottom-2 right-2 text-xl opacity-0 z-30" />
         <div className="text-[#475467] text-center md:text-[14px] text-[12px] ">
           <span className="text-[#434CE7] md:text-[14px] text-[12px] font-semibold hover:text-violet-500">
             Click to upload
           </span>
-          &nbsp;or drag & drop {label} <br />
+          &nbsp;or drag & drop the {label} <br />
           <span className="text-[12px]">
-            SVG, PNG, JPG or GIF (max. {`${width}x${height}px`})
+            SVG, PNG, JPG or GIF (max. {`${width} x ${height}px`})
           </span>
         </div>
         <input
@@ -85,6 +94,7 @@ const DragAndDropImage = ({ id, onImageSelect, label ,accept,width,height }) => 
           className="hidden"
         />
       </label>
+      {image && <img src={image} alt="Image Preview" />}
     </div>
   );
 };

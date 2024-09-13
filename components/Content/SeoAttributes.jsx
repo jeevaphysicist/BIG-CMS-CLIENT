@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "./RequiredSymbol";
+import { toast } from "react-toastify";
 
 const SeoAttributes = ({ onSubmit, handler }) => {
   const [formData, setFormData] = useState({
@@ -11,14 +12,50 @@ const SeoAttributes = ({ onSubmit, handler }) => {
     tags: "",
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Title is required";
+      has = true;
+    }
+    if (formData.description === "" || formData.description === null) {
+      newerrors.description = "Description is required";
+      has = true;
+    }
+    if (formData.slug === "" || formData.slug === null) {
+      newerrors.slug = "Slug is required";
+      has = true;
+    }
+    if (formData.tags === "" || formData.tags === null) {
+      newerrors.tags = "Tags are required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
     onSubmit(formData);
+    console.log("Form submitted with data:", formData);
   };
 
   return (
@@ -35,6 +72,11 @@ const SeoAttributes = ({ onSubmit, handler }) => {
             >
               URL Slug
               <RequiredSymbol />
+              {errors.slug && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.slug}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -54,6 +96,11 @@ const SeoAttributes = ({ onSubmit, handler }) => {
             >
               SEO Title
               <RequiredSymbol />
+              {errors.title && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.title}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -73,6 +120,11 @@ const SeoAttributes = ({ onSubmit, handler }) => {
             >
               Description
               <RequiredSymbol />
+              {errors.description && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.description}
+                </span>
+              )}
             </label>
             <Textarea
               type="text"
@@ -93,6 +145,11 @@ const SeoAttributes = ({ onSubmit, handler }) => {
             >
               SEO Tags
               <RequiredSymbol />
+              {errors.tags && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.tags}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -110,7 +167,12 @@ const SeoAttributes = ({ onSubmit, handler }) => {
 
       {/* Save and cancel buttons */}
       <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
-        <Button onClick={handler} variant="bordered" className="font-semibold">
+        <Button
+          type="button"
+          onClick={handler}
+          variant="bordered"
+          className="font-semibold"
+        >
           Back to list
         </Button>
         <Button

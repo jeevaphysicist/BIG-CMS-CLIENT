@@ -4,21 +4,52 @@ import { Button, Input, Textarea } from "@nextui-org/react";
 import testimonialImg from "../../../assets/image 15.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
 
 const Testimonials = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
   });
+
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Title is required";
+      has = true;
+    }
+    if (formData.description === "" || formData.description === null) {
+      newerrors.description = "Description is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
+
   return (
     <Fragment>
       <form
@@ -59,6 +90,11 @@ const Testimonials = ({ handleHomepage }) => {
                 >
                   Section Title
                   <RequiredSymbol />
+                  {errors.title && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.title}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -78,6 +114,11 @@ const Testimonials = ({ handleHomepage }) => {
                 >
                   Description
                   <RequiredSymbol />
+                  {errors.description && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.description}
+                    </span>
+                  )}
                 </label>
                 <Textarea
                   type="text"
@@ -97,6 +138,7 @@ const Testimonials = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

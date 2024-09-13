@@ -4,12 +4,10 @@ import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const BirthStoneInfo = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    banner: "",
-    selectionImage: "",
-  });
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
@@ -22,26 +20,75 @@ const BirthStoneInfo = ({ handleHomepage }) => {
     productLink: "",
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = (file, bannerkey) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+  const handleImageSelect = async (file, width, height, imagekey) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [imagekey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.banner === "" || formData.banner === null) {
+      newerrors.banner = "Banner is required";
+      has = true;
+    }
+    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+      newerrors.sectionTitle = "Section Title is required";
+      has = true;
+    }
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Section Description is required";
+      has = true;
+    }
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Title is required";
+      has = true;
+    }
+    if (formData.description === "" || formData.title === null) {
+      newerrors.description = "Title is required";
+      has = true;
+    }
+    if (formData.selectionImage === "" || formData.selectionImage === null) {
+      newerrors.selectionImage = "Selection image is required";
+      has = true;
+    }
+    if (formData.month === "" || formData.month === null) {
+      newerrors.month = "Selection image is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -60,6 +107,11 @@ const BirthStoneInfo = ({ handleHomepage }) => {
               >
                 Section Title
                 <RequiredSymbol />
+                {errors.sectionTitle && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.sectionTitle}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -79,6 +131,11 @@ const BirthStoneInfo = ({ handleHomepage }) => {
               >
                 Description
                 <RequiredSymbol />
+                {errors.sectionDescription && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.sectionDescription}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -126,6 +183,11 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                   >
                     Birthstone Month
                     <RequiredSymbol />
+                    {errors.month && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.month}
+                      </span>
+                    )}
                   </label>
                   <Select
                     type="text"
@@ -158,14 +220,20 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                   >
                     Birthstone Banner
                     <RequiredSymbol />
+                    {errors.banner && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.banner}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="banner"
-                    onImageSelect={(file) => handleImageSelect(file, "banner")}
+                    label="banner"
+                    accept={`images/*`}
+                    width={619}
+                    height={578}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.banner && (
-                    <img src={imagePreview.banner} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -174,16 +242,20 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                   >
                     Selection Image
                     <RequiredSymbol />
+                    {errors.selectionImage && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.selectionImage}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="selectionImage"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "selectionImage")
-                    }
+                    label="selection image"
+                    accept={`images/*`}
+                    width={619}
+                    height={578}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.selectionImage && (
-                    <img src={imagePreview.selectionImage} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -192,6 +264,11 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -211,6 +288,11 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
+                    {errors.description && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.description}
+                      </span>
+                    )}
                   </label>
                   <Textarea
                     type="text"
@@ -267,6 +349,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

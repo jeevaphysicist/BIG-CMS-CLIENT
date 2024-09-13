@@ -4,53 +4,125 @@ import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const Categories = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    category1: "",
-    category2: "",
-    category3: "",
-    category4: "",
-    category5: "",
-  });
-
   const [formData, setFormData] = useState({
     category1: "",
-    Title1: "",
+    title1: "",
     callToAction1: "",
     category2: "",
-    Title2: "",
+    title2: "",
     callToAction2: "",
     category3: "",
-    Title3: "",
+    title3: "",
     callToAction3: "",
     category4: "",
-    Title4: "",
+    title4: "",
     callToAction4: "",
     category5: "",
-    Title5: "",
+    title5: "",
     callToAction5: "",
   });
 
-  // Handle form input changes for text fields
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Handle image selection and store it directly in formData
-  const handleImageSelect = (file, categoryKey) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [categoryKey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [categoryKey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+  const handleImageSelect = async (file, width, height, categorykey) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [categorykey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.category1 === "" || formData.category1 === null) {
+      newerrors.category1 = "Category 1 required";
+      has = true;
+    }
+    if (formData.category2 === "" || formData.category2 === null) {
+      newerrors.category2 = "Category 2 required";
+      has = true;
+    }
+    if (formData.category3 === "" || formData.category3 === null) {
+      newerrors.category3 = "Category 3 required";
+      has = true;
+    }
+    if (formData.category4 === "" || formData.category4 === null) {
+      newerrors.category4 = "Category 4 required";
+      has = true;
+    }
+    if (formData.category5 === "" || formData.category5 === null) {
+      newerrors.category5 = "Category 4 required";
+      has = true;
+    }
+    if (formData.title1 === "" || formData.title1 === null) {
+      newerrors.title1 = "Title is required";
+      has = true;
+    }
+    if (formData.title2 === "" || formData.title2 === null) {
+      newerrors.title2 = "Title is required";
+      has = true;
+    }
+    if (formData.title3 === "" || formData.title3 === null) {
+      newerrors.title3 = "Title is required";
+      has = true;
+    }
+    if (formData.title4 === "" || formData.title4 === null) {
+      newerrors.title4 = "Title is required";
+      has = true;
+    }
+    if (formData.title5 === "" || formData.title5 === null) {
+      newerrors.title5 = "Title is required";
+      has = true;
+    }
+    if (formData.callToAction1 === "" || formData.callToAction1 === null) {
+      newerrors.callToAction1 = "Call to Action is required";
+      has = true;
+    }
+    if (formData.callToAction2 === "" || formData.callToAction2 === null) {
+      newerrors.callToAction2 = "Call to Action is required";
+      has = true;
+    }
+    if (formData.callToAction3 === "" || formData.callToAction3 === null) {
+      newerrors.callToAction3 = "Call to Action is required";
+      has = true;
+    }
+    if (formData.callToAction4 === "" || formData.callToAction4 === null) {
+      newerrors.callToAction4 = "Call to Action is required";
+      has = true;
+    }
+    if (formData.callToAction5 === "" || formData.callToAction5 === null) {
+      newerrors.callToAction5 = "Call to Action is required";
+      has = true;
+    }
+    setError(newerrors);
+    return has;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -90,16 +162,20 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Category 1
                     <RequiredSymbol />
+                    {errors.category1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category1}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="category1"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "category1")
-                    }
+                    label="category"
+                    accept={`images/*`}
+                    width={233}
+                    height={256}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.category1 && (
-                    <img src={imagePreview.category1} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -108,6 +184,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title1}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -127,6 +208,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.callToAction1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToAction1}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -151,16 +237,20 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Category 2
                     <RequiredSymbol />
+                    {errors.category2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category2}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="category2"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "category2")
-                    }
+                    label="category"
+                    accept={`images/*`}
+                    width={233}
+                    height={256}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.category2 && (
-                    <img src={imagePreview.category2} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -169,6 +259,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title2}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -188,6 +283,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.callToAction2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToAction2}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -212,16 +312,20 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Category 3
                     <RequiredSymbol />
+                    {errors.category3 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category3}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="category3"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "category3")
-                    }
+                    label="category"
+                    accept={`images/*`}
+                    width={233}
+                    height={256}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.category3 && (
-                    <img src={imagePreview.category3} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -230,6 +334,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title3 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title3}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -249,6 +358,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.callToAction3 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToAction3}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -273,16 +387,20 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Category 4
                     <RequiredSymbol />
+                    {errors.category4 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category4}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="category4"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "category4")
-                    }
+                    label="category"
+                    accept={`images/*`}
+                    width={233}
+                    height={256}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.category4 && (
-                    <img src={imagePreview.category4} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -291,6 +409,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title4 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title4}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -310,6 +433,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.callToAction4 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToAction4}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -333,16 +461,20 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Category 5
                     <RequiredSymbol />
+                    {errors.category5 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.category5}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="category5"
-                    onImageSelect={(file) =>
-                      handleImageSelect(file, "category5")
-                    }
+                    label="category"
+                    accept={`images/*`}
+                    width={233}
+                    height={256}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.category5 && (
-                    <img src={imagePreview.category5} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -351,6 +483,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
+                    {errors.title5 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title5}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -370,6 +507,11 @@ const Categories = ({ handleHomepage }) => {
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.callToAction5 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToAction5}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -390,6 +532,7 @@ const Categories = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

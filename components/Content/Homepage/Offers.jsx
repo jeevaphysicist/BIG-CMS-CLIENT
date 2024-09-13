@@ -6,13 +6,10 @@ import banner1 from "../../../assets/image 12.png";
 import banner2 from "../../../assets/image 2.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { validateImageDimensions } from "@/lib/imageValidator";
+import { toast } from "react-toastify";
 
 const Offers = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    banner1: "",
-    banner2: "",
-    banner3: "",
-  });
   const [formData, setFormData] = useState({
     banner1: "",
     banner1Title: "",
@@ -34,6 +31,9 @@ const Offers = ({ handleHomepage }) => {
     additionalDiscount: "",
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -49,18 +49,88 @@ const Offers = ({ handleHomepage }) => {
     }));
   };
 
-  const handleImageSelect = (file, bannerkey) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+  const handleImageSelect = async (file, width, height, bannerkey) => {
+    try {
+      console.log(bannerkey, width, height);
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [bannerkey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.banner1 === "" || formData.banner1 === null) {
+      newerrors.banner1 = "Banner 1 required";
+      has = true;
+    }
+    if (formData.banner2 === "" || formData.banner2 === null) {
+      newerrors.banner2 = "Banner 2 required";
+      has = true;
+    }
+    if (formData.banner3 === "" || formData.banner3 === null) {
+      newerrors.banner3 = "Banner 3 required";
+      has = true;
+    }
+    if (formData.banner1Title === "" || formData.banner1Title === null) {
+      newerrors.banner1Title = "Banner title required";
+      has = true;
+    }
+    if (formData.banner2Title === "" || formData.banner2Title === null) {
+      newerrors.banner2Title = "Banner title required";
+      has = true;
+    }
+    if (formData.banner3Title === "" || formData.banner3Title === null) {
+      newerrors.banner3Title = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.banner1Description === "" ||
+      formData.banner1Description === null
+    ) {
+      newerrors.banner1Description = "Banner description required";
+      has = true;
+    }
+
+    if (
+      formData.banner2Description === "" ||
+      formData.banner2Description === null
+    ) {
+      newerrors.banner2Description = "Banner description required";
+      has = true;
+    }
+    if (
+      formData.banner3Description === "" ||
+      formData.banner3Description === null
+    ) {
+      newerrors.banner3Description = "Banner description required";
+      has = true;
+    }
+
+    if (formData.banner1Link === "" || formData.banner1Link === null) {
+      newerrors.banner1Link = "Banner description required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -99,14 +169,20 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner 1
                 <RequiredSymbol />
+                {errors.banner1 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1}
+                  </span>
+                )}
               </label>
               <DragAndDropImage
                 id="banner1"
-                onImageSelect={(file) => handleImageSelect(file, "banner1")}
+                label="banner image"
+                accept={`images/*`}
+                width={619}
+                height={578}
+                onImageSelect={handleImageSelect}
               />
-              {imagePreview.banner1 && (
-                <img src={imagePreview.banner1} alt="banner image" />
-              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -115,6 +191,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner1Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -134,6 +215,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner1Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -153,6 +239,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Link
                 <RequiredSymbol />
+                {errors.banner1Link && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Link}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -246,14 +337,20 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner 2
                 <RequiredSymbol />
+                {errors.banner2 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2}
+                  </span>
+                )}
               </label>
               <DragAndDropImage
                 id="banner2"
-                onImageSelect={(file) => handleImageSelect(file, "banner2")}
+                label="banner image"
+                accept={`images/*`}
+                width={619}
+                height={578}
+                onImageSelect={handleImageSelect}
               />
-              {imagePreview.banner2 && (
-                <img src={imagePreview.banner2} alt="banner image" />
-              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -262,6 +359,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner2Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -281,6 +383,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner2Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -372,14 +479,20 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner 3
                 <RequiredSymbol />
+                {errors.banner3 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner3}
+                  </span>
+                )}
               </label>
               <DragAndDropImage
                 id="banner3"
-                onImageSelect={(file) => handleImageSelect(file, "banner3")}
+                label="banner image"
+                accept={`images/*`}
+                width={619}
+                height={578}
+                onImageSelect={handleImageSelect}
               />
-              {imagePreview.banner3 && (
-                <img src={imagePreview.banner3} alt="banner image" />
-              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -388,6 +501,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner3Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner3Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -407,6 +525,11 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner3Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner3Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -471,6 +594,7 @@ const Offers = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"

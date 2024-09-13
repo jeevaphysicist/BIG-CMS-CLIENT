@@ -8,10 +8,6 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 
 const Herosection = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    banner1: "",
-    banner2: "",
-  });
   const [formData, setFormData] = useState({
     banner1: "",
     banner1Title: "",
@@ -27,10 +23,10 @@ const Herosection = ({ handleHomepage }) => {
     minutes: "",
     seconds: "",
   });
-  const [errors,setError] = useState({});
-  const [loading,setLoading] = useState(false);
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -45,52 +41,68 @@ const Herosection = ({ handleHomepage }) => {
     }));
   };
 
-  const handleImageSelect = async (file,width,height, bannerkey) => {
+  const handleImageSelect = async (file, width, height, bannerkey) => {
     try {
-      await validateImageDimensions(file,width,height);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [bannerkey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+      console.log(bannerkey, width, height);
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [bannerkey]: file }));
+      }
     } catch (error) {
-       toast.error(error);
-    }    
+      toast.error(error);
+    }
   };
 
-  const handleVadilation = ()=>{
-        let newerrors = {};
-        let has = false;
-       if(formData.banner1 === '' || formData.banner1 === null){
-            newerrors.banner1 = "Banner 1 required";
-            has = true;
-        }
-        if(formData.banner2 === '' || formData.banner2 === null){
-          newerrors.banner2 = "Banner 2 required";
-          has = true;
-      }
-        setError(newerrors);
-        return has;
-  }
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.banner1 === "" || formData.banner1 === null) {
+      newerrors.banner1 = "Banner 1 required";
+      has = true;
+    }
+    if (formData.banner2 === "" || formData.banner2 === null) {
+      newerrors.banner2 = "Banner 2 required";
+      has = true;
+    }
+    if (formData.banner1Title === "" || formData.banner1Title === null) {
+      newerrors.banner1Title = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.banner1Description === "" ||
+      formData.banner1Description === null
+    ) {
+      newerrors.banner1Description = "Banner description required";
+      has = true;
+    }
+    if (formData.banner2Title === "" || formData.banner2Title === null) {
+      newerrors.banner2Title = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.banner2Description === "" ||
+      formData.banner2Description === null
+    ) {
+      newerrors.banner2Description = "Banner description required";
+      has = true;
+    }
+    setError(newerrors);
+    return has;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse",validateResponse);
-    if(validateResponse){
-       toast.error('Please fill required details correctly !')
-       return null;
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
     }
 
     // API Call Here
-    
 
     console.log("Form submitted with data:", formData);
-
   };
-  
 
   return (
     <Fragment>
@@ -123,19 +135,21 @@ const Herosection = ({ handleHomepage }) => {
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 1
-                <RequiredSymbol /> {errors.banner1 && <span className="font-regular text-[12px] text-red-600">{errors.banner1}</span>}
+                <RequiredSymbol />
+                {errors.banner1 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1}
+                  </span>
+                )}
               </label>
               <DragAndDropImage
                 id="banner1"
+                label="banner image"
                 accept={`images/*`}
-                width={800}
-                height={400}
+                width={736}
+                height={552}
                 onImageSelect={handleImageSelect}
               />
-              {imagePreview.banner1 && (
-                <img src={imagePreview.banner1} alt="banner image" />
-              )}
-              
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -144,6 +158,11 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner1Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -153,7 +172,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                onChange={handleChange}
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -163,6 +182,11 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner1Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -172,7 +196,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                onChange={handleChange}
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -189,78 +213,76 @@ const Herosection = ({ handleHomepage }) => {
                   aria-label="Enable Timer"
                 />
               </div>
-              {formData.enableTimer && (
-                <div className="w-full flex justify-between md:gap-4 gap-2">
-                  <div className="grid gap-2">
-                    <label
-                      htmlFor="days"
-                      className="md:text-[18px] text-[16px] gilroy-medium"
-                    >
-                      Days
-                    </label>
-                    <Input
-                      type="text"
-                      id="banner_desc"
-                      variant="bordered"
-                      size="lg"
-                      radius="sm"
-                      name="days"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label
-                      htmlFor="days"
-                      className="md:text-[18px] text-[16px] gilroy-medium"
-                    >
-                      Hours
-                    </label>
-                    <Input
-                      type="text"
-                      id="banner_desc"
-                      variant="bordered"
-                      size="lg"
-                      radius="sm"
-                      name="hours"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label
-                      htmlFor="days"
-                      className="md:text-[18px] text-[16px] gilroy-medium"
-                    >
-                      Minutes
-                    </label>
-                    <Input
-                      type="text"
-                      id="banner_desc"
-                      variant="bordered"
-                      size="lg"
-                      radius="sm"
-                      name="minutes"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label
-                      htmlFor="days"
-                      className="md:text-[18px] text-[16px] gilroy-medium"
-                    >
-                      Seconds
-                    </label>
-                    <Input
-                      type="text"
-                      id="banner_desc"
-                      variant="bordered"
-                      size="lg"
-                      radius="sm"
-                      name="seconds"
-                      onChange={handleChange}
-                    />
-                  </div>
+              <div className="w-full flex justify-between md:gap-4 gap-2">
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="days"
+                    className="md:text-[18px] text-[16px] gilroy-medium"
+                  >
+                    Days
+                  </label>
+                  <Input
+                    type="text"
+                    id="banner_desc"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="days"
+                    onChange={handleFormChange}
+                  />
                 </div>
-              )}
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="days"
+                    className="md:text-[18px] text-[16px] gilroy-medium"
+                  >
+                    Hours
+                  </label>
+                  <Input
+                    type="text"
+                    id="banner_desc"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="hours"
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="days"
+                    className="md:text-[18px] text-[16px] gilroy-medium"
+                  >
+                    Minutes
+                  </label>
+                  <Input
+                    type="text"
+                    id="banner_desc"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="minutes"
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="days"
+                    className="md:text-[18px] text-[16px] gilroy-medium"
+                  >
+                    Seconds
+                  </label>
+                  <Input
+                    type="text"
+                    id="banner_desc"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="seconds"
+                    onChange={handleFormChange}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -292,17 +314,21 @@ const Herosection = ({ handleHomepage }) => {
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 2
-                <RequiredSymbol /> {errors.banner2 && <span className="font-regular text-[12px] text-red-600">{errors.banner2}</span>}
+                <RequiredSymbol />{" "}
+                {errors.banner2 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2}
+                  </span>
+                )}
               </label>
               <DragAndDropImage
-               accept={`images/*`}
-               dimensions={`1122X318px`}
+                accept={`images/*`}
+                label="banner image"
                 id="banner2"
-                onImageSelect={(file) => handleImageSelect(file, "banner2")}
+                width={736}
+                height={552}
+                onImageSelect={handleImageSelect}
               />
-              {imagePreview.banner2 && (
-                <img src={imagePreview.banner2} alt="banner image" />
-              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -311,6 +337,11 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner2Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -320,7 +351,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                onChange={handleChange}
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -330,6 +361,11 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner2Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -339,7 +375,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                onChange={handleChange}
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -368,7 +404,7 @@ const Herosection = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerContent"
-                onChange={handleChange}
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -383,7 +419,7 @@ const Herosection = ({ handleHomepage }) => {
           >
             Back to list
           </Button>
-          <Button         
+          <Button
             color="primary"
             type="submit"
             className="font-semibold text-white"

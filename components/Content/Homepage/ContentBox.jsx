@@ -4,14 +4,10 @@ import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const ContentBox = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState({
-    icon1: "",
-    icon2: "",
-    icon3: "",
-    icon4: "",
-  });
   const [formData, setFormData] = useState({
     icon1: "",
     icon1Title: "",
@@ -27,23 +23,103 @@ const ContentBox = ({ handleHomepage }) => {
     icon4Description: "",
   });
 
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = (file, iconkey) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const blobUrl = URL.createObjectURL(file);
-      setImagePreview((prev) => ({ ...prev, [iconkey]: blobUrl }));
-      setFormData((prev) => ({ ...prev, [iconkey]: file }));
-    };
-    reader.readAsArrayBuffer(file);
+  const handleImageSelect = async (file, width, height, iconkey) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [iconkey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.icon1 === "" || formData.icon1 === null) {
+      newerrors.icon1 = "Icon 1 required";
+      has = true;
+    }
+    if (formData.icon2 === "" || formData.icon2 === null) {
+      newerrors.icon2 = "Icon 2 required";
+      has = true;
+    }
+    if (formData.icon3 === "" || formData.icon3 === null) {
+      newerrors.icon3 = "Icon 3 required";
+      has = true;
+    }
+    if (formData.icon4 === "" || formData.icon4 === null) {
+      newerrors.icon4 = "Icon 4 required";
+      has = true;
+    }
+    if (formData.icon1Title === "" || formData.icon1Title === null) {
+      newerrors.icon1Title = "Icon title required";
+      has = true;
+    }
+    if (
+      formData.icon1Description === "" ||
+      formData.icon1Description === null
+    ) {
+      newerrors.icon1Description = "Icon description required";
+      has = true;
+    }
+    if (formData.icon2Title === "" || formData.icon2Title === null) {
+      newerrors.icon2Title = "Icon title required";
+      has = true;
+    }
+    if (
+      formData.icon2Description === "" ||
+      formData.icon2Description === null
+    ) {
+      newerrors.icon2Description = "Icon description required";
+      has = true;
+    }
+    if (formData.icon3Title === "" || formData.icon3Title === null) {
+      newerrors.icon3Title = "Icon title required";
+      has = true;
+    }
+    if (
+      formData.icon3Description === "" ||
+      formData.icon3Description === null
+    ) {
+      newerrors.icon3Description = "Icon description required";
+      has = true;
+    }
+    if (formData.icon4Title === "" || formData.icon4Title === null) {
+      newerrors.icon4Title = "Icon title required";
+      has = true;
+    }
+    if (
+      formData.icon4Description === "" ||
+      formData.icon4Description === null
+    ) {
+      newerrors.icon4Description = "Icon description required";
+      has = true;
+    }
+    setError(newerrors);
+    return has;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
     console.log("Form submitted with data:", formData);
   };
 
@@ -95,26 +171,37 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 1
                     <RequiredSymbol />
+                    {errors.icon1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon1}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="icon1"
-                    onImageSelect={(file) => handleImageSelect(file, "icon1")}
+                    label="icon"
+                    accept={`images/*`}
+                    width={264}
+                    height={264}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.icon1 && (
-                    <img src={imagePreview.icon1} alt="banner image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_title"
+                    htmlFor="icon_title"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
-                    <RequiredSymbol />
+                    <RequiredSymbol />{" "}
+                    {errors.icon1Title && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon1Title}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
-                    id="banner_title"
+                    id="icon_title"
                     placeholder="Engagement Rings"
                     variant="bordered"
                     size="lg"
@@ -130,6 +217,11 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
+                    {errors.icon1Description && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon1Description}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -154,14 +246,20 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 2
                     <RequiredSymbol />
+                    {errors.icon2 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon2}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="icon2"
-                    onImageSelect={(file) => handleImageSelect(file, "icon2")}
+                    label="icon"
+                    accept={`images/*`}
+                    width={264}
+                    height={264}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.icon2 && (
-                    <img src={imagePreview.icon2} alt="icon image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -169,7 +267,12 @@ const ContentBox = ({ handleHomepage }) => {
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
-                    <RequiredSymbol />
+                    <RequiredSymbol />{" "}
+                    {errors.icon2Title && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon2Title}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -189,6 +292,11 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
+                    {errors.icon2Description && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon2Description}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -213,14 +321,20 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 3
                     <RequiredSymbol />
+                    {errors.icon3 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon3}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="icon3"
-                    onImageSelect={(file) => handleImageSelect(file, "icon3")}
+                    label="icon"
+                    accept={`images/*`}
+                    width={264}
+                    height={264}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.icon3 && (
-                    <img src={imagePreview.icon3} alt="icon image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -228,7 +342,12 @@ const ContentBox = ({ handleHomepage }) => {
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
-                    <RequiredSymbol />
+                    <RequiredSymbol />{" "}
+                    {errors.icon3Title && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon3Title}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -248,6 +367,11 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
+                    {errors.icon3Description && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon3Description}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -272,14 +396,20 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 4
                     <RequiredSymbol />
+                    {errors.icon4 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon4}
+                      </span>
+                    )}
                   </label>
                   <DragAndDropImage
                     id="icon4"
-                    onImageSelect={(file) => handleImageSelect(file, "icon4")}
+                    label="icon"
+                    accept={`images/*`}
+                    width={264}
+                    height={264}
+                    onImageSelect={handleImageSelect}
                   />
-                  {imagePreview.icon4 && (
-                    <img src={imagePreview.icon4} alt="icon image" />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -287,7 +417,12 @@ const ContentBox = ({ handleHomepage }) => {
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
-                    <RequiredSymbol />
+                    <RequiredSymbol />{" "}
+                    {errors.icon4Title && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon4Title}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -307,6 +442,11 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
+                    {errors.icon4Description && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.icon4Description}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -327,6 +467,7 @@ const ContentBox = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
