@@ -4,8 +4,6 @@ import { Button, Input, Switch } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
-import { validateImageDimensions } from "@/lib/imageValidator";
-import { toast } from "react-toastify";
 
 const Herosection = ({ handleHomepage }) => {
   const [imagePreview, setImagePreview] = useState({
@@ -27,8 +25,6 @@ const Herosection = ({ handleHomepage }) => {
     minutes: "",
     seconds: "",
   });
-  const [errors,setError] = useState({});
-  const [loading,setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,51 +41,20 @@ const Herosection = ({ handleHomepage }) => {
     }));
   };
 
-  const handleImageSelect = async (file,width,height, bannerkey) => {
-    try {
-      await validateImageDimensions(file,width,height);
-      const reader = new FileReader();
-      reader.onloadend = () => {
+  const handleImageSelect = (file, bannerkey) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
       const blobUrl = URL.createObjectURL(file);
       setImagePreview((prev) => ({ ...prev, [bannerkey]: blobUrl }));
       setFormData((prev) => ({ ...prev, [bannerkey]: file }));
     };
     reader.readAsArrayBuffer(file);
-    } catch (error) {
-       toast.error(error);
-    }    
   };
-
-  const handleVadilation = ()=>{
-        let newerrors = {};
-        let has = false;
-       if(formData.banner1 === '' || formData.banner1 === null){
-            newerrors.banner1 = "Banner 1 required";
-            has = true;
-        }
-        if(formData.banner2 === '' || formData.banner2 === null){
-          newerrors.banner2 = "Banner 2 required";
-          has = true;
-       }
-        setError(newerrors);
-        return has;
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let validateResponse = handleVadilation();
-    console.log("validationresponse",validateResponse);
-    if(validateResponse){
-       toast.error('Please fill required details correctly !')
-       return null;
-    }
-
-    // API Call Here    
-
     console.log("Form submitted with data:", formData);
-
   };
-  
 
   return (
     <Fragment>
@@ -122,19 +87,15 @@ const Herosection = ({ handleHomepage }) => {
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 1
-                <RequiredSymbol /> {errors.banner1 && <span className="font-regular text-[12px] text-red-600">{errors.banner1}</span>}
+                <RequiredSymbol />
               </label>
               <DragAndDropImage
                 id="banner1"
-                accept={`images/*`}
-                width={800}
-                height={400}
-                onImageSelect={handleImageSelect}
+                onImageSelect={(file) => handleImageSelect(file, "banner1")}
               />
               {imagePreview.banner1 && (
                 <img src={imagePreview.banner1} alt="banner image" />
               )}
-              
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -291,11 +252,9 @@ const Herosection = ({ handleHomepage }) => {
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 2
-                <RequiredSymbol /> {errors.banner2 && <span className="font-regular text-[12px] text-red-600">{errors.banner2}</span>}
+                <RequiredSymbol />
               </label>
               <DragAndDropImage
-               accept={`images/*`}
-               dimensions={`1122X318px`}
                 id="banner2"
                 onImageSelect={(file) => handleImageSelect(file, "banner2")}
               />
@@ -375,14 +334,13 @@ const Herosection = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
-            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
           >
             Back to list
           </Button>
-          <Button         
+          <Button
             color="primary"
             type="submit"
             className="font-semibold text-white"
