@@ -10,5 +10,5 @@ export function performLogout(dispatch) {
     Cookies.remove('refresh_token');
     // Dispatch logout action
     dispatch(LogoutHandler());
-    toast.info('Session Ended !');
+    // toast.info('Session Ended !');
 }

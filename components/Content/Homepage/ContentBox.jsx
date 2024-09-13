@@ -185,6 +185,7 @@ const ContentBox = ({ handleHomepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.icon1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon1 )} alt="Image Preview" />}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -260,6 +261,8 @@ const ContentBox = ({ handleHomepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.icon2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon2 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -335,6 +338,8 @@ const ContentBox = ({ handleHomepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.icon3 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon3 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -410,6 +415,8 @@ const ContentBox = ({ handleHomepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.icon4 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon4 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label

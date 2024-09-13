@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./DragDropImage.css";
 import { FiUploadCloud } from "react-icons/fi";
 import { PiHandGrabbing } from "react-icons/pi";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const DragAndDropImage = ({
   id,
@@ -33,15 +34,14 @@ const DragAndDropImage = ({
     }
   };
 
-  const handleFiles = (files) => {
+  const handleFiles = async (files) => {
     const file = files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         if (onImageSelect) {
           onImageSelect(file, width, height, id);
-        }
-        setImage(e.target.result);
+        }                
       };
       reader.readAsDataURL(file);
     } else {
@@ -49,7 +49,9 @@ const DragAndDropImage = ({
     }
   };
 
-  const handleFileInputChange = (event) => {
+
+
+const handleFileInputChange = (event) => {
     const files = event.target.files;
     if (files.length > 0) {
       handleFiles(files);

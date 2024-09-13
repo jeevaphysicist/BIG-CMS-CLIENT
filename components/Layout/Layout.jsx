@@ -25,6 +25,7 @@ const MenuItems = ({ handleAside }) => {
     sitePages: false,
     assets: false,
     content: false,
+    menu:false,
   });
 
   const toggleSubMenu = (menu) => {
@@ -116,6 +117,22 @@ const MenuItems = ({ handleAside }) => {
                   <Link href="/content/social-medias" onClick={handleAside} className='flex font-medium w-[100%]'>Socail Media</Link>
                      {HandleFunction('/content/social-medias') &&<div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
                   </li>
+                  <li className={`${HandleFunction('/content/ring-size-guide') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                  <Link href="/content/ring-size-guide" onClick={handleAside} className='flex font-medium w-[100%]'> Ring size guide</Link>
+                     {HandleFunction('/content/ring-size-guide') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/content/gemstone-certification') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                  <Link href="/content/gemstone-certification" onClick={handleAside} className='flex font-medium w-[100%]'> Gemstone certification</Link>
+                     {HandleFunction('/content/gemstone-certification') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/content/holiday-gift-guide') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                  <Link href="/content/holiday-gift-guide" onClick={handleAside} className='flex font-medium w-[100%]'> Holiday gift guide</Link>
+                     {HandleFunction('/content/holiday-gift-guide') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/content/shipping') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                  <Link href="/content/shipping" onClick={handleAside} className='flex font-medium w-[100%]'>Shipping</Link>
+                     {HandleFunction('/content/shipping') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
                   <li className={`${HandleFunction('/content/category-page') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
                   <Link href="/content/category-page" onClick={handleAside} className='flex font-medium w-[100%]'> Category Pages</Link>
                      {HandleFunction('/content/category-page') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
@@ -123,7 +140,7 @@ const MenuItems = ({ handleAside }) => {
                 </ul>
               )}
             </li>
-            <li className="flex flex-col">
+            {/* <li className="flex flex-col">
               <div
                 className={`flex ${false ? "bg-[#F6F6FF]":""} hover:bg-[#F6F6FF] px-4 py-3 rounded-[10px]  items-center justify-between gap-3 cursor-pointer`}
                 onClick={() => toggleSubMenu('assets')}
@@ -150,7 +167,7 @@ const MenuItems = ({ handleAside }) => {
                   </li>
                 </ul>
               )}
-            </li>
+            </li> */}
             <li className={`flex ${HandleFunction('/trade-shows') ? "bg-[#F6F6FF]":""} hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}>
             <Link href="/trade-shows" onClick={handleAside} className='flex gap-3 items-center w-[100%]'>
               <FaSitemap className='text-[#82838A]' />
@@ -163,11 +180,53 @@ const MenuItems = ({ handleAside }) => {
               <span className='text-[#0A1215]'>Reviews and Ratings</span>
             </Link>
             </li>
-            <li className={`flex ${HandleFunction('/menu') ? "bg-[#F6F6FF]":""} hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}>
-            <Link href="/menu" onClick={handleAside} className='flex gap-3 items-center w-[100%]'>
-              <FaListUl className='text-[#82838A]' />
-              <span className='text-[#0A1215]'>Menu</span>
-              </Link>
+            <li className="flex flex-col">
+              <div
+                className={`flex ${false ? "bg-[#F6F6FF]":""} hover:bg-[#F6F6FF] px-4 py-3 rounded-[10px]  items-center justify-between gap-3 cursor-pointer`}
+                onClick={() => toggleSubMenu('menu')}
+              >
+              <div className="flex  items-center gap-3">
+                <FaImages className='text-[#82838A]' />
+                <span className='text-[#0A1215]'>Menu</span>
+              </div>
+                {openMenu.menu ? (
+                  <FaChevronDown className='text-[#82838A]' />
+                ) : (
+                  <FaChevronRight className='text-[#82838A]' />
+                )}
+              </div>
+              {openMenu.menu && (
+                <ul className="ml-12 mt-2  border-l-2 border-gray-2  space-y-2">
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                    <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Gemstones</Link>
+                    {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Jewelry</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Drops & Beads</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Semi-Mounts</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Findings</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Gifts</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                  <li className={`${HandleFunction('/menu/') ? "bg-[#F6F6FF] text-[#434CE7]":"text-[#0A1215]"} cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}>
+                     <Link href="/menu/" onClick={handleAside} className='flex font-medium w-[100%]'>Custom Jewelry</Link>
+                     {HandleFunction('/menu/') && <div className='w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]'></div>}
+                  </li>
+                </ul>
+              )}
             </li>
             <li className={`flex ${HandleFunction('/ticker') ? "bg-[#F6F6FF]":""} hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}>
             <Link href="/ticker" onClick={handleAside} className='flex gap-3 items-center w-[100%]'>

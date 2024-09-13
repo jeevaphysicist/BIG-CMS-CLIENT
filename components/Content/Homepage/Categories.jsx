@@ -176,6 +176,8 @@ const Categories = ({ handleHomepage }) => {
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.category1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.category1 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -251,6 +253,8 @@ const Categories = ({ handleHomepage }) => {
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.category2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.category2 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -326,6 +330,8 @@ const Categories = ({ handleHomepage }) => {
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.category3 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.category3 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -401,6 +407,8 @@ const Categories = ({ handleHomepage }) => {
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.category4 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.category4 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -475,6 +483,8 @@ const Categories = ({ handleHomepage }) => {
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
+                 {formData.category5 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.category5 )} alt="Image Preview" />}
+
                 </div>
                 <div className="flex flex-col gap-3">
                   <label

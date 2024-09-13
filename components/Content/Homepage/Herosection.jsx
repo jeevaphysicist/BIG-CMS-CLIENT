@@ -6,6 +6,7 @@ import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Herosection = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ const Herosection = ({ handleHomepage }) => {
 
   const handleImageSelect = async (file, width, height, bannerkey) => {
     try {
-      console.log(bannerkey, width, height);
+      // console.log(bannerkey, width, height);
       await validateImageDimensions(file, width, height);
       if (file) {
         setFormData((prevData) => ({ ...prevData, [bannerkey]: file }));
@@ -93,7 +94,7 @@ const Herosection = ({ handleHomepage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
@@ -101,7 +102,7 @@ const Herosection = ({ handleHomepage }) => {
 
     // API Call Here
 
-    console.log("Form submitted with data:", formData);
+    // console.log("Form submitted with data:", formData);
   };
 
   return (
@@ -146,10 +147,14 @@ const Herosection = ({ handleHomepage }) => {
                 id="banner1"
                 label="banner image"
                 accept={`images/*`}
-                width={736}
-                height={552}
+                width={318}
+                height={548}
                 onImageSelect={handleImageSelect}
               />
+              
+             {formData.banner1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner1 )} alt="Image Preview" />}
+
+              
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -325,10 +330,12 @@ const Herosection = ({ handleHomepage }) => {
                 accept={`images/*`}
                 label="banner image"
                 id="banner2"
-                width={736}
-                height={552}
+                width={1122}
+                height={318}
                 onImageSelect={handleImageSelect}
               />
+             {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />}
+
             </div>
             <div className="flex flex-col gap-3">
               <label
