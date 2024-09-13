@@ -187,7 +187,7 @@ const Herosection = ({ handleHomepage }) => {
                   onChange={() => handleSwitchChange("enableTimer")}
                   aria-label="Enable Timer"
                 />
-              </div>
+              </div> 
               {formData.enableTimer && (
                 <div className="w-full flex justify-between md:gap-4 gap-2">
                   <div className="grid gap-2">
