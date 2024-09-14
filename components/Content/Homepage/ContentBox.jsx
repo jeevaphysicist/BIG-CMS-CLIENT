@@ -6,6 +6,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const ContentBox = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
