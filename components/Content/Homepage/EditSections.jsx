@@ -75,7 +75,7 @@ const EditSections = ({ handleHomepage }) => {
       </div>
       {activeTab === "generalInfo" && (
         <section>
-          <div className="w-full md:px-4 px-2 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-40 bg-white">
+          <div className="w-full  md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-40 bg-white">
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>
@@ -117,7 +117,7 @@ const EditSections = ({ handleHomepage }) => {
               <option value="socialfollow">Social Follow (Section 18)</option>
             </select>
           </div>
-          <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">
+          <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "herosection" && (
               <Herosection handleHomepage={handleHomepage} />
             )}

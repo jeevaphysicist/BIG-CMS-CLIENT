@@ -62,7 +62,7 @@ return (
               <RequiredSymbol />
             </label>
             {/* Text editor */}
-            <TextEditor handleContentChange={handleProcedureContentChange} />
+            <TextEditor value={content} handleContentChange={handleProcedureContentChange} />
           </div>
         </div>
       </div>

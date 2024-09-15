@@ -75,7 +75,7 @@ const About = ({ handleSitepage }) => {
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="page_title"
-                className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
               >
                 Page Title
                 <RequiredSymbol />
@@ -99,7 +99,7 @@ const About = ({ handleSitepage }) => {
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="header"
-                className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
               >
                 Header
                 <RequiredSymbol />
@@ -123,7 +123,7 @@ const About = ({ handleSitepage }) => {
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="intro"
-                className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
               >
                 Introduction
                 <RequiredSymbol />
@@ -148,7 +148,7 @@ const About = ({ handleSitepage }) => {
             <div className="flex flex-col gap-3 md:mb-8 mb-44">
               <label
                 htmlFor="content"
-                className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                className="md:text-[18px] text-[16px] font-medium flex gap-1"
               >
                 Content
                 <RequiredSymbol />
@@ -159,7 +159,7 @@ const About = ({ handleSitepage }) => {
                 )}
               </label>
               {/* Text editor */}
-              <TextEditor handleContentChange={handleProcedureContentChange} />
+              <TextEditor value={formData.content} handleContentChange={handleProcedureContentChange} />
             </div>
           </div>
         </div>

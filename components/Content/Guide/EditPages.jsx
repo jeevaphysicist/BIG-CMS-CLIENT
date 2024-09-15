@@ -1,18 +1,21 @@
 /* eslint-disable react/prop-types */
-import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
+import { Button, Input, SelectSection, Tab, Tabs, Textarea } from "@nextui-org/react";
 import { Fragment, useState } from "react";
 import RequiredSymbol from "../RequiredSymbol";
-import About from "./About";
-import Offers from "./Offers";
+// import About from "./About";
+// import Offers from "./Offers";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import GemStoneGuide from "./GemStoneGuide";
+import MeaningOfGemstones from "./MeaningOfGemstones";
+import ProductFromGemstones from "./ProductFromGemstones";
 
-const EditPages = ({ handleSitepage }) => {
-  const [selectedSection, setSelectedSection] = useState("about");
+const EditPages = ({ handleGuide }) => {
+  const [selectedSection, setSelectedSection] = useState("gemstone-guide");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +84,7 @@ const EditPages = ({ handleSitepage }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Add New Site Page
+              Add New Guide
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Enter Page Contents.
@@ -113,21 +116,40 @@ const EditPages = ({ handleSitepage }) => {
           >
             SEO Attributes
           </button>
-          <button
-            className={`text-[16px] ${
-              activeTab === "media"
-                ? "border-b-3 border-[#434CE7] text-black"
-                : "text-black/50"
-            }  font-semibold`}
-            onClick={() => handleTabChange("media")}
-          >
-            Media
-          </button>
         </div>
       </div>
       {activeTab === "generalInfo" && (
         <section>
-          <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-20 bg-white">
+          <div className="md:top-28 sticky z-20 bg-white">
+          {
+            selectedSection === "gemstone-guide" && 
+           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
+              <label
+                htmlFor="page-title"
+                className="text-[16px]  font-semibold flex gap-1"
+              >
+                Page Title
+                <RequiredSymbol />
+                {/* {errors.introduction && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.introduction}
+                  </span>
+                )} */}
+              </label>
+              <Input
+                type="text"
+                minRows={4}
+                id="page-title"
+                variant="bordered"
+                placeholder="Gemstone Guide"
+                size="lg"
+                radius="sm"
+                name="pageTitle"
+                // onChange={handleFormChange}
+              />
+            </div>
+          }
+          <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3   ">
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>
@@ -137,69 +159,33 @@ const EditPages = ({ handleSitepage }) => {
               onChange={(e) => setSelectedSection(e.target.value)}
               aria-label="Select section to edit"
             >
-              <option value="about">About (Section 1)</option>
-              <option value="offers">Offers (Section 2)</option>
+              <option value="gemstone-guide">Gemstone Guide (Section 1)</option>
+              <option value="meaningOfGemstones">Meaning of Gemstones (Section 2)</option>
+              <option value="productsFromGemstones">Products from Gemstones (Section 3)</option>
+              <option value="moreAboutGemstones">More About Gemstones (Section 4)</option>
+              <option value="contentSection">Content Section (Section 5)</option>
+              <option value="faqs">Frequently Asked Questions (Section 6)</option>
             </select>
           </div>
-          <div className=" my-2 no-scrollbar md:min-h-[65vh]">
-            {selectedSection === "about" && (
-              <About handleSitepage={handleSitepage} />
-            )}
-            {selectedSection === "offers" && (
-              <Offers handleSitepage={handleSitepage} />
-            )}
+          <div className="w-[100%] h-[1px] bg-gray-200" />
           </div>
+        <div className="  no-scrollbar md:min-h-[65vh]">
+            {selectedSection === "gemstone-guide" && (
+              <GemStoneGuide handleGuide={handleGuide} />
+            )}
+            {selectedSection === "meaningOfGemstones" && (
+              <MeaningOfGemstones handleGuide={handleGuide} />
+            )}
+            {selectedSection === "productsFromGemstones" && (
+              <ProductFromGemstones handleGuide={handleGuide} />
+            )}
+          </div> 
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
+        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleGuide} />
       )}
-      {activeTab === "media" && (
-        <form
-          onSubmit={handleSubmit}
-          className="w-full md:px-8 px-4 py-8  space-y-6"
-        >
-          <div className="w-full min-h-[60vh] flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <DragAndDropImage
-                id="media"
-                label="media"
-                accept={`images/*`}
-                width={487}
-                height={410}
-                onImageSelect={handleImageSelect}
-              />
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="file"
-                  className="md:text-[18px] text-[14px] gilroy-medium flex gap-1"
-                >
-                  Uploaded Files
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Save and cancel buttons */}
-          <div className="w-full sticky bottom-0 py-3 bg-white z-20 flex justify-end gap-4">
-            <Button
-              onClick={handleSitepage}
-              variant="bordered"
-              className="font-semibold"
-            >
-              Back to list
-            </Button>
-            <Button
-              color="primary"
-              className="font-semibold text-white"
-              startContent={<FiSave size={20} />}
-              onClick={handleModal}
-            >
-              Save New Page
-            </Button>
-          </div>
-        </form>
-      )}
+      
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
