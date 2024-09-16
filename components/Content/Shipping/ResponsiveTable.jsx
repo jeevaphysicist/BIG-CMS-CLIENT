@@ -72,14 +72,14 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                   {row.method}
                 </td>
                 <td className="text-nowrap">
-                  <motion.div
+                  {/* <motion.div
                     className="cursor-move mr-2 "
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <RiDragMove2Fill size={16} className="text-[#676767]" />
                   </motion.div>
-                  <Checkbox />
+                  <Checkbox /> */}
                   {row.cost}
                 </td>
 
