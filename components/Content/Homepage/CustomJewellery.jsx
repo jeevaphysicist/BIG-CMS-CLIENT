@@ -7,6 +7,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const CustomJewellery = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -218,6 +219,13 @@ const CustomJewellery = ({ handleHomepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.banner && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.banner)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="icons" className="text-[18px] gilroy-medium">
@@ -255,6 +263,13 @@ const CustomJewellery = ({ handleHomepage }) => {
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
+                      {formData.icon1 && (
+                        <img
+                          className="h-[150px] mx-auto w-[150px]"
+                          src={FormateImageURL(formData.icon1)}
+                          alt="Image Preview"
+                        />
+                      )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
@@ -304,6 +319,13 @@ const CustomJewellery = ({ handleHomepage }) => {
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
+                      {formData.icon2 && (
+                        <img
+                          className="h-[150px] mx-auto w-[150px]"
+                          src={FormateImageURL(formData.icon2)}
+                          alt="Image Preview"
+                        />
+                      )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
@@ -353,6 +375,13 @@ const CustomJewellery = ({ handleHomepage }) => {
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
+                      {formData.icon3 && (
+                        <img
+                          className="h-[150px] mx-auto w-[150px]"
+                          src={FormateImageURL(formData.icon3)}
+                          alt="Image Preview"
+                        />
+                      )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label

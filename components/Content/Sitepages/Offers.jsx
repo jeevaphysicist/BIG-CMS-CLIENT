@@ -6,6 +6,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Offers = ({ handleSitepage }) => {
   const [formData, setFormData] = useState({
@@ -177,6 +178,13 @@ const Offers = ({ handleSitepage }) => {
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.banner && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.banner)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label

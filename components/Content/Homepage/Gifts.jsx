@@ -7,6 +7,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Gifts = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -142,6 +143,13 @@ const Gifts = ({ handleHomepage }) => {
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.gift1 && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.gift1)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -216,6 +224,13 @@ const Gifts = ({ handleHomepage }) => {
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.gift2 && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.gift2)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label

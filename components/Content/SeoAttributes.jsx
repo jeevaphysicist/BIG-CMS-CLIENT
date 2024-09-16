@@ -4,7 +4,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "./RequiredSymbol";
 import { toast } from "react-toastify";
 
-const SeoAttributes = ({ onSubmit, handler }) => {
+const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
   const [formData, setFormData] = useState({
     slug: "",
     title: "",
@@ -180,6 +180,7 @@ const SeoAttributes = ({ onSubmit, handler }) => {
           className="font-semibold text-white"
           startContent={<FiSave size={20} />}
           type="submit"
+          onClick={handleModal}
         >
           Save New Page
         </Button>

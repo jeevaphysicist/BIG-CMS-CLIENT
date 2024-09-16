@@ -7,6 +7,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Recommended = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -186,6 +187,13 @@ const Recommended = ({ handleHomepage }) => {
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.banner && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.banner)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label

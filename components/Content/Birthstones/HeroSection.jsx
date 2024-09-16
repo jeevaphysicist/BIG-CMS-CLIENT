@@ -4,7 +4,7 @@ import { Button, Input } from "@nextui-org/react";
 import DragAndDropImage from "../DragDropImage";
 import { FiSave } from "react-icons/fi";
 
-const GemStoneGuide = ({ handleGuide }) => {
+const HeroSection = ({ handleBirthStones }) => {
   const handleImageSelect = () => {};
 
   return (
@@ -29,7 +29,7 @@ const GemStoneGuide = ({ handleGuide }) => {
               minRows={4}
               id="intro"
               variant="bordered"
-              placeholder="Facts About Emerald Gemstones"
+              placeholder="May Birthstone: Emerald - Gem Of Spring And Prosperity"
               size="lg"
               radius="sm"
               name="introduction"
@@ -50,17 +50,11 @@ const GemStoneGuide = ({ handleGuide }) => {
               accept={`images/*`}
               label="banner image"
               id="banner2"
-              width={1122}
-              height={318}
+              width={1248}
+              height={356}
               onImageSelect={handleImageSelect}
             />
-            {formData.banner2 && (
-              <img
-                className="h-[150px] mx-auto w-[150px]"
-                src={FormateImageURL(formData.banner2)}
-                alt="Image Preview"
-              />
-            )}
+            {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
           </div>
           <div className="flex flex-col  my-3 pt-2 gap-3">
             <label
@@ -80,7 +74,7 @@ const GemStoneGuide = ({ handleGuide }) => {
               minRows={4}
               id="banner-title"
               variant="bordered"
-              placeholder="EMERALD GEMSTONES"
+              placeholder="Birthstones"
               size="lg"
               radius="sm"
               name="banner-title"
@@ -114,7 +108,7 @@ const GemStoneGuide = ({ handleGuide }) => {
       <div className="w-full  sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4 pr-5">
         <Button
           type="button"
-          onClick={handleGuide}
+          onClick={handleBirthStones}
           variant="bordered"
           className="font-semibold"
         >
@@ -133,4 +127,4 @@ const GemStoneGuide = ({ handleGuide }) => {
   );
 };
 
-export default GemStoneGuide;
+export default HeroSection;

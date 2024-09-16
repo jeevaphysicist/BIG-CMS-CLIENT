@@ -6,6 +6,7 @@ import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const SocialFollow = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -146,6 +147,13 @@ const SocialFollow = ({ handleHomepage }) => {
                 height={264}
                 onImageSelect={handleImageSelect}
               />
+              {formData.thumbnail && (
+                <img
+                  className="h-[150px] mx-auto w-[150px]"
+                  src={FormateImageURL(formData.thumbnail)}
+                  alt="Image Preview"
+                />
+              )}
             </div>
           </div>
         </div>

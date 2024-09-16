@@ -6,9 +6,8 @@ import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
-import { FormateImageURL } from "@/lib/FormateImageURL";
 
-const BirthStoneInfo = ({ handleHomepage }) => {
+const BirthStoneInfo = ({ handleBirthStones }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
@@ -235,13 +234,6 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     height={578}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
-                    <img
-                      className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
-                      alt="Image Preview"
-                    />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -264,13 +256,6 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     height={578}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.selectionImage && (
-                    <img
-                      className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.selectionImage)}
-                      alt="Image Preview"
-                    />
-                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -365,7 +350,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
-            onClick={handleHomepage}
+            onClick={handleBirthStones}
             variant="bordered"
             className="font-semibold"
           >
