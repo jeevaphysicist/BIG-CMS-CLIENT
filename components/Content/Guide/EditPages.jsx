@@ -148,7 +148,7 @@ const EditPages = ({ handleGuide }) => {
                 // onChange={handleFormChange}
               />
             </div>
-          }
+          }     
           <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3   ">
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
