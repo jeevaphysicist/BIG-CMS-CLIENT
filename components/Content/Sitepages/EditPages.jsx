@@ -5,23 +5,58 @@ import RequiredSymbol from "../RequiredSymbol";
 import About from "./About";
 import Offers from "./Offers";
 import { FiSave } from "react-icons/fi";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
 
 const EditPages = ({ handleSitepage }) => {
   const [selectedSection, setSelectedSection] = useState("about");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
-  const [imagePreview, setImagePreview] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    media: "",
+  });
 
-  const handleImageSelect = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageSelect = async (file, width, height, media) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [media]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.media === "" || formData.media === null) {
+      newerrors.media = "Image is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
+    console.log("Form submitted with data:", formData);
   };
 
   const handleModal = () => {
@@ -34,6 +69,10 @@ const EditPages = ({ handleSitepage }) => {
 
   const handleModalTab = (tab) => {
     setModalActiveTab(tab);
+  };
+
+  const handleSeoSubmit = (formData) => {
+    console.log("Submitting data for Sitepages", formData);
   };
 
   return (
@@ -102,7 +141,7 @@ const EditPages = ({ handleSitepage }) => {
               <option value="offers">Offers (Section 2)</option>
             </select>
           </div>
-          <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">
+          <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "about" && (
               <About handleSitepage={handleSitepage} />
             )}
@@ -113,13 +152,23 @@ const EditPages = ({ handleSitepage }) => {
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes handler={handleSitepage} />
+        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
       )}
       {activeTab === "media" && (
-        <section className="w-full md:px-8 px-4 py-8  space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full md:px-8 px-4 py-8  space-y-6"
+        >
           <div className="w-full min-h-[60vh] flex flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <ImageUpload onImageSelect={handleImageSelect} />
+              <DragAndDropImage
+                id="media"
+                label="media"
+                accept={`images/*`}
+                width={487}
+                height={410}
+                onImageSelect={handleImageSelect}
+              />
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="file"
@@ -127,13 +176,6 @@ const EditPages = ({ handleSitepage }) => {
                 >
                   Uploaded Files
                 </label>
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="banner image"
-                    className="w-[50%]"
-                  />
-                )}
               </div>
             </div>
           </div>
@@ -156,7 +198,7 @@ const EditPages = ({ handleSitepage }) => {
               Save New Page
             </Button>
           </div>
-        </section>
+        </form>
       )}
       <Modal
         isOpen={isModalOpen}

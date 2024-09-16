@@ -1,13 +1,13 @@
-'use client'
-import DragAndDropImage from '@/components/Content/DragDropImage'
-import React, { Fragment } from 'react'
 
-const page = () => {
+import Index from "@/components/Content/Policies/Index";
+import React, { Fragment } from "react";
+
+const Policies = () => {
   return (
     <Fragment>
-        <DragAndDropImage />
+       <Index />
     </Fragment>
-  )
-}
+  );
+};
 
-export default page
+export default Policies;

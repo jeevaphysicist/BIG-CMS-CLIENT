@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import Herosection from "./Herosection";
 import ContentBox from "./ContentBox";
 import Categories from "./Categories";
-import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import Recommended from "./Recommended";
 import ExploreGemstones from "./ExploreGemstones";
 import ExploreJwellery from "./ExploreJwellery";
@@ -19,8 +19,6 @@ import Faqs from "./Faqs";
 import ContentSection from "./ContentSection";
 import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
-import { FiSave } from "react-icons/fi";
-import RequiredSymbol from "../RequiredSymbol";
 import SeoAttributes from "../SeoAttributes";
 
 const EditSections = ({ handleHomepage }) => {
@@ -28,12 +26,16 @@ const EditSections = ({ handleHomepage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
 
   const handleChange = (tab) => {
-        setActiveTab(tab);
+    setActiveTab(tab);
+  };
+
+  const handleSeoSubmit = (formData) => {
+    console.log("Submitting data for Homepage", formData);
   };
 
   return (
     <Fragment>
-      <div className="w-full md:h-28  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 border-b-1.5 sticky top-0 z-30 bg-white justify-between">
+      <div className="w-full md:h-28  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 border-b-1.5 sticky top-0 z-40 bg-white justify-between">
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
@@ -73,7 +75,7 @@ const EditSections = ({ handleHomepage }) => {
       </div>
       {activeTab === "generalInfo" && (
         <section>
-          <div className="w-full md:px-4 px-2 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-20 bg-white">
+          <div className="w-full  md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-40 bg-white">
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>
@@ -115,7 +117,7 @@ const EditSections = ({ handleHomepage }) => {
               <option value="socialfollow">Social Follow (Section 18)</option>
             </select>
           </div>
-          <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">
+          <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "herosection" && (
               <Herosection handleHomepage={handleHomepage} />
             )}
@@ -174,8 +176,7 @@ const EditSections = ({ handleHomepage }) => {
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes handler={handleHomepage} />
-
+        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleHomepage} />
       )}
     </Fragment>
   );

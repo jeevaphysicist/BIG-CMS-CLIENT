@@ -1,33 +1,113 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
 import { Button, Input, Switch } from "@nextui-org/react";
-import banner2 from "../../../assets/image 2.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import DragAndDropImage from "../DragDropImage";
+import { validateImageDimensions } from "@/lib/imageValidator";
+import { toast } from "react-toastify";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Herosection = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const [formData,setFormData]= useState({
-         
+  const [formData, setFormData] = useState({
+    banner1: "",
+    banner1Title: "",
+    banner1Description: "",
+    banner2: "",
+    banner2Title: "",
+    banner2Description: "",
+    bannerContent: "",
+    enableTimer: false,
+    enableButton: false,
+    days: "",
+    hours: "",
+    minutes: "",
+    seconds: "",
   });
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e)=>{
-       let  {name,value} = e.target.value; 
-  }
-
-  const handleImageSelect = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
+  const handleSwitchChange = (field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: !prevData[field],
+    }));
+  };
+
+  const handleImageSelect = async (file, width, height, bannerkey) => {
+    try {
+      // console.log(bannerkey, width, height);
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [bannerkey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.banner1 === "" || formData.banner1 === null) {
+      newerrors.banner1 = "Banner 1 required";
+      has = true;
+    }
+    if (formData.banner2 === "" || formData.banner2 === null) {
+      newerrors.banner2 = "Banner 2 required";
+      has = true;
+    }
+    if (formData.banner1Title === "" || formData.banner1Title === null) {
+      newerrors.banner1Title = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.banner1Description === "" ||
+      formData.banner1Description === null
+    ) {
+      newerrors.banner1Description = "Banner description required";
+      has = true;
+    }
+    if (formData.banner2Title === "" || formData.banner2Title === null) {
+      newerrors.banner2Title = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.banner2Description === "" ||
+      formData.banner2Description === null
+    ) {
+      newerrors.banner2Description = "Banner description required";
+      has = true;
+    }
+    setError(newerrors);
+    return has;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let validateResponse = handleVadilation();
+    // console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
+    // console.log("Form submitted with data:", formData);
+  };
 
   return (
     <Fragment>
-      <section className="w-full md:px-8 px-2 space-y-6">
+      <form onSubmit={handleSubmit} className="w-full md:px-8 px-2 space-y-6">
         {/* Banner 1 */}
         <div className="w-[100%] md:flex md:flex-row-reverse gap-8">
           <div className="md:w-[40%] h-full py-5 md:pt-10">
@@ -45,7 +125,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 1.png'} alt="banner1" />
+                <img src={"/images/image 1.png"} alt="banner1" />
               </div>
             </div>
           </div>
@@ -57,12 +137,24 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner 1
                 <RequiredSymbol />
+                {errors.banner1 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1}
+                  </span>
+                )}
               </label>
-              <ImageUpload
+              <DragAndDropImage
+                id="banner1"
+                label="banner image"
+                accept={`images/*`}
+                width={318}
+                height={548}
                 onImageSelect={handleImageSelect}
-                label="Banner Image"
               />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+              
+             {formData.banner1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner1 )} alt="Image Preview" />}
+
+              
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -71,14 +163,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner1Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
+                name="banner1Title"
                 id="banner_title"
                 placeholder="Engagement Rings"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -88,14 +187,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner1Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner1Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
                 id="banner_desc"
+                name="banner1Description"
                 placeholder="Start the journey toward finding your perfect ring"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -106,7 +212,11 @@ const Herosection = ({ handleHomepage }) => {
                 >
                   Enable Timer
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableTimer}
+                  onChange={() => handleSwitchChange("enableTimer")}
+                  aria-label="Enable Timer"
+                />
               </div>
               <div className="w-full flex justify-between md:gap-4 gap-2">
                 <div className="grid gap-2">
@@ -122,6 +232,8 @@ const Herosection = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="days"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -137,6 +249,8 @@ const Herosection = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="hours"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -152,6 +266,8 @@ const Herosection = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="minutes"
+                    onChange={handleFormChange}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -167,6 +283,8 @@ const Herosection = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="seconds"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -190,7 +308,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/image 2.png'} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="banner2" />
               </div>
             </div>
           </div>
@@ -201,13 +319,23 @@ const Herosection = ({ handleHomepage }) => {
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 2
-                <RequiredSymbol />
+                <RequiredSymbol />{" "}
+                {errors.banner2 && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2}
+                  </span>
+                )}
               </label>
-              <ImageUpload
+              <DragAndDropImage
+                accept={`images/*`}
+                label="banner image"
+                id="banner2"
+                width={1122}
+                height={318}
                 onImageSelect={handleImageSelect}
-                label="Banner Image"
               />
-              {imagePreview && <img src={imagePreview} alt="banner image" />}
+             {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />}
+
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -216,14 +344,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
+                {errors.banner2Title && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Title}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
                 id="banner_title1"
+                name="banner2Title"
                 placeholder="Valentines Day"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -233,14 +368,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
+                {errors.banner2Description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.banner2Description}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
                 id="banner_desc1"
+                name="banner2Description"
                 placeholder="Enjoy the added benefit of obtaining free shipping within United"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -248,7 +390,11 @@ const Herosection = ({ handleHomepage }) => {
                 <label htmlFor="timer" className="text-[18px] gilroy-medium">
                   Enable Button
                 </label>
-                <Switch defaultSelected aria-label="Automatic updates" />
+                <Switch
+                  checked={formData.enableButton}
+                  onChange={() => handleSwitchChange("enableButton")}
+                  aria-label="Enable Button"
+                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
@@ -264,6 +410,8 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="bannerContent"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -271,6 +419,7 @@ const Herosection = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
@@ -279,13 +428,14 @@ const Herosection = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

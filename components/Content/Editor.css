@@ -1,0 +1,29 @@
+.custom-editor{
+    border:2px solid #E2E8F0;
+    border-radius: 20px;     
+  }
+  
+  .custom-editor .ql-toolbar {
+   border: none;
+  }
+  
+  .custom-editor .ql-container {
+   border: none;
+  }
+  
+  /* Style for the icons in the toolbar */
+  .custom-editor .ql-toolbar .ql-formats button {
+  background: transparent !important;
+  color: #A0AEC0 !important;
+  border: none !important;
+  transition: color 0.3s ease, background-color 0.3s ease !important;
+  }
+  
+  .custom-editor .ql-toolbar .ql-formats button:hover {
+   color: #3182CE; /* Icon color on hover */
+   background-color: #EDF2F7; /* Background color on hover */
+  }
+  
+  .custom-editor .ql-toolbar .ql-formats button.ql-active {
+   color: #2B6CB0; /* Active icon color */
+  }

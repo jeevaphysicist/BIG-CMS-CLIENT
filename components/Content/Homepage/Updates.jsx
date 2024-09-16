@@ -1,24 +1,87 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
-import ImageUpload from "../ImageUpload";
+import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
-import updates from "../../../assets/updates.svg";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
+import { validateImageDimensions } from "@/lib/imageValidator";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Updates = ({ handleHomepage }) => {
-  const [imagePreview, setImagePreview] = useState(null);
+  const [formData, setFormData] = useState({
+    sectionTitle: "",
+    description: "",
+    banner: "",
+    callToActionTitle: "",
+  });
 
-  const handleImageSelect = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  const handleImageSelect = async (file, width, height, banner) => {
+    try {
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.banner === "" || formData.banner === null) {
+      newerrors.banner = "Banner is required";
+      has = true;
+    }
+    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+      newerrors.sectionTitle = "Section Title is required";
+      has = true;
+    }
+    if (
+      formData.callToActionTitle === "" ||
+      formData.callToActionTitle === null
+    ) {
+      newerrors.callToActionTitle = "Call to action title is required";
+      has = true;
+    }
+    if (formData.description === "" || formData.description === null) {
+      newerrors.description = "Description is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let validateResponse = handleVadilation();
+    console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
     <Fragment>
-      <section className="w-full md:h-full md:px-8 px-2 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full md:h-full md:px-8 px-2 space-y-6"
+      >
         <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
@@ -28,6 +91,11 @@ const Updates = ({ handleHomepage }) => {
               >
                 Section Title
                 <RequiredSymbol />
+                {errors.sectionTitle && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.sectionTitle}
+                  </span>
+                )}
               </label>
               <Input
                 type="text"
@@ -36,6 +104,8 @@ const Updates = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="sectionTitle"
+                onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -45,6 +115,11 @@ const Updates = ({ handleHomepage }) => {
               >
                 Description
                 <RequiredSymbol />
+                {errors.description && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.description}
+                  </span>
+                )}
               </label>
               <Textarea
                 type="text"
@@ -54,6 +129,8 @@ const Updates = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                name="description"
+                onChange={handleFormChange}
               />
             </div>
           </div>
@@ -71,7 +148,7 @@ const Updates = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={'/images/updates.svg'} alt="content" />
+                <img src={"/images/updates.svg"} alt="content" />
               </div>
             </div>
           </div>
@@ -87,10 +164,26 @@ const Updates = ({ handleHomepage }) => {
                   >
                     Banner
                     <RequiredSymbol />
+                    {errors.banner && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.banner}
+                      </span>
+                    )}
                   </label>
-                  <ImageUpload onImageSelect={handleImageSelect} />
-                  {imagePreview && (
-                    <img src={imagePreview} alt="banner image" />
+                  <DragAndDropImage
+                    id="banner"
+                    label="banner"
+                    accept={`images/*`}
+                    width={264}
+                    height={264}
+                    onImageSelect={handleImageSelect}
+                  />
+                  {formData.banner && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.banner)}
+                      alt="Image Preview"
+                    />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
@@ -100,6 +193,11 @@ const Updates = ({ handleHomepage }) => {
                   >
                     Call to action title
                     <RequiredSymbol />
+                    {errors.callToActionTitle && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.callToActionTitle}
+                      </span>
+                    )}
                   </label>
                   <Input
                     type="text"
@@ -109,6 +207,8 @@ const Updates = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
+                    name="callToActionTitle"
+                    onChange={handleFormChange}
                   />
                 </div>
               </div>
@@ -119,6 +219,7 @@ const Updates = ({ handleHomepage }) => {
         {/* Save and cancel buttons */}
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
+            type="button"
             onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
@@ -127,13 +228,14 @@ const Updates = ({ handleHomepage }) => {
           </Button>
           <Button
             color="primary"
+            type="submit"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };
