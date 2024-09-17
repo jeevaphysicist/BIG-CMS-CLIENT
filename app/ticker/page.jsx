@@ -1,4 +1,4 @@
-import Index from "../../components/Ticker/index";
+import Index from "@/components/Ticker/Index";
 import { Fragment } from "react";
 
 const Ticker = () => {
