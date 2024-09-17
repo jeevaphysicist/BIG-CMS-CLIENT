@@ -1,12 +1,13 @@
-import { Input, Tab, Tabs } from '@nextui-org/react';
+import { Button, Input, Switch, Tab, Tabs } from '@nextui-org/react';
 import React from 'react'
 import { CiCirclePlus } from 'react-icons/ci';
 import { RiSettings5Fill } from 'react-icons/ri';
 import RequiredSymbol from '../Content/RequiredSymbol';
+import { FiSave } from 'react-icons/fi';
 
 const AddEditTradeShow = ({type,handleAddEdit}) => {
   return (
-    <div>
+    <div className='relative'>
          <div className=' bg-white space-y-3'>
          <div className="flex items-center justify-between px-5 pt-5 w-[100%]">
             <div className="flex flex-col items-start justify-start">
@@ -42,7 +43,7 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
                 minRows={4}
                 id="showCity"
                 variant="bordered"
-                placeholder="EMERALD GEMSTONES"
+                placeholder="Chicago, IL"
                 size="lg"
                 radius="sm"
                 name="showCity"
@@ -52,7 +53,7 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
                 </div>
                 <div className="flex flex-col  my-3 pt-2 gap-3 w-[100%]">
                 <label
-                    htmlFor="banner-title"
+                    htmlFor="showPromoter"
                     className="text-[16px]  font-semibold flex gap-1"
                 >
                 Show Promoter
@@ -66,12 +67,12 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
               <Input
                 type="text"
                 minRows={4}
-                id="banner-title"
+                id="showPromoter"
                 variant="bordered"
-                placeholder="EMERALD GEMSTONES"
+                placeholder="Intergem"
                 size="lg"
                 radius="sm"
-                name="banner-title"
+                name="showPromoter"
                 className='w-[100%]'
                 // onChange={handleFormChange}
               />
@@ -81,7 +82,7 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
                
                 <div className="flex flex-col   gap-3 w-[100%]">
                 <label
-                    htmlFor="showCity"
+                    htmlFor="showFromDate"
                     className="text-[16px]  font-semibold flex gap-1"
                 >
                 Show From Date
@@ -95,19 +96,19 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
               <Input
                 type="text"
                 minRows={4}
-                id="showCity"
+                id="showFromDate"
                 variant="bordered"
-                placeholder="EMERALD GEMSTONES"
+                placeholder="Feb 23, 2024"
                 size="lg"
                 radius="sm"
-                name="showCity"
+                name="showFromDate"
                 className='w-[100%]'
                 // onChange={handleFormChange}
               />
                 </div>
                 <div className="flex flex-col  gap-3 w-[100%]">
                 <label
-                    htmlFor="banner-title"
+                    htmlFor="showToDate"
                     className="text-[16px]  font-semibold flex gap-1"
                 >
                 Show To Date
@@ -121,12 +122,12 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
               <Input
                 type="text"
                 minRows={4}
-                id="banner-title"
+                id="showToDate"
                 variant="bordered"
-                placeholder="EMERALD GEMSTONES"
+                placeholder="Feb 25, 2024"
                 size="lg"
                 radius="sm"
-                name="banner-title"
+                name="showToDate"
                 className='w-[100%]'
                 // onChange={handleFormChange}
               />
@@ -134,7 +135,7 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
             </div>
             <div className="flex flex-col   gap-3 w-[100%]">
                 <label
-                    htmlFor="showCity"
+                    htmlFor="address"
                     className="text-[16px]  font-semibold flex gap-1"
                 >
                 Address
@@ -148,12 +149,12 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
               <Input
                 type="text"
                 minRows={4}
-                id="showCity"
+                id="address"
                 variant="bordered"
-                placeholder="EMERALD GEMSTONES"
+                placeholder="Donald E. Stephens Convention Center, 5555 North River Road, Rosemont, IL 60018"
                 size="lg"
                 radius="sm"
-                name="showCity"
+                name="address"
                 className='w-[100%]'
                 // onChange={handleFormChange}
               />
@@ -162,7 +163,7 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
                
                <div className="flex flex-col   gap-3 w-[100%]">
                <label
-                   htmlFor="showCity"
+                   htmlFor="type"
                    className="text-[16px]  font-semibold flex gap-1"
                >
                Type
@@ -176,19 +177,19 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
              <Input
                type="text"
                minRows={4}
-               id="showCity"
+               id="type"
                variant="bordered"
-               placeholder="EMERALD GEMSTONES"
+               placeholder="Wholesale & Retail"
                size="lg"
                radius="sm"
-               name="showCity"
+               name="type"
                className='w-[100%]'
                // onChange={handleFormChange}
              />
                </div>
                <div className="flex flex-col  gap-3 w-[100%]">
                <label
-                   htmlFor="banner-title"
+                   htmlFor="booth"
                    className="text-[16px]  font-semibold flex gap-1"
                >
               Booth #
@@ -202,18 +203,51 @@ const AddEditTradeShow = ({type,handleAddEdit}) => {
              <Input
                type="text"
                minRows={4}
-               id="banner-title"
+               id="booth"
                variant="bordered"
-               placeholder="EMERALD GEMSTONES"
+               placeholder="Booth #132 & 134"
                size="lg"
                radius="sm"
-               name="banner-title"
+               name="booth"
                className='w-[100%]'
                // onChange={handleFormChange}
              />
                </div>                
            </div>
+           <div className="flex flex-row  gap-3 w-[100%]">
+               <label
+                   htmlFor="showTicket"
+                   className="text-[16px]  font-semibold flex gap-1"
+               >
+              Show Ticket
+               {/* {errors.introduction && (
+                 <span className="font-regular text-[12px] text-red-600">
+                   {errors.introduction}
+                 </span>
+               )} */}
+             </label>
+             <Switch id='showTicket' defaultSelected size='sm' />
+             </div> 
          </div>
+         {/* Save and cancel buttons */}
+        <div className="w-full sticky bottom-0 py-3 px-5 bg-white z-30 flex justify-end gap-4">
+          <Button
+            type="button"
+            onClick={handleAddEdit}
+            variant="bordered"
+            className="font-semibold"
+          >
+            Back to list
+          </Button>
+          <Button
+            color="primary"
+            type="submit"
+            className="font-semibold text-white"
+            startContent={<FiSave size={20} />}
+          >
+            Save
+          </Button>
+        </div>
     </div>
   )
 }

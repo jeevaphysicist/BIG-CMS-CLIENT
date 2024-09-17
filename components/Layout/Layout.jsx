@@ -563,9 +563,9 @@ const MenuItems = ({ handleAside }) => {
             <p className="text-sm text-gray-500">olivia@untitledui.com</p>
           </div>
         </div>
-        <div>
-          <MdSwitchLeft className="rotate-90 text-[#82838A] text-[18px]" />
-        </div>
+        <button>
+        <HiOutlineLogout className="text-[#82838A] text-[20px]" />
+        </button>
       </div>
     </>
   );

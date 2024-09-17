@@ -13,6 +13,9 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 import GemStoneGuide from "./GemStoneGuide";
 import MeaningOfGemstones from "./MeaningOfGemstones";
 import ProductFromGemstones from "./ProductFromGemstones";
+import ContentSection from "./ContentSection";
+import Faqs from "./Faqs";
+import MoreAboutGemstones from "./MoreAboutGemStones";
 
 const EditPages = ({ handleGuide }) => {
   const [selectedSection, setSelectedSection] = useState("gemstone-guide");
@@ -178,6 +181,15 @@ const EditPages = ({ handleGuide }) => {
             )}
             {selectedSection === "productsFromGemstones" && (
               <ProductFromGemstones handleGuide={handleGuide} />
+            )}
+            {selectedSection === "moreAboutGemstones" && (
+              <MoreAboutGemstones handleGuide={handleGuide} />
+            )}
+            {selectedSection === "contentSection" && (
+              <ContentSection handleGuide={handleGuide} />
+            )}
+            {selectedSection === "faqs" && (
+              <Faqs handleGuide={handleGuide} />
             )}
           </div> 
         </section>
