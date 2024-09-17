@@ -1,7 +1,7 @@
 import Index from "@/components/Content/CategoryPages/Index";
 import { Fragment } from "react";
 
-const Guides = () => {
+const CategoryPages = () => {
   return (
     <Fragment>
       <Index />
@@ -9,4 +9,4 @@ const Guides = () => {
   );
 };
 
-export default Guides;
+export default CategoryPages;

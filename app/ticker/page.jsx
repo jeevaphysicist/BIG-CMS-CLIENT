@@ -1,8 +1,12 @@
-import React from "react";
 import Index from "../../components/Ticker/index";
+import { Fragment } from "react";
 
-const page = () => {
-  return <Index />;
+const Ticker = () => {
+  return (
+    <Fragment>
+      <Index />
+    </Fragment>
+  );
 };
 
-export default page;
+export default Ticker;
