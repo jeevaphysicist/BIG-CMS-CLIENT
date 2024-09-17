@@ -11,6 +11,7 @@ const EditModal = ({
   modaltitle,
   subtitle,
   handler,
+  buttonname,
 }) => {
   if (!isOpen) return null;
   return (
@@ -30,8 +31,8 @@ const EditModal = ({
         exit={{ opacity: 0, scale: 0.75 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="xl:w-[40%] md:w-[60%] w-[95%] h-[70%] lg:h-[50%] rounded-[20px] bg-white">
-          <div className="flex md:flex-row flex-col h-[20%] gap-3 justify-between py-5 px-6 md:py-6 md:px-8 border-b-1 items-center">
+        <div className="xl:w-[40%] md:w-[60%] w-[95%] min-h-[50%] lg:min-h-[35%] rounded-[20px] bg-white">
+          <div className="flex md:flex-row flex-col h-[20%] gap-3 justify-between py-5 px-6 md:py-6 md:px-8 border-b-1 items-center ">
             <div className="font-semibold space-y-1">
               <h2 className="font-semibold text-black md:text-[18px] text-[16px]">
                 {modaltitle}
@@ -43,11 +44,11 @@ const EditModal = ({
               <Tab key="publish" title="Publish"></Tab>
             </Tabs>
           </div>
-          <div className="h-[65%] w-[100%] flex items-center justify-center">
+          <div className="h-[65%] w-[100%] flex items-center justify-center ">
             {children}
             {/* Save and cancel buttons */}
           </div>
-          <div className="w-full h-[15%] sticky bottom-0 pb-3 z-30 flex justify-end gap-4 pr-5">
+          <div className="w-full h-[15%] sticky bottom-0 py-3 z-30 flex justify-end gap-4 pr-5">
             <Button
               type="button"
               onClick={onClose}
@@ -62,7 +63,7 @@ const EditModal = ({
               className="font-semibold text-white"
               startContent={<FiSave size={20} />}
             >
-              Save
+              {buttonname}
             </Button>
           </div>
         </div>

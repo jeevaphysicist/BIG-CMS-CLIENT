@@ -2,66 +2,65 @@
 import { useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
-
 import ResponsiveTable from "./ResponsiveTable";
 import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
-import EditModal from "@/components/EditModal";
-import RequiredSymbol from "../RequiredSymbol";
 import { Input } from "@nextui-org/react";
+import RequiredSymbol from "../Content/RequiredSymbol";
+import EditModal from "../EditModal";
 
 const initialData = [
   {
     id: "1",
-    method: "USPS First Class (No Insurance, Only Tracking)",
-    cost: "Free",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "2",
-    method: "USPS First Class Insured Mail (Insurance and Tracking)",
-    cost: "$6.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "3",
-    method: "USPS Priority Mail",
-    cost: "$8.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "4",
-    method: "USPS Express Mail",
-    cost: "$22.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "5",
-    method: "USPS International First Class Mail",
-    cost: "$10.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "6",
-    method: "USPS First Class Insured Mail (Insurance and Tracking)",
-    cost: "$6.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "7",
-    method: "USPS Priority Mail",
-    cost: "$8.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "8",
-    method: "USPS Express Mail",
-    cost: "$22.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
   {
     id: "9",
-    method: "USPS International First Class Mail",
-    cost: "$10.00",
+    title:
+      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
     status: "Active",
   },
 
@@ -82,7 +81,7 @@ const Index = () => {
     td: "bg-[#F9FAFB] font-regular text-[#0A1215]",
   };
 
-  const handleShippingModal = () => {
+  const handleTicker = () => {
     setIsModalOpen(true);
   };
 
@@ -94,16 +93,16 @@ const Index = () => {
         <div className="flex items-center justify-between w-[100%]">
           <div className="flex flex-col items-start justify-start">
             <h1 className="flex text-[#0A1215] font-medium text-[20px]">
-              Shipping Method
+              Ticker
             </h1>
-            <p className="text-[#4A5367]">Edit Shipping Method</p>
+            <p className="text-[#4A5367]">Add and Edit Your Ticker Details</p>
           </div>
           <button
             className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-            onClick={handleShippingModal}
+            onClick={handleTicker}
           >
             <CiCirclePlus />
-            Add New Shipping Method
+            Add New Ticker
           </button>
         </div>
         <div className="flex mt-5 relative items-center justify-start">
@@ -117,24 +116,24 @@ const Index = () => {
         <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
           <ResponsiveTable
             initialData={initialData}
-            handleShippingModal={handleShippingModal}
+            handleTicker={handleTicker}
           />
         </div>
       </div>
       <EditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        modaltitle="Add New Shipping method"
-        subtitle="Seamlessly Add shipping Method"
-        buttonname="Save"
+        modaltitle="Add New Ticker"
+        subtitle="Seamlessly Add New Ticker"
+        buttonname="Save New Ticker"
       >
         <div className="w-[100%] px-6 py-4 space-y-4">
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="method"
-              className=" text-[16px] font-medium flex gap-1"
+              htmlFor="title"
+              className="text-[16px] font-medium flex gap-1"
             >
-              Method
+              Ticker Title
               <RequiredSymbol />{" "}
               {/* {errors.banner2 && (
                   <span className="font-regular text-[12px] text-red-600">
@@ -145,38 +144,12 @@ const Index = () => {
             <Input
               type="text"
               minRows={4}
-              id="method"
+              id="title"
               variant="bordered"
-              placeholder="USPS First Class (No Insurance, only Tracking)"
+              placeholder="Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies"
               size="md"
               radius="sm"
-              name="method"
-              // onChange={handleFormChange}
-            />
-            {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
-          </div>
-          <div className="flex flex-col gap-3">
-            <label
-              htmlFor="cost"
-              className=" text-[16px] font-medium flex gap-1"
-            >
-              Cost
-              <RequiredSymbol />{" "}
-              {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
-            </label>
-            <Input
-              type="text"
-              minRows={4}
-              id="cost"
-              variant="bordered"
-              placeholder="Free"
-              size="md"
-              radius="sm"
-              name="cost"
+              name="title"
               // onChange={handleFormChange}
             />
             {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}

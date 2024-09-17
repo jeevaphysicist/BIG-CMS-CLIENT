@@ -10,7 +10,7 @@ import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 
-const ResponsiveTable = ({ initialData, handleShippingModal }) => {
+const ResponsiveTable = ({ initialData, handleCategoryPage }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -36,12 +36,15 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
             <tr>
               <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Shipping Method <PiArrowDownBold />
+                  Menu Name <PiArrowDownBold />
                 </span>
+              </th>
+              <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
+                Link
               </th>
               <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Cost <PiArrowDownBold />
+                  Corresponding Page <PiArrowDownBold />
                 </span>
               </th>
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
@@ -69,18 +72,13 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                     <RiDragMove2Fill size={16} className="text-[#676767]" />
                   </motion.div>
                   <Checkbox />
-                  {row.method}
+                  {row.name}
                 </td>
-                <td className="text-nowrap">
-                  {/* <motion.div
-                    className="cursor-move mr-2 "
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <RiDragMove2Fill size={16} className="text-[#676767]" />
-                  </motion.div>
-                  <Checkbox /> */}
-                  {row.cost}
+                <td className="px-4 py-4 font-regular text-[14px] ">
+                  <p className="text-balance w-[150px]">{row.link}</p>
+                </td>
+                <td className="px-4 py-4 font-regular text-[14px] ">
+                  <p className="text-balance w-[200px]">{row.page}</p>
                 </td>
                 <td className="px-4 py-2 text-[14px]">
                   {row.status === "Active" ? (
@@ -103,7 +101,7 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                     </button>
                     <button
                       className="text-[20px] text-[#475467]"
-                      onClick={handleShippingModal}
+                      onClick={handleCategoryPage}
                     >
                       <FiEdit2 />
                     </button>

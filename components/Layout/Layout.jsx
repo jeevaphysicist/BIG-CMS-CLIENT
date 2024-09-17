@@ -519,16 +519,16 @@ const MenuItems = ({ handleAside }) => {
           </li>
           <li
             className={`flex ${
-              HandleFunction("/custom-jewelry") ? "bg-[#F6F6FF]" : ""
+              HandleFunction("/custom-jewellery") ? "bg-[#F6F6FF]" : ""
             } hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}
           >
             <Link
-              href="/custom-jewelry"
+              href="/custom-jewellery"
               onClick={handleAside}
               className="flex gap-3 items-center w-[100%]"
             >
               <FaGem className="text-[#82838A]" />
-              <span className="text-[#0A1215]">Custom Jewelry</span>
+              <span className="text-[#0A1215]">Custom Jewellery</span>
             </Link>
           </li>
           <li
@@ -564,7 +564,7 @@ const MenuItems = ({ handleAside }) => {
           </div>
         </div>
         <button>
-        <HiOutlineLogout className="text-[#82838A] text-[20px]" />
+          <HiOutlineLogout className="text-[#82838A] text-[20px]" />
         </button>
       </div>
     </>

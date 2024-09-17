@@ -10,7 +10,7 @@ import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 
-const ResponsiveTable = ({ initialData, handleShippingModal }) => {
+const ResponsiveTable = ({ initialData, handleTicker }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -36,12 +36,7 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
             <tr>
               <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Shipping Method <PiArrowDownBold />
-                </span>
-              </th>
-              <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
-                <span className="flex items-center gap-2">
-                  Cost <PiArrowDownBold />
+                  Ticker Title <PiArrowDownBold />
                 </span>
               </th>
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
@@ -69,19 +64,9 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                     <RiDragMove2Fill size={16} className="text-[#676767]" />
                   </motion.div>
                   <Checkbox />
-                  {row.method}
+                  {row.title}
                 </td>
-                <td className="text-nowrap">
-                  {/* <motion.div
-                    className="cursor-move mr-2 "
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <RiDragMove2Fill size={16} className="text-[#676767]" />
-                  </motion.div>
-                  <Checkbox /> */}
-                  {row.cost}
-                </td>
+
                 <td className="px-4 py-2 text-[14px]">
                   {row.status === "Active" ? (
                     <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
@@ -103,7 +88,7 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                     </button>
                     <button
                       className="text-[20px] text-[#475467]"
-                      onClick={handleShippingModal}
+                      onClick={handleTicker}
                     >
                       <FiEdit2 />
                     </button>
