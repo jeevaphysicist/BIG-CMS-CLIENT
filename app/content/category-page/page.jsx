@@ -1,5 +1,4 @@
-import Index from "@/components/Content/CategoryPages/Index";
-
+import Index from "@/components/Content/CategoryPages/CategoryIndex";
 import { Fragment } from "react";
 
 const CategoryPages = () => {
