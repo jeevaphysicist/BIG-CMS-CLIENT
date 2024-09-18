@@ -5,18 +5,69 @@ import { FiSearch } from "react-icons/fi";
 import ResponsiveTable from "./ResponsiveTable";
 import EditPages from "./EditPages";
 
-const initialData = [
+const Gemstone = [
   {
     id: "1",
-    type: "About",
-    status: "Active",
+    slug:"by-gemstone",
+    type: "By Gemstone",
+    content:[{
+      id: "1",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    },
+    {
+      id: "2",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    },
+    {
+      id: "3",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    },
+    {
+      id: "4",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    }]
   },
   {
     id: "2",
-    type: "History",
-    status: "InActive",
+    type: "By Birthstone",
+    slug:"by-birthstone",
+    content:[{
+      id: "1",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    }]
   },
-  // ... more data
+  {
+    id: "3",
+    type: "By Shape",
+    slug:"by-shape",
+    content:[{
+      id: "1",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    }]
+  },
+  {
+    id: "4",
+    type: "All Gemstone",
+    slug:"all-gemstone",
+    content:[{
+      id: "1",
+      name: "Amestrine",
+      icon:"/images/image 25.png",
+      status:"Active"
+    }]
+  },
 ];
 
 const Index = () => {
@@ -61,7 +112,7 @@ const Index = () => {
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
-              initialData={initialData}
+              initialData={Gemstone}
               handleGemstonePage={handleGemstonePage}
             />
           </div>

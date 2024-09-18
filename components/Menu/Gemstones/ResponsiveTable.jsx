@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { motion, Reorder } from "framer-motion";
 import { GripVertical } from "lucide-react";
 import { Button, Switch } from "@nextui-org/react";
@@ -9,10 +9,12 @@ import { PiTrashBold } from "react-icons/pi";
 import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [openList,setOpenList] = useState('by-gemstone');
 
   const toggleSelectAll = () => {
     if (selectedRows.length === data.length) {
@@ -28,6 +30,10 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
     );
   };
 
+  const handleTypeChange =(type)=>{
+        setOpenList(type);
+  }
+
   return (
     <section className="w-[100%] ">
       <div className="overflow-x-auto border-r-1 border-l-1   border-t-1 rounded-t-lg ">
@@ -36,7 +42,7 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
             <tr>
               <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Gemstone Type <PiArrowDownBold />
+                  Gemstone Type <PiArrowDownBold  />
                 </span>
               </th>
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
@@ -47,57 +53,70 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
               </th>
             </tr>
           </thead>
-          <thead className="w-full bg-neutral-100 h-10 border-b">
-            <tr>
-              <td className="px-6 text-sm font-semibold">By Gemstone</td>
-              <td></td>
-              <td></td>
-            </tr>
-          </thead>
+          
           <tbody>
-            {data?.map((row) => (
-              <tr
-                key={row.id}
-                value={row}
-                as="tr"
-                className="border-b bg-[#F9FAFB] hover:bg-white"
-              >
-                <td className="px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
-                  <Checkbox />
-                  {row.type}
-                </td>
-                <td className="px-4 py-4 font-regular text-[14px] ">
-                  <p className="text-balance w-[200px]">{row.description}</p>
-                </td>
-                <td className="px-4 py-2 text-[14px]">
-                  {row.status === "Active" ? (
-                    <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
-                      <span className="w-2 h-2 rounded-full bg-[#17B26A]" />
-                      Active
-                    </span>
-                  ) : (
-                    <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
-                      <span className="w-2 h-2 rounded-full bg-[red]" />
-                      InActive
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-4 text-[14px]">
-                  <div className="flex items-center gap-5">
-                    <Switch size="sm" aria-label="Automatic updates" />
-                    <button className="text-[20px] text-[#475467]">
-                      <PiTrashBold />
-                    </button>
-                    <button
-                      className="text-[20px] text-[#475467]"
-                      onClick={handleGemstonePage}
-                    >
-                      <FiEdit2 />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {
+              data.map((item,index)=>{
+                 return(
+                  <Fragment>
+                  <tr onClick={()=>handleTypeChange(item.slug)}>
+                     <td className="px-6 text-sm font-semibold py-4 flex gap-3 items-center bg-[#F9F9F9]">{item.type}  <MdKeyboardArrowRight className={`${openList === item.slug ? "rotate-90":"rotate-0"} transition-all duration-300 text-[20px]`} /></td>
+                      <td className="bg-[#F9F9F9]"></td>
+                      <td className="bg-[#F9F9F9]"></td>
+                  </tr>          
+                    {openList === item.slug && item.content?.map((row) => (
+                      <tr
+                        key={row.id}
+                        value={row}
+                        as="tr"
+                        className="border-b hover:bg-[#F9FAFB] bg-white"
+                      >
+                        <td className="px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
+                          <Checkbox />
+                          {row.name}
+                        </td>               
+                        <td className="px-4 py-2 text-[14px]">
+                          {row.status === "Active" ? (
+                            <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
+                              <span className="w-2 h-2 rounded-full bg-[#17B26A]" />
+                              Active
+                            </span>
+                          ) : (
+                            <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
+                              <span className="w-2 h-2 rounded-full bg-[red]" />
+                              InActive
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 text-[14px]">
+                          <div className="flex items-center gap-5">
+                            <Switch size="sm" aria-label="Automatic updates" />
+                            <button className="text-[20px] text-[#475467]">
+                              <PiTrashBold />
+                            </button>
+                            <button
+                              className="text-[20px] text-[#475467]"
+                              onClick={handleGemstonePage}
+                            >
+                              <FiEdit2 />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {
+                      openList === item.slug && <tr >
+                      <td className="px-6 text-sm border-b-1 font-semibold py-4 flex gap-3 items-center bg-[#F9F9F9]"></td>
+                       <td className="bg-[#F9F9F9] border-b-1 text-center text-blue-500">{'View More'}</td>
+                       <td className="bg-[#F9F9F9] border-b-1"></td>
+                      </tr>
+                    }
+                       
+                    </Fragment>
+                 )
+              })
+            }
+           
           </tbody>
         </table>
       </div>
