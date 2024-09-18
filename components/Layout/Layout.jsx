@@ -376,13 +376,13 @@ const MenuItems = ({ handleAside }) => {
               <ul className="ml-12 mt-2  border-l-2 border-gray-2  space-y-2">
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/gemstones")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/gemstones"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
@@ -394,13 +394,13 @@ const MenuItems = ({ handleAside }) => {
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/jewellery")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/jewellery"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
