@@ -11,7 +11,7 @@ import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
-const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
+const ResponsiveTable = ({ initialData, handleJewelryPage }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
   const [openList, setOpenList] = useState("by-gemstone");
@@ -80,9 +80,6 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
                       >
                         <td className="w-[60%] px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
                           <Checkbox />
-                          <div className="p-3 border-2 rounded-[12px]">
-                            <img src={row.icon} alt="icon" className="w-5" />
-                          </div>
                           {row.name}
                         </td>
                         <td className="px-4 py-2 text-[14px]">
@@ -106,7 +103,7 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
                             </button>
                             <button
                               className="text-[20px] text-[#475467]"
-                              onClick={handleGemstonePage}
+                              onClick={handleJewelryPage}
                             >
                               <FiEdit2 />
                             </button>

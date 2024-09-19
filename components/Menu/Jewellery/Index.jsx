@@ -7,82 +7,85 @@ import ResponsiveTable from "./ResponsiveTable";
 const Gemstone = [
   {
     id: "1",
-    slug: "by-gemstone",
-    type: "By Gemstone",
+    slug: "by-type",
+    type: "By Type",
     content: [
       {
         id: "1",
-        name: "Amestrine",
-        icon: "/images/image 30.png",
+        name: "Rings",
         status: "Active",
       },
       {
         id: "2",
-        name: "Amethyst",
-        icon: "/images/image 31.png",
+        name: "Ring Band",
         status: "Active",
       },
       {
         id: "3",
-        name: "Ammolite",
-        icon: "/images/image 27.png",
+        name: "Earrings",
         status: "Active",
       },
       {
         id: "4",
-        name: "Apatite",
-        icon: "/images/image 28.png",
+        name: "Chains",
         status: "Active",
       },
       {
         id: "5",
-        name: "Aquamarine",
-        icon: "/images/image 26.png",
+        name: "Huggie Hoop",
         status: "Active",
       },
       {
         id: "6",
-        name: "Black Spinel",
-        icon: "/images/image 29.png",
+        name: "Silver Jewelry",
         status: "Active",
       },
     ],
   },
   {
     id: "2",
-    type: "By Birthstone",
-    slug: "by-birthstone",
+    type: "By Gemstone",
+    slug: "by-gemstone",
     content: [
       {
         id: "1",
         name: "Amestrine",
-        icon: "/images/image 25.png",
         status: "Active",
       },
     ],
   },
   {
     id: "3",
-    type: "By Shape",
-    slug: "by-shape",
+    type: "By Birthstone",
+    slug: "by-birthstone",
     content: [
       {
         id: "1",
         name: "Amestrine",
-        icon: "/images/image 25.png",
         status: "Active",
       },
     ],
   },
   {
     id: "4",
-    type: "All Gemstone",
-    slug: "all-gemstone",
+    type: "By Special Occasion",
+    slug: "by-special-occasion",
     content: [
       {
         id: "1",
         name: "Amestrine",
-        icon: "/images/image 25.png",
+        status: "Active",
+      },
+    ],
+  },
+  {
+    id: "5",
+    type: "By Popularity",
+    slug: "by-popularity",
+    content: [
+      {
+        id: "1",
+        name: "Amestrine",
         status: "Active",
       },
     ],
@@ -101,7 +104,7 @@ const Index = () => {
     th: "bg-white font-medium w-[100px]  rounded-t-[10px]",
     td: "bg-[#F9FAFB] font-regular text-[#0A1215]",
   };
-  const handleGemstonePage = () => {
+  const handleJewelryPage = () => {
     setIsList(!isList);
   };
 
@@ -114,10 +117,10 @@ const Index = () => {
           <div className="flex items-center justify-between w-[100%]">
             <div className="flex flex-col items-start justify-start">
               <h1 className="flex text-[#0A1215] font-medium text-[20px]">
-                Gemstones
+                Jewelry
               </h1>
               <p className="text-[#4A5367]">
-                View and Edit Different Gemstone sections
+                View and Edit Different Jewelry Submenus
               </p>
             </div>
           </div>
@@ -132,12 +135,12 @@ const Index = () => {
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
               initialData={Gemstone}
-              handleGemstonePage={handleGemstonePage}
+              handleJewelryPage={handleJewelryPage}
             />
           </div>
         </div>
       ) : (
-        <EditPages handleGemstonePage={handleGemstonePage} />
+        <EditPages handleJewelryPage={handleJewelryPage} />
       )}
     </div>
   );

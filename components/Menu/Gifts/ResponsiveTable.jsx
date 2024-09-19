@@ -80,9 +80,6 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
                       >
                         <td className="w-[60%] px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
                           <Checkbox />
-                          <div className="p-3 border-2 rounded-[12px]">
-                            <img src={row.icon} alt="icon" className="w-5" />
-                          </div>
                           {row.name}
                         </td>
                         <td className="px-4 py-2 text-[14px]">

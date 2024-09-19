@@ -388,7 +388,7 @@ const MenuItems = ({ handleAside }) => {
                   >
                     Gemstones
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/gemstones") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
@@ -406,97 +406,97 @@ const MenuItems = ({ handleAside }) => {
                   >
                     Jewelry
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/jewellery") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/drops-beads")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/drops-beads"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Drops & Beads
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/drops-beads") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/semi-mounts")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/semi-mounts"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Semi-Mounts
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/semi-mounts") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/findings")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/findings"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Findings
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/findings") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/gifts")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/gifts"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Gifts
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/gifts") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/custom-jewelry")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/custom-jewelry"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Custom Jewelry
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/custom-jewelry") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
