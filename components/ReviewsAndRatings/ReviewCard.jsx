@@ -11,18 +11,18 @@ const ReviewCard = ({ initialData, activeTab }) => {
       <section className="p-4 w-full space-y-4">
         {data.map((item) => (
           <div
-            className="flex gap-2 w-full justify-between border-b-2 py-4"
+            className="flex md:flex-row flex-col gap-5 w-full justify-between border-b-2 py-4"
             key={item.id}
           >
             <div className="flex gap-4">
-              <div className="w-12 h-12 rounded-full bg-black  text-white grid place-content-center font-bold">
+              <div className="w-12 h-12 flex-shrink-0 rounded-full bg-black  text-white grid place-content-center font-bold">
                 {item.profile}
               </div>
               <div className="space-y-2">
-                <h2 className="font-semibold text-[16px]">
+                <h2 className="font-semibold  text-[16px]">
                   {item.name}
-                  <span className="font-normal text-black/50 text-[12px]">
-                    {item.buyer ? "Verified Buyer" : ""}
+                  <span className="font-normal ml-2 text-black/50 text-[12px]">
+                    {item.verifiedBuyer ? "Verified Buyer" : ""}
                   </span>
                 </h2>
                 <div className="flex gap-1">
@@ -39,7 +39,7 @@ const ReviewCard = ({ initialData, activeTab }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-end justify-between">
+            <div className="flex flex-col gap-3 items-start md:items-end justify-between">
               <p>{item.date}</p>
               <div className="flex items-center gap-5">
                 <Switch size="sm" aria-label="Automatic updates" />
