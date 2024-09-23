@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { Button } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import TextEditor from "../TextEditor";
+import { toast } from "react-toastify";
 
 const MoreAboutGemstones = ({ handleBirthStones }) => {
+  const [content, setContent] = useState("");
+  const [formData, setFormData] = useState({
+    content: "",
+  });
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleProcedureContentChange = (content) => {
+    // console.log("content---->", content);
+    setContent(content);
+    setFormData((prevData) => ({ ...prevData, content }));
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.content === "" || formData.content === null) {
+      newerrors.content = "Section Content is required";
+      has = true;
+    }
+    setError(newerrors);
+    return has;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let validateResponse = handleVadilation();
+    // console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
+    console.log("Form submitted with data:", formData);
+  };
+
   return (
-    <section>
+    <form onSubmit={handleSubmit}>
       <div className="flex items-start lg:pr-5  my-5 justify-between w-[100%] lg:flex-row flex-col ">
         <div className="w-[100%] md:px-8 px-4">
           <div className="flex flex-col  my-3 pt-2 gap-3">
@@ -14,15 +53,18 @@ const MoreAboutGemstones = ({ handleBirthStones }) => {
               htmlFor="intro"
               className="text-[16px]  font-semibold flex gap-1"
             >
-              Main Content
+              Section Content
               <RequiredSymbol />
-              {/* {errors.introduction && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.introduction}
-                  </span>
-                )} */}
+              {errors.content && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.content}
+                </span>
+              )}
             </label>
-            <TextEditor />
+            <TextEditor
+              value={content}
+              handleContentChange={handleProcedureContentChange}
+            />
           </div>
         </div>
       </div>
@@ -45,7 +87,7 @@ const MoreAboutGemstones = ({ handleBirthStones }) => {
           Save
         </Button>
       </div>
-    </section>
+    </form>
   );
 };
 

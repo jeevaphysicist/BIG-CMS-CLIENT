@@ -12,32 +12,31 @@ const AddReviews = ({ handleReviewPage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
   const [formData, setFormData] = useState({
-    media: "",
+    customerName: "",
+    category: "",
+    product: "",
+    rating: "",
+    title: "",
+    descripiton: "",
+    verifiedCustomer: false,
   });
 
+  const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleVadilation = () => {
-    let newerrors = {};
-    let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
-      has = true;
-    }
-
-    setError(newerrors);
-    return has;
+  const handleSwitchChange = (field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: !prevData[field],
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -113,11 +112,6 @@ const AddReviews = ({ handleReviewPage }) => {
                     className=" text-[16px] font-medium flex gap-1"
                   >
                     Customer Name
-                    {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                   </label>
                   <Input
                     type="text"
@@ -128,9 +122,8 @@ const AddReviews = ({ handleReviewPage }) => {
                     size="lg"
                     radius="sm"
                     name="name"
-                    // onChange={handleFormChange}
+                    onChange={handleFormChange}
                   />
-                  {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -138,11 +131,6 @@ const AddReviews = ({ handleReviewPage }) => {
                     className=" text-[16px] font-medium flex gap-1"
                   >
                     Select Category
-                    {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                   </label>
                   <select
                     className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
@@ -157,7 +145,6 @@ const AddReviews = ({ handleReviewPage }) => {
                     <option value="semiMounts">Semi-Mounts</option>
                     <option value="guide">Guide</option>
                   </select>
-                  {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
                 </div>
               </div>
 
@@ -167,11 +154,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Select Product
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                 </label>
                 <select
                   className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
@@ -186,7 +168,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   <option value="semiMounts">Semi-Mounts</option>
                   <option value="guide">Guide</option>
                 </select>
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -194,11 +175,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Add Star Rating
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                 </label>
                 <div className="flex gap-3">
                   <FaStar className="text-[24px] text-[#FA0B4F]" />
@@ -207,8 +183,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   <FaStar className="text-[24px] text-[#FA0B4F]" />
                   <FaStar className="text-[24px] text-[#FA0B4F]" />
                 </div>
-
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -216,11 +190,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Review Title
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                 </label>
                 <Input
                   type="text"
@@ -230,9 +199,8 @@ const AddReviews = ({ handleReviewPage }) => {
                   size="lg"
                   radius="sm"
                   name="title"
-                  // onChange={handleFormChange}
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -240,11 +208,6 @@ const AddReviews = ({ handleReviewPage }) => {
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Description
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                 </label>
                 <Textarea
                   type="text"
@@ -255,9 +218,8 @@ const AddReviews = ({ handleReviewPage }) => {
                   size="lg"
                   radius="sm"
                   name="description"
-                  // onChange={handleFormChange}
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex gap-3">
                 <label
@@ -265,13 +227,12 @@ const AddReviews = ({ handleReviewPage }) => {
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Verified Customer
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
                 </label>
-                <Switch />
+                <Switch
+                  checked={formData.verifiedCustomer}
+                  onChange={() => handleSwitchChange("verifiedCustomer")}
+                  aria-label="Verified Customer"
+                />
               </div>
             </div>
             {/* Save and cancel buttons */}

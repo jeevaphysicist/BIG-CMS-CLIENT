@@ -10,16 +10,17 @@ import DragAndDropImage from "../DragDropImage";
 
 const EditPages = ({ handleSizeGuide }) => {
   const [formData, setFormData] = useState({
-    media: "",
+    image: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({});
+  const [errors, setErrors] = useState(false);
 
-  const handleImageSelect = async (file, width, height, media) => {
+  const handleImageSelect = async (file, width, height, image) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
+        setFormData((prevData) => ({ ...prevData, [image]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -29,8 +30,8 @@ const EditPages = ({ handleSizeGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.image === "" || formData.image === null) {
+      newerrors.image = "Image is required";
       has = true;
     }
 
@@ -54,7 +55,7 @@ const EditPages = ({ handleSizeGuide }) => {
 
   return (
     <Fragment>
-      <section className="h-full w-full">
+      <form onSubmit={handleSubmit} className="h-full w-full">
         <div className="w-full md:h-20  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 sticky top-0 z-30 bg-white justify-between">
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
@@ -81,21 +82,27 @@ const EditPages = ({ handleSizeGuide }) => {
                 >
                   Header Banner
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.image && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.image}
+                    </span>
+                  )}
                 </label>
                 <DragAndDropImage
                   accept={`images/*`}
                   label="banner image"
-                  id="banner2"
+                  id="image"
                   width={580}
                   height={465}
                   onImageSelect={handleImageSelect}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
+                {formData.image && (
+                  <img
+                    className="h-[150px] mx-auto w-[150px]"
+                    src={FormateImageURL(formData.image)}
+                    alt="Image Preview"
+                  />
+                )}
               </div>
             </div>
             <div className="w-[40%] mt-10">
@@ -137,7 +144,7 @@ const EditPages = ({ handleSizeGuide }) => {
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

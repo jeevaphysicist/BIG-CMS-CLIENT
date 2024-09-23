@@ -9,27 +9,30 @@ import { FiSave } from "react-icons/fi";
 
 const EditPages = ({ handleSocialMedias }) => {
   const [formData, setFormData] = useState({
-    media: "",
+    title: "",
+    link: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [errors, setError] = useState({});
 
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Social Media Title is required";
+      has = true;
+    }
+    if (formData.link === "" || formData.link === null) {
+      newerrors.link = "Link is required";
       has = true;
     }
 
@@ -51,25 +54,9 @@ const EditPages = ({ handleSocialMedias }) => {
     console.log("Form submitted with data:", formData);
   };
 
-  const handleModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
-  const handleModalTab = (tab) => {
-    setModalActiveTab(tab);
-  };
-
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Sitepages", formData);
-  };
-
   return (
     <Fragment>
-      <section className="h-full w-full">
+      <form onSubmit={handleSubmit} className="h-full w-full">
         <div className="w-full md:h-20  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 sticky top-0 z-30 bg-white justify-between">
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
@@ -94,11 +81,11 @@ const EditPages = ({ handleSocialMedias }) => {
             >
               Social Media Title
               <RequiredSymbol />
-              {/* {errors.introduction && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.introduction}
-                  </span>
-                )} */}
+              {errors.title && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.title}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -108,8 +95,8 @@ const EditPages = ({ handleSocialMedias }) => {
               placeholder="Facebook"
               size="lg"
               radius="sm"
-              name="mediaTitle"
-              // onChange={handleFormChange}
+              name="title"
+              onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
@@ -119,11 +106,11 @@ const EditPages = ({ handleSocialMedias }) => {
             >
               Link
               <RequiredSymbol />
-              {/* {errors.introduction && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.introduction}
-                  </span>
-                )} */}
+              {errors.link && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.link}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -134,7 +121,7 @@ const EditPages = ({ handleSocialMedias }) => {
               size="lg"
               radius="sm"
               name="link"
-              // onChange={handleFormChange}
+              onChange={handleFormChange}
             />
           </div>
         </div>
@@ -157,7 +144,7 @@ const EditPages = ({ handleSocialMedias }) => {
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

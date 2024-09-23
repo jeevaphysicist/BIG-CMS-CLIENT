@@ -4,37 +4,44 @@ import { Fragment, useState } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
-import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
-import DragAndDropImage from "../DragDropImage";
 import TextEditor from "../TextEditor";
 
 const EditPages = ({ handleGemstoneCertification }) => {
+  const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    media: "",
+    title: "",
+    content: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [errors, setError] = useState({});
 
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleProcedureContentChange = (content) => {
+    // console.log("content---->", content);
+    setContent(content);
+    setFormData((prevData) => ({ ...prevData, content }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Title is required";
       has = true;
     }
-
+    if (formData.content === "" || formData.content === null) {
+      newerrors.content = "Content is required";
+      has = true;
+    }
     setError(newerrors);
     return has;
   };
@@ -47,15 +54,13 @@ const EditPages = ({ handleGemstoneCertification }) => {
       toast.error("Please fill required details correctly !");
       return null;
     }
-
     // API Call Here
-
     console.log("Form submitted with data:", formData);
   };
 
   return (
     <Fragment>
-      <section className="h-full w-full">
+      <form onSubmit={handleSubmit} className="h-full w-full">
         <div className="w-full md:h-20  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 sticky top-0 z-30 bg-white justify-between">
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
@@ -82,11 +87,11 @@ const EditPages = ({ handleGemstoneCertification }) => {
                 >
                   Title
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.title && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.title}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -97,9 +102,8 @@ const EditPages = ({ handleGemstoneCertification }) => {
                   size="lg"
                   radius="sm"
                   name="title"
-                  // onChange={handleFormChange}
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -108,14 +112,16 @@ const EditPages = ({ handleGemstoneCertification }) => {
                 >
                   Main Content
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.content && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.content}
+                    </span>
+                  )}
                 </label>
-                <TextEditor />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
+                <TextEditor
+                  value={formData.content}
+                  handleContentChange={handleProcedureContentChange}
+                />
               </div>
             </div>
           </div>
@@ -139,7 +145,7 @@ const EditPages = ({ handleGemstoneCertification }) => {
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };
