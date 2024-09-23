@@ -281,6 +281,86 @@ const Gifts = ({ handleHomepage }) => {
                   />
                 </div>
               </div>
+              {/* Gifts 3 */}
+              <div className=" flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="Gift"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Gift 3
+                    <RequiredSymbol />
+                    {errors.gift3 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.gift3}
+                      </span>
+                    )}
+                  </label>
+                  <DragAndDropImage
+                    id="gift3"
+                    label="gift"
+                    accept={`images/*`}
+                    width={487}
+                    height={410}
+                    onImageSelect={handleImageSelect}
+                  />
+                  {formData.gift3 && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.gift3)}
+                      alt="Image Preview"
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="gifts_title"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Title
+                    <RequiredSymbol />
+                    {errors.title1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.title1}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="gifts_title"
+                    placeholder="Valentine Gifts"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="title3"
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="gifts_desc"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Redirection Link
+                    <RequiredSymbol />
+                    {errors.redirectionLink1 && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.redirectionLink1}
+                      </span>
+                    )}{" "}
+                  </label>
+                  <Input
+                    type="text"
+                    id="gifts_desc"
+                    placeholder="https://www.figma.com/design/rE0NmfCUn82V6d2h4V6ATC/BIG-Fin?node-id=884-24014&t=UmVz2Vtl3xwTE8gn-1"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="redirectionLink1"
+                    onChange={handleFormChange}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
