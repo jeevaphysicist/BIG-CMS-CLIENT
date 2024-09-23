@@ -85,11 +85,11 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
 
     // API Call Here
 
-    // console.log("Form submitted with data:", formData);
+    console.log("Form submitted with data:", formData);
   };
 
   return (
-    <div className="relative">
+    <form onSubmit={handleSubmit} className="relative">
       <div className=" bg-white space-y-3">
         <div className="flex items-center justify-between px-5 pt-5 w-[100%]">
           <div className="flex flex-col items-start justify-start">
@@ -336,7 +336,7 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
           Save
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 

@@ -10,7 +10,6 @@ import { FaStar } from "react-icons/fa";
 
 const AddReviews = ({ handleReviewPage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
-  const [modalActiveTab, setModalActiveTab] = useState("details");
   const [formData, setFormData] = useState({
     customerName: "",
     category: "",
@@ -21,7 +20,6 @@ const AddReviews = ({ handleReviewPage }) => {
     verifiedCustomer: false,
   });
 
-  const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
   const handleFormChange = (e) => {
@@ -39,26 +37,33 @@ const AddReviews = ({ handleReviewPage }) => {
     }));
   };
 
+  const handleImageSelect = async (file, width, height, bannerkey) => {
+    try {
+      // console.log(bannerkey, width, height);
+      await validateImageDimensions(file, width, height);
+      if (file) {
+        setFormData((prevData) => ({ ...prevData, [bannerkey]: file }));
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Form submitted with data:", formData);
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
-
     // API Call Here
-
     console.log("Form submitted with data:", formData);
   };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-  };
-
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Sitepages", formData);
   };
 
   return (
@@ -102,7 +107,7 @@ const AddReviews = ({ handleReviewPage }) => {
         </div>
       </div>
       {activeTab === "generalInfo" && (
-        <section>
+        <form onSubmit={handleSubmit}>
           <div className="w-full md:px-4 px-2">
             <div className="w-full md:p-8 p-2 space-y-5">
               <div className="grid md:grid-cols-2 gap-y-6 gap-x-10">
@@ -121,7 +126,7 @@ const AddReviews = ({ handleReviewPage }) => {
                     placeholder="Charlie"
                     size="lg"
                     radius="sm"
-                    name="name"
+                    name="customerName"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -135,6 +140,8 @@ const AddReviews = ({ handleReviewPage }) => {
                   <select
                     className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                     aria-label="Select section to edit"
+                    name="category"
+                    onChange={handleFormChange}
                   >
                     <option value="company">Company</option>
                     <option value="policies">Policies</option>
@@ -158,6 +165,8 @@ const AddReviews = ({ handleReviewPage }) => {
                 <select
                   className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                   aria-label="Select section to edit"
+                  name="product"
+                  onChange={handleFormChange}
                 >
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
@@ -255,7 +264,7 @@ const AddReviews = ({ handleReviewPage }) => {
               </Button>
             </div>
           </div>
-        </section>
+        </form>
       )}
       {activeTab === "media" && (
         <form

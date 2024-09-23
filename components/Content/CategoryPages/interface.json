@@ -1,0 +1,42 @@
+[
+  {
+    "sectionName": "Header",
+    "sectionslug": "header",
+    "id": 1,
+    "content": {
+      "title": "",
+      "description": ""
+    }
+  },
+  {
+    "sectionName": "Content Box",
+    "sectionslug": "content-box",
+    "id": 2,
+    "content": {
+      "title": "",
+      "description": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 3,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "question": "",
+      "answer": ""
+    }
+  },
+  {
+    "sectionName": "Updates Section",
+    "sectionslug": "updates-section",
+    "id": 4,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "bannerImage": "",
+      "buttonTitle": ""
+    }
+  }
+]

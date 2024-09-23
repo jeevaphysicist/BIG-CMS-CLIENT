@@ -9,27 +9,43 @@ import { FiSave } from "react-icons/fi";
 
 const EditPages = ({ handleFooterPage }) => {
   const [formData, setFormData] = useState({
-    media: "",
+    footerCategory: "",
+    footerItemTitle: "",
+    footerLink: "",
+    footerCorrespondingPage: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [errors, setError] = useState("");
 
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.footerCategory === "" || formData.footerCategory === null) {
+      newerrors.footerCategory = "Footer Category is required";
+      has = true;
+    }
+    if (formData.footerItemTitle === "" || formData.footerItemTitle === null) {
+      newerrors.footerItemTitle = "Footer Title is required";
+      has = true;
+    }
+    if (formData.footerLink === "" || formData.footerLink === null) {
+      newerrors.footerLink = "Footer Link is required";
+      has = true;
+    }
+    if (
+      formData.footerCorrespondingPage === "" ||
+      formData.footerCorrespondingPage === null
+    ) {
+      newerrors.footerCorrespondingPage = "Corresponding Page is required";
       has = true;
     }
 
@@ -53,7 +69,7 @@ const EditPages = ({ handleFooterPage }) => {
 
   return (
     <Fragment>
-      <section className="h-full w-full">
+      <form onSubmit={handleSubmit} className="h-full w-full">
         <div className="w-full md:h-20  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 sticky top-0 z-30 bg-white justify-between">
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
@@ -80,15 +96,17 @@ const EditPages = ({ handleFooterPage }) => {
                 >
                   Select Footer Category
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.footerCategory && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.footerCategory}
+                    </span>
+                  )}
                 </label>
                 <select
                   className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                   aria-label="Select section to edit"
+                  onChange={handleFormChange}
+                  name="footerCategory"
                 >
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
@@ -99,7 +117,6 @@ const EditPages = ({ handleFooterPage }) => {
                   <option value="semiMounts">Semi-Mounts</option>
                   <option value="guide">Guide</option>
                 </select>
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -108,11 +125,11 @@ const EditPages = ({ handleFooterPage }) => {
                 >
                   Footer Item Title
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.footerItemTitle && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.footerItemTitle}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -122,10 +139,9 @@ const EditPages = ({ handleFooterPage }) => {
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="title"
-                  // onChange={handleFormChange}
+                  name="footerItemTitle"
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -134,11 +150,11 @@ const EditPages = ({ handleFooterPage }) => {
                 >
                   Link
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.footerLink && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.footerLink}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -147,10 +163,9 @@ const EditPages = ({ handleFooterPage }) => {
                   placeholder="bit.ly/1213"
                   size="lg"
                   radius="sm"
-                  name="link"
-                  // onChange={handleFormChange}
+                  name="footerLink"
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -159,11 +174,11 @@ const EditPages = ({ handleFooterPage }) => {
                 >
                   Corresponding Page
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.footerCorrespondingPage && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.footerCorrespondingPage}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -172,10 +187,9 @@ const EditPages = ({ handleFooterPage }) => {
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="page"
-                  // onChange={handleFormChange}
+                  name="footerCorrespondingPage"
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
             </div>
           </div>
@@ -199,7 +213,7 @@ const EditPages = ({ handleFooterPage }) => {
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };

@@ -1,0 +1,69 @@
+[
+  {
+    "sectionName": "Icon Box",
+    "sectionslug": "icon-box",
+    "id": 1,
+    "content": {
+      "sectionTitle": "",
+      "iconOneImage": "",
+      "iconOneTitle": "",
+      "iconTwoImage": "",
+      "iconTwoTitle": "",
+      "iconThreeImage": "",
+      "iconThreeTitle": ""
+    }
+  },
+  {
+    "sectionName": "How Does It Work",
+    "sectionslug": "how-does-it-work",
+    "id": 2,
+    "content": {
+      "sectionTitle": "",
+      "iconOneImage": "",
+      "iconOneDescription": "",
+      "iconTwoImage": "",
+      "iconTwoDescription": "",
+      "iconThreeImage": "",
+      "iconThreeDescription": ""
+    }
+  },
+  {
+    "sectionName": "Content",
+    "sectionslug": "content",
+    "id": 3,
+    "content": {
+      "description": ""
+    }
+  },
+  {
+    "sectionName": "Testimonials",
+    "sectionslug": "testimonials",
+    "id": 4,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 5,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "question": "",
+      "answer": ""
+    }
+  },
+  {
+    "sectionName": "Updates Section",
+    "sectionslug": "updates-section",
+    "id": 6,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "bannerImage": "",
+      "buttonTitle": ""
+    }
+  }
+]

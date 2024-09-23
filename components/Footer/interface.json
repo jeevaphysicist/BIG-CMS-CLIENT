@@ -1,0 +1,82 @@
+[
+  {
+    "sectionName": "Company",
+    "sectionslug": "company",
+    "id": 1,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Policies",
+    "sectionslug": "policies",
+    "id": 2,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Gemstones",
+    "sectionslug": "gemstones",
+    "id": 3,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Jewelry",
+    "sectionslug": "jewelry",
+    "id": 4,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Drops and Beads",
+    "sectionslug": "drops-and-beads",
+    "id": 5,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Gifts",
+    "sectionslug": "gifts",
+    "id": 6,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Semi Mounts",
+    "sectionslug": "semi-mounts",
+    "id": 7,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  },
+  {
+    "sectionName": "Guide",
+    "sectionslug": "guide",
+    "id": 8,
+    "content": {
+      "footerItemTitle": "",
+      "footerItemLink": "",
+      "footerItemCorrespondingPage": ""
+    }
+  }
+]

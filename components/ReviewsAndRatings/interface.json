@@ -1,0 +1,16 @@
+[
+  {
+    "sectionName": "Add New Review",
+    "sectionslug": "add-new-review",
+    "id": 1,
+    "content": {
+      "customerName": "",
+      "selectedCategory": "",
+      "selectedProduct": "",
+      "rating": "",
+      "reviewTitle": "",
+      "reviewDescription": "",
+      "verfiedCustomerStatus": ""
+    }
+  }
+]

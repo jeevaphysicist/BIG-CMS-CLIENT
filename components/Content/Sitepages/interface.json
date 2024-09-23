@@ -1,0 +1,32 @@
+[
+  {
+    "sectionName": "About",
+    "sectionslug": "about",
+    "id": 1,
+    "content": {
+      "pageTitle": "",
+      "header": "",
+      "introduction": "",
+      "content": ""
+    }
+  },
+  {
+    "sectionName": "Offers",
+    "sectionslug": "offers",
+    "id": 2,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "bannerImage": "",
+      "buttonTitle": ""
+    }
+  },
+  {
+    "sectionName": "Media",
+    "sectionslug": "media",
+    "id": 3,
+    "content": {
+      "mediaImage": ""
+    }
+  }
+]
