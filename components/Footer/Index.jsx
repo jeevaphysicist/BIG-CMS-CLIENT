@@ -157,7 +157,10 @@ const Index = () => {
           </div>
         </div>
       ) : (
-        <EditPages handleFooterPage={handleFooterPage} />
+        <EditPages
+          handleFooterPage={handleFooterPage}
+          selectedCategory={selectedSection}
+        />
       )}
     </div>
   );

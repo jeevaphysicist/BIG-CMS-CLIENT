@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import RequiredSymbol from "../Content/RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
 
-const EditPages = ({ handleFooterPage }) => {
+const EditPages = ({ handleFooterPage, selectedCategory }) => {
   const [formData, setFormData] = useState({
     footerCategory: "",
     footerItemTitle: "",
@@ -25,6 +25,15 @@ const EditPages = ({ handleFooterPage }) => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setFormData((prevData) => ({
+        ...prevData,
+        footerCategory: selectedCategory,
+      }));
+    }
+  }, [selectedCategory]);
 
   const handleVadilation = () => {
     let newerrors = {};
@@ -105,8 +114,10 @@ const EditPages = ({ handleFooterPage }) => {
                 <select
                   className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                   aria-label="Select section to edit"
+                  value={formData.footerCategory}
                   onChange={handleFormChange}
                   name="footerCategory"
+                  disabled={true}
                 >
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
