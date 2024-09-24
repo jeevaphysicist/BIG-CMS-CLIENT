@@ -7,6 +7,7 @@ import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import { Input } from "@nextui-org/react";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import EditModal from "../EditModal";
+import { toast } from "react-toastify";
 
 const initialData = [
   {
@@ -85,6 +86,46 @@ const Index = () => {
     setIsModalOpen(true);
   };
 
+  const [formData, setFormData] = useState({
+    tickerTitle: "",
+  });
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleVadilation = () => {
+    let newerrors = {};
+    let has = false;
+    if (formData.tickerTitle === "" || formData.tickerTitle === null) {
+      newerrors.tickerTitle = "Ticker Title is required";
+      has = true;
+    }
+
+    setError(newerrors);
+    return has;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let validateResponse = handleVadilation();
+    // console.log("validationresponse", validateResponse);
+    if (validateResponse) {
+      toast.error("Please fill required details correctly !");
+      return null;
+    }
+
+    // API Call Here
+
+    console.log("Form submitted with data:", formData);
+  };
+
   const handleAddSitePage = () => {};
 
   return (
@@ -127,7 +168,7 @@ const Index = () => {
         subtitle="Seamlessly Add New Ticker"
         buttonname="Save New Ticker"
       >
-        <div className="w-[100%] px-6 py-4 space-y-4">
+        <form onSubmit={handleSubmit} className="w-[100%] px-6 py-4 space-y-4">
           <div className="flex flex-col gap-3">
             <label
               htmlFor="title"
@@ -135,11 +176,11 @@ const Index = () => {
             >
               Ticker Title
               <RequiredSymbol />{" "}
-              {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+              {errors.tickerTitle && (
+                <span className="font-regular text-[12px] text-red-600">
+                  {errors.tickerTitle}
+                </span>
+              )}
             </label>
             <Input
               type="text"
@@ -150,11 +191,10 @@ const Index = () => {
               size="md"
               radius="sm"
               name="title"
-              // onChange={handleFormChange}
+              onChange={handleFormChange}
             />
-            {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
           </div>
-        </div>
+        </form>
       </EditModal>
     </div>
   );

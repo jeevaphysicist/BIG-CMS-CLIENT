@@ -1,0 +1,37 @@
+[
+  {
+    "sectionName": "Explore Gemstones",
+    "sectionslug": "explore-gemstones",
+    "id": 1,
+    "content": {
+      "sectionTitle": "",
+      "mainContent": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 2,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "question": "",
+      "answer": ""
+    }
+  },
+  {
+    "sectionName": "Edit Tradeshow Listing",
+    "sectionslug": "edit-tradeshow-listing",
+    "id": 3,
+    "content": {
+      "showCity": "",
+      "showPromoter": "",
+      "showFromDate": "",
+      "showToDate": "",
+      "address": "",
+      "type": "",
+      "booth": "",
+      "showTicket": ""
+    }
+  }
+]

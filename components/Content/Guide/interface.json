@@ -1,0 +1,68 @@
+[
+  {
+    "sectionName": "Gemstone Guide",
+    "sectionslug": "gemstone-guide",
+    "id": 1,
+    "content": {
+      "pageTitle": "",
+      "headerTitle": "",
+      "headerBannerImage": "",
+      "bannerTitle": ""
+    }
+  },
+  {
+    "sectionName": "Meaning of Gemstones",
+    "sectionslug": "meaning-of-gemstones",
+    "id": 2,
+    "content": {
+      "sectionTitle": "",
+      "mainContent": ""
+    }
+  },
+  {
+    "sectionName": "Products from Gemstones",
+    "sectionslug": "product-from-gemstones",
+    "id": 3,
+    "content": {
+      "sectionTitle": "",
+      "categoryOneImage": "",
+      "categoryOneTitle": "",
+      "categoryOneButtonLink": "",
+      "categoryTwoImage": "",
+      "categoryTwoTitle": "",
+      "categoryTwoButtonLink": "",
+      "categoryThreeImage": "",
+      "categoryThreeTitle": "",
+      "categoryThreeButtonLink": ""
+    }
+  },
+  {
+    "sectionName": "More About Gemstones",
+    "sectionslug": "more-about-gemstones",
+    "id": 4,
+    "content": {
+      "sectionTitle": "",
+      "mainContent": ""
+    }
+  },
+  {
+    "sectionName": "Content Section",
+    "sectionslug": "content-section",
+    "id": 5,
+    "content": {
+      "bannerImage": "",
+      "bannerTitle": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 6,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "question": "",
+      "answer": ""
+    }
+  }
+]

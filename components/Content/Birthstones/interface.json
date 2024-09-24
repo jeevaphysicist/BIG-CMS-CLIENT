@@ -1,0 +1,64 @@
+[
+  {
+    "sectionName": "Hero Section",
+    "sectionslug": "hero-section",
+    "id": 1,
+    "content": {
+      "headerTitle": "",
+      "headerBannerImage": "",
+      "bannerTitle": ""
+    }
+  },
+  {
+    "sectionName": "Introduction",
+    "sectionslug": "introduction",
+    "id": 2,
+    "content": {
+      "sectionContent": ""
+    }
+  },
+  {
+    "sectionName": "More About Gemstones",
+    "sectionslug": "more-about-gemstones",
+    "id": 3,
+    "content": {
+      "sectionContent": ""
+    }
+  },
+  {
+    "sectionName": "Content Section",
+    "sectionslug": "content-section",
+    "id": 4,
+    "content": {
+      "bannerImage": "",
+      "bannerTitle": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 5,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "question": "",
+      "answer": ""
+    }
+  },
+  {
+    "sectionName": "Birthstone Information",
+    "sectionslug": "birthstone-information",
+    "id": 6,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "birthStoneMonth": "",
+      "birthStoneImage": "",
+      "selectionImage": "",
+      "title": "",
+      "description": "",
+      "readMoreLink": "",
+      "productLink": ""
+    }
+  }
+]
