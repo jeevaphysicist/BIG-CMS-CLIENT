@@ -39,7 +39,7 @@ const ReviewCard = ({ initialData, activeTab }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3 items-start md:items-end justify-between">
+            <div className="flex md:flex-col gap-3 items-start md:items-end justify-between">
               <p>{item.date}</p>
               <div className="flex items-center gap-5">
                 <Switch size="sm" aria-label="Automatic updates" />

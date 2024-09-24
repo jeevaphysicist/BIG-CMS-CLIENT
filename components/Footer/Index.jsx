@@ -148,7 +148,7 @@ const Index = () => {
             {selectedSection === "logoContact" && (
               <LogoAndContact handleFooterPage={handleFooterPage} />
             )}
-            {selectedSection === "jewellery" && (
+            {selectedSection !== "logoContact" && (
               <ResponsiveTable
                 initialData={initialData}
                 handleFooterPage={handleFooterPage}
@@ -157,7 +157,10 @@ const Index = () => {
           </div>
         </div>
       ) : (
-        <EditPages handleFooterPage={handleFooterPage} />
+        <EditPages
+          handleFooterPage={handleFooterPage}
+          selectedCategory={selectedSection}
+        />
       )}
     </div>
   );

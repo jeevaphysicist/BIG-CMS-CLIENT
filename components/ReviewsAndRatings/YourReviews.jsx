@@ -43,13 +43,13 @@ const reviews = [
 const YourReviews = () => {
   return (
     <div className="w-full px-4">
-      <div className="w-full flex justify-end px-8 sticky z-30 top-28 bg-white ">
+      <div className="w-full flex md:justify-end justify-center md:px-8 px-0 sticky z-30 top-28 bg-white ">
         <div className="flex mt-5 relative items-center justify-start">
           <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
           <input
             type="search"
             placeholder="Search"
-            className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
+            className=" border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
           />
         </div>
       </div>

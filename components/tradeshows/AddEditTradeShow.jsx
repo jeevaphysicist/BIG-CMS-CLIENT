@@ -93,7 +93,7 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
       <div className=" bg-white space-y-3">
         <div className="flex items-center justify-between px-5 pt-5 w-[100%]">
           <div className="flex flex-col items-start justify-start">
-            <h1 className="flex text-[#0A1215] items-end gap-3 font-medium text-[20px]">
+            <h1 className="flex text-[#0A1215] md:items-end gap-3 font-medium text-[20px]">
               {type === "create" ? "Add new" : "Edit"} Tradeshow Listing{" "}
               <span className="h-5 w-5 text-[14px] bg-[#E5E5E5] rounded-md flex items-center justify-center bg-[]">
                 <RiSettings5Fill />
@@ -109,9 +109,9 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
           </Tabs>
         </div>
       </div>
-      <div className="flex flex-col px-5 gap-5 items-center w-[100%] justify-center">
+      <div className="flex flex-col px-5 pb-5 gap-5 items-center w-[100%] justify-center">
         <div className="flex flex-col md:flex-row w-[100%] gap-5 items-center justify-between">
-          <div className="flex flex-col  my-3 pt-2 gap-3 w-[100%]">
+          <div className="flex flex-col  mt-3 pt-2 gap-3 w-[100%]">
             <label
               htmlFor="showCity"
               className="text-[16px]  font-semibold flex gap-1"
@@ -137,7 +137,7 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
               onChange={handleFormChange}
             />
           </div>
-          <div className="flex flex-col  my-3 pt-2 gap-3 w-[100%]">
+          <div className="flex flex-col  md:mt-3 pt-2 gap-3 w-[100%]">
             <label
               htmlFor="showPromoter"
               className="text-[16px]  font-semibold flex gap-1"
