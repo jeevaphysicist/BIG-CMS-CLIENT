@@ -148,7 +148,7 @@ const Index = () => {
             {selectedSection === "logoContact" && (
               <LogoAndContact handleFooterPage={handleFooterPage} />
             )}
-            {selectedSection === "jewellery" && (
+            {selectedSection !== "logoContact" && (
               <ResponsiveTable
                 initialData={initialData}
                 handleFooterPage={handleFooterPage}
