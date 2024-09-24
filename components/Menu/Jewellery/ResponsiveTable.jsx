@@ -14,7 +14,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 const ResponsiveTable = ({ initialData, handleJewelryPage }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [openList, setOpenList] = useState("by-gemstone");
+  const [openList, setOpenList] = useState("by-type");
 
   // const toggleSelectAll = () => {
   //   if (selectedRows.length === data.length) {

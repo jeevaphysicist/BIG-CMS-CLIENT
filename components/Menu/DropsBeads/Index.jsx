@@ -37,7 +37,7 @@ const Index = () => {
 
   return (
     <div className="w-[100%]">
-      {isList ? (
+      
         <div className="w-[100%] p-5">
           <div className="flex items-center justify-between w-[100%]">
             <div className="flex flex-col items-start justify-start">
@@ -64,9 +64,7 @@ const Index = () => {
             />
           </div>
         </div>
-      ) : (
-        <EditPages handleDropsBeadsPage={handleDropsBeadsPage} />
-      )}
+
     </div>
   );
 };

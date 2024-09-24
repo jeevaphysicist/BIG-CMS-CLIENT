@@ -15,6 +15,14 @@ const publicApi = axios.create({
     }
 });
 
+// Public Front end axios instance (no authorization)
+const publicFrontendApi = axios.create({
+    baseURL: '',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
 // Private axios instance (with authorization)
 const privateApi = axios.create({
     baseURL: BASE_URL,
@@ -47,7 +55,7 @@ privateApi.interceptors.response.use(
             originalRequest._retry = true;
 
             const refreshed = await refreshAccessToken();  
-            console.log("refreshed",refreshed);
+            // console.log("refreshed",refreshed);
             if (refreshed) {
                 let { accessToken } = GetCookies();
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -94,6 +102,21 @@ export const handleLogin = async (data)=>{
     const formData = convertToFormData(data);
     try {        
         const response = await publicApi.post('/accounts/auth/login', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response ;
+    } catch (error) {
+        return error;
+    }
+}
+
+// S.No 02
+// Get Template Handler
+export const handleGetTemplate = async ()=>{
+    try {        
+        const response = await publicFrontendApi.get('/templates/template.json',  {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

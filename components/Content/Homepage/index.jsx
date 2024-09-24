@@ -12,8 +12,10 @@ import {
 import { Switch } from "@nextui-org/react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
+import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
 
 const Index = () => {
+  const  { template } = GetCurrentUserDetails();
   const [homePage, setHomePage] = useState(true);
   const [isChecked, setIsChecked] = useState(true);
   const itemsClasses = {
@@ -27,6 +29,8 @@ const Index = () => {
                         td:"bg-[#F9FAFB] font-regular border-b-1 text-[#0A1215]"
                   }
 
+ console.log("templates",template);
+ 
   const handleHomepage = () => {
     setHomePage(!homePage);
   };

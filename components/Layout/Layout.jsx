@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHome,
   FaBook,
@@ -18,6 +18,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiOutlineLogout } from "react-icons/hi";
 import { CgMenuRightAlt } from "react-icons/cg";
+import { handleGetTemplate } from "@/API/api";
+import { useDispatch } from "react-redux";
+import {  UpdateTemplatesHandler } from "@/app/Redux/Features/userSlice";
 
 const MenuItems = ({ handleAside }) => {
   const [openMenu, setOpenMenu] = useState({
@@ -39,6 +42,7 @@ const MenuItems = ({ handleAside }) => {
     let isCurrentpath = path === pathname;
     return isCurrentpath;
   };
+
 
   const HandleParentFunction = (statwith) => {
     let isContentPath = pathname.startsWith(statwith);
@@ -572,7 +576,7 @@ const MenuItems = ({ handleAside }) => {
 };
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
 
   return (
     <div className="relative  w-[100%]  lg:left-0 lg:top-0  lg:h-[100vh] bg-gray-200 lg:shadow-lg ">
