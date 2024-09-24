@@ -1,0 +1,254 @@
+[
+  {
+    "sectionName": "Herosection",
+    "sectionslug": "herosection",
+    "id": 1,
+    "content": {
+      "bannerOneTitle": "",
+      "bannerOneImage": "",
+      "bannerOneDescription": "",
+      "bannerOneEnableTimerStatus": "",
+      "startDate": "",
+      "startEnd": "",
+      "bannerTwoTitle": "",
+      "bannerTwoImage": "",
+      "bannerTwoDescription": "",
+      "bannerTwoButtonContent": "",
+      "bannerTwoButtonLink": ""
+    }
+  },
+  {
+    "sectionName": "Content Box",
+    "sectionslug": "content-box",
+    "id": 2,
+    "content": {
+      "iconOne": "",
+      "iconOneTile": "",
+      "iconOneDescription": "",
+      "iconTwo": "",
+      "iconTwoTile": "",
+      "iconTwoDescription": "",
+      "iconThree": "",
+      "iconThreeTile": "",
+      "iconThreeDescription": "",
+      "iconFour": "",
+      "iconFourTile": "",
+      "iconFourDescription": ""
+    }
+  },
+  {
+    "sectionName": "Categories",
+    "sectionslug": "categories",
+    "id": 3,
+    "content": {
+      "categoryOneImage": "",
+      "categoryOneTitle": "",
+      "categoryOneLink": "",
+      "categoryTwoImage": "",
+      "categoryTwoTitle": "",
+      "categoryTwoLink": "",
+      "categoryThreeImage": "",
+      "categoryThreeTitle": "",
+      "categoryThreeLink": "",
+      "categoryFourImage": "",
+      "categoryFourTitle": "",
+      "categoryFourLink": "",
+      "categoryFiveImage": "",
+      "categoryFiveTitle": "",
+      "categoryFiveLink": ""
+    }
+  },
+  {
+    "sectionName": "Recommended",
+    "sectionslug": "recommended",
+    "id": 4,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "image": "",
+      "title": "",
+      "description": ""
+    }
+  },
+  {
+    "sectionName": "Explore Gemstones",
+    "sectionslug": "explore-gemstones",
+    "id": 5,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "buttonName": "",
+      "buttonLink": ""
+    }
+  },
+  {
+    "sectionName": "Explore Jewlery",
+    "sectionslug": "explore-jewlery",
+    "id": 6,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "buttonName": "",
+      "buttonLink": ""
+    }
+  },
+  {
+    "sectionName": "Drops and Beads",
+    "sectionslug": "drops-and-beads",
+    "id": 7,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "buttonName": "",
+      "buttonLink": ""
+    }
+  },
+  {
+    "sectionName": "Semi Mounts",
+    "sectionslug": "semi-mounts",
+    "id": 8,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "buttonName": "",
+      "buttonLink": ""
+    }
+  },
+  {
+    "sectionName": "Gifts",
+    "sectionslug": "gifts",
+    "id": 9,
+    "content": {
+      "giftOneTitle": "",
+      "giftOneImage": "",
+      "giftOneLink": "",
+      "giftTwoTitle": "",
+      "giftTwoImage": "",
+      "giftTwoLink": "",
+      "giftThreeTitle": "",
+      "giftThreeImage": "",
+      "giftThreeLink": ""
+    }
+  },
+  {
+    "sectionName": "Offers",
+    "sectionslug": "offers",
+    "id": 10,
+    "content": {
+      "bannerOneImage": "",
+      "bannerOneTitle": "",
+      "bannerOneDescription": "",
+      "bannerOneLink": "",
+      "bannerOneCouponStatus": "",
+      "bannerOneCouponCode": "",
+      "bannerOneAdditionalDiscount": "",
+      "bannerTwoImage": "",
+      "bannerTwoTitle": "",
+      "bannerTwoDescription": "",
+      "bannerTwoButtonStatus": "",
+      "bannerTwoButtonContent": "",
+      "bannerTwoButtonLink": "",
+      "bannerThreeImage": "",
+      "bannerThreeTitle": "",
+      "bannerThreeDescription": "",
+      "bannerThreeButtonStatus": "",
+      "bannerThreeButtonContent": "",
+      "bannerThreeButtonLink": ""
+    }
+  },
+  {
+    "sectionName": "Birthstone Information",
+    "sectionslug": "birthstone-information",
+    "id": 11,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "birthStoneMonth": "",
+      "birthStoneImage": "",
+      "selectionImage": "",
+      "title": "",
+      "description": "",
+      "readMoreLink": "",
+      "productLink": ""
+    }
+  },
+  {
+    "sectionName": "Gemshows",
+    "sectionslug": "gemshows",
+    "id": 12,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "buttonName": "",
+      "buttonLink": ""
+    }
+  },
+  {
+    "sectionName": "Testimonials",
+    "sectionslug": "testimonials",
+    "id": 13,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": ""
+    }
+  },
+  {
+    "sectionName": "Custom Jewelry",
+    "sectionslug": "custom-jewelry",
+    "id": 14,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "sectionBanner": "",
+      "bannerIconStatus": "",
+      "iconOneImage": "",
+      "iconOneTitle": "",
+      "iconTwoImage": "",
+      "iconTwoTitle": "",
+      "iconThreeImage": "",
+      "iconThreeTitle": ""
+    }
+  },
+  {
+    "sectionName": "Frequently Asked Questions",
+    "sectionslug": "frequently-asked-questions",
+    "id": 15,
+    "content": {
+      "sectionTitle": "",
+      "selectedCategory": "",
+      "faqs":[{"question": "","answer": ""}]
+    }
+  },
+  {
+    "sectionName": "Content Section",
+    "sectionslug": "content-section",
+    "id": 16,
+    "content": {
+      "sectionTitle": "",
+      "subtitle": "",
+      "bannerImage": "",
+      "description": ""
+    }
+  },
+  {
+    "sectionName": "Updates Section",
+    "sectionslug": "updates-section",
+    "id": 17,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "bannerImage": "",
+      "buttonTitle": ""
+    }
+  },
+  {
+    "sectionName": "Social Follow",
+    "sectionslug": "social-follow",
+    "id": 18,
+    "content": {
+      "sectionTitle": "",
+      "sectionDescription": "",
+      "thumbnailImage": ""
+    }
+  }
+]

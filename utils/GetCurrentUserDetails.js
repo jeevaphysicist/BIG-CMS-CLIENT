@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 
-export const GetCurrentUserDetails = ()=>{
-       const profile = useSelector(state=>state.user.user);       
-       return { profile };
+export const GetCurrentUserDetails = ()=>{       
+       const template = useSelector(state=>state.user.template);       
+       return { template };
 }

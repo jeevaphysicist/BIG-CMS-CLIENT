@@ -1,0 +1,10 @@
+[
+  {
+    "sectionName": "Add New Ticker",
+    "sectionslug": "add-new-ticker",
+    "id": 1,
+    "content": {
+      "tickerTitle": ""
+    }
+  }
+]

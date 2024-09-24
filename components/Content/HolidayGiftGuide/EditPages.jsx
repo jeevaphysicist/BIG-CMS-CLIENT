@@ -10,31 +10,40 @@ import DragAndDropImage from "../DragDropImage";
 import TextEditor from "../TextEditor";
 
 const EditPages = ({ handleGiftGuide }) => {
+  const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    media: "",
+    title: "",
+    content: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [errors, setError] = useState({});
 
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleProcedureContentChange = (content) => {
+    // console.log("content---->", content);
+    setContent(content);
+    setFormData((prevData) => ({ ...prevData, content }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Title is required";
       has = true;
     }
-
+    if (formData.content === "" || formData.content === null) {
+      newerrors.content = "Content is required";
+      has = true;
+    }
     setError(newerrors);
     return has;
   };
@@ -82,11 +91,11 @@ const EditPages = ({ handleGiftGuide }) => {
                 >
                   Title
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.title && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.title}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="text"
@@ -97,9 +106,8 @@ const EditPages = ({ handleGiftGuide }) => {
                   size="lg"
                   radius="sm"
                   name="title"
-                  // onChange={handleFormChange}
+                  onChange={handleFormChange}
                 />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
               </div>
               <div className="flex flex-col gap-3">
                 <label
@@ -108,14 +116,16 @@ const EditPages = ({ handleGiftGuide }) => {
                 >
                   Main Content
                   <RequiredSymbol />{" "}
-                  {/* {errors.banner2 && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
-                  </span>
-                )} */}
+                  {errors.content && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.content}
+                    </span>
+                  )}
                 </label>
-                <TextEditor />
-                {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
+                <TextEditor
+                  value={formData.content}
+                  handleContentChange={handleProcedureContentChange}
+                />
               </div>
             </div>
           </div>

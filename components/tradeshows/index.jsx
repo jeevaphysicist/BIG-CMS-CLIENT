@@ -4,6 +4,8 @@ import { CiCirclePlus } from 'react-icons/ci'
 import { FiSearch } from 'react-icons/fi'
 import TradeshowList from './TradeshowList'
 import AddEditTradeShow from './AddEditTradeShow'
+import ExploreGemStones from './ExploreGemStones'
+import Faqs from './Faqs'
 
 const index = () => {
   const [isAddEdit,setIsAddEdit] = useState({
@@ -21,6 +23,9 @@ const index = () => {
   }
   const handleSection = (e)=>{
         setSelectSection(e.target.value);
+  }
+  const handleClose = ()=>{
+    setIsAddEdit(prev=>({...prev,status:false}));
   }
 
   return (
@@ -73,7 +78,18 @@ const index = () => {
          <div className='h-[1px] w-[100%] bg-[#D7D7D7]'/>
          </div>
          <div>
+          {
+            selectSection === 'trade-show-list' &&
            <TradeshowList handleType={handleType} handleAddEdit={handleAddEdit} />
+          }
+          {
+            selectSection === 'explore-gemstones' &&
+           <ExploreGemStones  handleClose={handleClose} />
+          }
+          {
+            selectSection === 'faqs' &&
+           <Faqs  handleClose={handleClose} />
+          }
          </div>
      </section>
      :

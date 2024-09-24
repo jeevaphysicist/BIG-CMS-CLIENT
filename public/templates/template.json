@@ -1,0 +1,280 @@
+[
+    {
+        "moduleName":"Homepage",
+        "moduleSlug":"homepage",
+        "sections":[
+            {
+                "sectionName":"Hero Section (Section 1)",
+                "sectionSlug":"hero-section"                
+            },
+            {
+                "sectionName":"Content Section (Section 2)",
+                "sectionSlug":"content-section"                
+            },
+            {
+                "sectionName":"Categories (Section 3)",
+                "sectionSlug":"categories"                
+            },
+            {
+                "sectionName":"Recommended (Section 4)",
+                "sectionSlug":"recommended"                
+            },
+            {
+                "sectionName":"Explore Gemstones (Section 5)",
+                "sectionSlug":"hero-section"                
+            },
+            {
+                "sectionName":"Explore Jewellery (Section 6)",
+                "sectionSlug":"explore-jewellery"                
+            },
+            {
+                "sectionName":"Drops & Beads (Section 7)",
+                "sectionSlug":"drops-beads"                
+            },
+            {
+                "sectionName":"Semi-Mount (Section 8)",
+                "sectionSlug":"semi-mounts"                
+            },
+            {
+                "sectionName":"Gifts (Section 9)",
+                "sectionSlug":"gifts"                
+            },
+            {
+                "sectionName":"Offers (Section 10)",
+                "sectionSlug":"offers"                
+            },
+            {
+                "sectionName":"Birthstone Information (Section 11) ",
+                "sectionSlug":"birthstone-information"                
+            },
+            {
+                "sectionName":"Gemshows (Section 12)",
+                "sectionSlug":"gemshows"                
+            },
+            {
+                "sectionName":"Testimonials (Section 13)",
+                "sectionSlug":"testimonials"                
+            },
+            {
+                "sectionName":"Custom Jewellery (Section 14) ",
+                "sectionSlug":"custom-jewellery"                
+            },
+            {
+                "sectionName":"Frequently Asked Questions (Section 15)",
+                "sectionSlug":"faqs"                
+            },
+            {
+                "sectionName":"Content Section (Section 16)",
+                "sectionSlug":"content-section"                
+            },
+            {
+                "sectionName":"Update Section (Section 17)",
+                "sectionSlug":"update-section"                
+            },
+            {
+                "sectionName":"Social Media (Section 18)",
+                "sectionSlug":"social-media"                
+            }
+        ]
+    },
+    {
+        "moduleName":"Sitepages",
+        "moduleSlug":"sitepages",
+        "sections":[
+            {
+                "sectionName":"About (Section 1)",
+                "sectionSlug":"about"                
+            },
+            {
+                "sectionName":"Offer (Section 2)",
+                "sectionSlug":"offers"                
+            },
+            {
+                "sectionName":"Media (Section 3)",
+                "sectionSlug":"media"                
+            }             
+        ]
+    },
+    {
+        "moduleName":"Policy",
+        "moduleSlug":"policy",
+        "sections":[
+            {
+                "sectionName":"General Info (Section 1)",
+                "sectionSlug":"general-info"                
+            }          
+        ]
+    },
+    {
+        "moduleName":"Guides",
+        "moduleSlug":"guides",
+        "sections":[
+            {
+                "sectionName":"Gemstone Guide (Section 1)",
+                "sectionSlug":"gemstone-guide"                
+            },
+            {
+                "sectionName":"Meaning of Gemstones (Section 2)",
+                "sectionSlug":"meaning-of-gemstones"                
+            },
+            {
+                "sectionName":"Products from Gemstones (Section 3)",
+                "sectionSlug":"products-from-gemstones"                
+            },
+            {
+                "sectionName":"More about Gemstones (Section 4)",
+                "sectionSlug":"More-About-gemstones"                
+            },
+            {
+                "sectionName":"Content-Section (Section 5)",
+                "sectionSlug":"content-section"                
+            },
+            {
+                "sectionName":"Frequently Asked Questions (Section 6)",
+                "sectionSlug":"faqs"                
+            }
+        ]
+    },
+    {
+        "moduleName":"BirthStones",
+        "moduleSlug":"guides",
+        "sections":[
+            {
+                "sectionName":"Hero Section (Section 1)",
+                "sectionSlug":"hero-section"                
+            },
+            {
+                "sectionName":"Introduction (Section 2)",
+                "sectionSlug":"introduction"                
+            },
+            {
+                "sectionName":"More about Gemstones (Section 3)",
+                "sectionSlug":"More-About-gemstones"                
+            },
+            {
+                "sectionName":"Content Section (Section 4)",
+                "sectionSlug":"content-section"                
+            },
+            {
+                "sectionName":"Frequently Asked Questions (Section 5)",
+                "sectionSlug":"faqs"                
+            },
+            {
+                "sectionName":"Birthstone Information (Section 6) ",
+                "sectionSlug":"birthstone-information"                
+            }       
+        ]
+    },
+    {
+        "moduleName":"Category Pages",
+        "moduleSlug":"category-pages",
+        "sections":[
+            {
+                "sectionName":"Hero Section (Section 1)",
+                "sectionSlug":"hero-section"                
+            },
+            {
+                "sectionName":"Content Box (Section 2)",
+                "sectionSlug":"context-box"                
+            },            
+            {
+                "sectionName":"Frequently Asked Questions (Section 3)",
+                "sectionSlug":"faqs"                
+            },
+            {
+                "sectionName":"Update Section (Section 4)",
+                "sectionSlug":"update-section"                
+            }       
+        ]
+    },
+    {
+        "moduleName":"Trade Shows",
+        "moduleSlug":"tradeshow",
+        "sections":[
+            {
+                "sectionName":"Tradeshow Listing (Section 1)",
+                "sectionSlug":"hero-section"                
+            },
+            {
+                "sectionName":"Explore Gemstones (Section 2)",
+                "sectionSlug":"explore-gemstones"                
+            },            
+            {
+                "sectionName":"Frequently Asked Questions (Section 3)",
+                "sectionSlug":"faqs"                
+            }       
+        ]
+    },
+    {
+        "moduleName":"Custom Jewellery",
+        "moduleSlug":"custom-jewellery",
+        "sections":[
+            {
+                "sectionName":"Icon Box(Section 1)",
+                "sectionSlug":"icon-box"                
+            },
+            {
+                "sectionName":"How Does it Works (Section 2)",
+                "sectionSlug":"how-does-work"                
+            },            
+            {
+                "sectionName":"Content (Section 3)",
+                "sectionSlug":"cotent"                
+            },
+            {
+                "sectionName":"Testimonials (Section 4)",
+                "sectionSlug":"testimonials"                
+            },
+            {
+                "sectionName":"Frequently Asked Questions (Section 5)",
+                "sectionSlug":"faqs"                
+            },
+            {
+                "sectionName":"Update Section (Section 6)",
+                "sectionSlug":"update-section"                
+            }         
+        ]
+    },
+    {
+        "moduleName":"Footer",
+        "moduleSlug":"footer",
+        "sections":[
+            {
+                "sectionName":"Logo and Contact",
+                "sectionSlug":"logo-and-contact"                
+            },
+            {
+                "sectionName":"Company",
+                "sectionSlug":"company"                
+            },
+            {
+                "sectionName":"Policies",
+                "sectionSlug":"policies"                
+            } ,
+            {
+                "sectionName":"Gemstone",
+                "sectionSlug":"gemstone"                
+            },
+            {
+                "sectionName":"Jewellery",
+                "sectionSlug":"jewellery"                
+            },
+            {
+                "sectionName":"Drops & Beads",
+                "sectionSlug":"drops-beads"                
+            },
+            {
+                "sectionName":"Gifts",
+                "sectionSlug":"gifts"                
+            },
+            {
+                "sectionName":"Semi-Mounts",
+                "sectionSlug":"semi-mounts"                
+            },
+            {
+                "sectionName":"Guide",
+                "sectionSlug":"guide"                
+            }             
+        ]
+    }
+]

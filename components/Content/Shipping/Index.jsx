@@ -126,6 +126,7 @@ const Index = () => {
         onClose={() => setIsModalOpen(false)}
         modaltitle="Add New Shipping method"
         subtitle="Seamlessly Add shipping Method"
+        buttonname="Save"
       >
         <div className="w-[100%] px-6 py-4 space-y-4">
           <div className="flex flex-col gap-3">

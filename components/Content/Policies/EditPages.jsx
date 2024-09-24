@@ -35,6 +35,10 @@ const EditPages = ({ handlePolicies }) => {
     setModalActiveTab(tab);
   };
 
+  const handleSeoSubmit = (formData) => {
+    console.log("Submitting data for Sitepages", formData);
+  };
+
   return (
     <Fragment>
       <div className="w-full md:h-28  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 border-b-1.5 sticky top-0 z-30 bg-white justify-between">
@@ -72,19 +76,19 @@ const EditPages = ({ handlePolicies }) => {
             onClick={() => handleTabChange("seoAttributes")}
           >
             SEO Attributes
-          </button>          
+          </button>
         </div>
       </div>
       {activeTab === "generalInfo" && (
-        <section>         
-          <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">         
-              <GeneralInfo handlePolicies={handlePolicies} />          
+        <section>
+          <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">
+            <GeneralInfo handlePolicies={handlePolicies} />
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes handler={handlePolicies} />
-      )}      
+        <SeoAttributes handler={handlePolicies} onSubmit={handleSeoSubmit} />
+      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

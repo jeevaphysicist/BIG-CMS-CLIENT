@@ -402,7 +402,7 @@ const Herosection = ({ handleHomepage }) => {
                 htmlFor="btn_content"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Banner Content
+                Button Content
               </label>
               <Input
                 type="text"
@@ -410,7 +410,24 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="bannerContent"
+                name="buttonContent"
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="btn_content"
+                className="md:text-[18px] text-[16px] gilroy-medium"
+              >
+                Button Link 
+             </label>
+              <Input
+                type="text"
+                id="btn_content"
+                variant="bordered"
+                size="lg"
+                radius="sm"
+                name="buttonLink"
                 onChange={handleFormChange}
               />
             </div>

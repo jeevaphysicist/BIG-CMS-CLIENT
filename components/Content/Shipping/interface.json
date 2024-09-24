@@ -1,0 +1,11 @@
+[
+  {
+    "sectionName": "Add New Shipping Method",
+    "sectionslug": "add-new-shipping-method",
+    "id": 1,
+    "content": {
+      "method": "",
+      "cost": ""
+    }
+  }
+]

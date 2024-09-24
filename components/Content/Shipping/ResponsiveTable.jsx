@@ -82,7 +82,6 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                   <Checkbox /> */}
                   {row.cost}
                 </td>
-
                 <td className="px-4 py-2 text-[14px]">
                   {row.status === "Active" ? (
                     <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">

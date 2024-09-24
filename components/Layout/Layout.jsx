@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHome,
   FaBook,
@@ -18,6 +18,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiOutlineLogout } from "react-icons/hi";
 import { CgMenuRightAlt } from "react-icons/cg";
+import { handleGetTemplate } from "@/API/api";
+import { useDispatch } from "react-redux";
+import {  UpdateTemplatesHandler } from "@/app/Redux/Features/userSlice";
 
 const MenuItems = ({ handleAside }) => {
   const [openMenu, setOpenMenu] = useState({
@@ -39,6 +42,7 @@ const MenuItems = ({ handleAside }) => {
     let isCurrentpath = path === pathname;
     return isCurrentpath;
   };
+
 
   const HandleParentFunction = (statwith) => {
     let isContentPath = pathname.startsWith(statwith);
@@ -376,127 +380,127 @@ const MenuItems = ({ handleAside }) => {
               <ul className="ml-12 mt-2  border-l-2 border-gray-2  space-y-2">
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/gemstones")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/gemstones"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Gemstones
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/gemstones") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/jewellery")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/jewellery"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Jewelry
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/jewellery") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/drops-beads")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/drops-beads"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Drops & Beads
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/drops-beads") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/semi-mounts")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/semi-mounts"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Semi-Mounts
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/semi-mounts") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/findings")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/findings"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Findings
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/findings") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/gifts")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/gifts"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Gifts
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/gifts") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/")
+                    HandleFunction("/menu/custom-jewelry")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/"
+                    href="/menu/custom-jewelry"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Custom Jewelry
                   </Link>
-                  {HandleFunction("/menu/") && (
+                  {HandleFunction("/menu/custom-jewelry") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
@@ -519,16 +523,16 @@ const MenuItems = ({ handleAside }) => {
           </li>
           <li
             className={`flex ${
-              HandleFunction("/custom-jewelry") ? "bg-[#F6F6FF]" : ""
+              HandleFunction("/custom-jewellery") ? "bg-[#F6F6FF]" : ""
             } hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}
           >
             <Link
-              href="/custom-jewelry"
+              href="/custom-jewellery"
               onClick={handleAside}
               className="flex gap-3 items-center w-[100%]"
             >
               <FaGem className="text-[#82838A]" />
-              <span className="text-[#0A1215]">Custom Jewelry</span>
+              <span className="text-[#0A1215]">Custom Jewellery</span>
             </Link>
           </li>
           <li
@@ -563,16 +567,16 @@ const MenuItems = ({ handleAside }) => {
             <p className="text-sm text-gray-500">olivia@untitledui.com</p>
           </div>
         </div>
-        <div>
-          <MdSwitchLeft className="rotate-90 text-[#82838A] text-[18px]" />
-        </div>
+        <button>
+          <HiOutlineLogout className="text-[#82838A] text-[20px]" />
+        </button>
       </div>
     </>
   );
 };
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
 
   return (
     <div className="relative  w-[100%]  lg:left-0 lg:top-0  lg:h-[100vh] bg-gray-200 lg:shadow-lg ">
