@@ -78,5 +78,18 @@
       "footerItemLink": "",
       "footerItemCorrespondingPage": ""
     }
+  },
+  {
+    "sectionName": "Logo and Contact",
+    "sectionslug": "logo-and-contact",
+    "id": 9,
+    "content": {
+      "logo": "",
+      "phoneNumberOne": "",
+      "phoneNumberTwo": "",
+      "email": "",
+      "location": "",
+      "fax": ""
+    }
   }
 ]

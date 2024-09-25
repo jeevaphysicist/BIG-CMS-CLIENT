@@ -11,8 +11,8 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 const SocialFollow = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    description: "",
-    thumbnail: "",
+    sectionDescription: "",
+    thumbnailImage: "",
   });
 
   const [errors, setError] = useState({});
@@ -42,12 +42,15 @@ const SocialFollow = ({ handleHomepage }) => {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.thumbnail === "" || formData.thumbnail === null) {
-      newerrors.thumbnail = "Thumbnail is required";
+    if (formData.thumbnailImage === "" || formData.thumbnailImage === null) {
+      newerrors.thumbnailImage = "Thumbnail is required";
       has = true;
     }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Description is required";
       has = true;
     }
 
@@ -108,9 +111,9 @@ const SocialFollow = ({ handleHomepage }) => {
               >
                 Description
                 <RequiredSymbol />
-                {errors.description && (
+                {errors.sectionDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.description}
+                    {errors.sectionDescription}
                   </span>
                 )}
               </label>
@@ -122,7 +125,7 @@ const SocialFollow = ({ handleHomepage }) => {
                 placeholder="For daily Gemstone goodness and exclusive deals. Sparkle awaits join us today!"
                 size="lg"
                 radius="sm"
-                name="description"
+                name="sectionDescription"
                 onChange={handleFormChange}
               />
             </div>
@@ -131,26 +134,26 @@ const SocialFollow = ({ handleHomepage }) => {
                 htmlFor="icon"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
-                Add Social Media Thumbnail Images
+                Add Social Media thumbnail Images
                 <RequiredSymbol />
-                {errors.thumbnail && (
+                {errors.thumbnailImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.thumbnail}
+                    {errors.thumbnailImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="thumbnail"
-                label="thumbnail"
+                id="thumbnailImage"
+                label="thumbnailImage"
                 accept={`images/*`}
                 width={264}
                 height={264}
                 onImageSelect={handleImageSelect}
               />
-              {formData.thumbnail && (
+              {formData.thumbnailImage && (
                 <img
                   className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.thumbnail)}
+                  src={FormateImageURL(formData.thumbnailImage)}
                   alt="Image Preview"
                 />
               )}

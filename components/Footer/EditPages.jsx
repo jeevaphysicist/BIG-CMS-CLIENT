@@ -11,8 +11,9 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
   const [formData, setFormData] = useState({
     footerCategory: "",
     footerItemTitle: "",
-    footerLink: "",
-    footerCorrespondingPage: "",
+    footerItemLink: "",
+    footerItemCorrespondingPage: "",
+    moduleId: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -46,15 +47,15 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
       newerrors.footerItemTitle = "Footer Title is required";
       has = true;
     }
-    if (formData.footerLink === "" || formData.footerLink === null) {
-      newerrors.footerLink = "Footer Link is required";
+    if (formData.footerItemLink === "" || formData.footerItemLink === null) {
+      newerrors.footerItemLink = "Footer Link is required";
       has = true;
     }
     if (
-      formData.footerCorrespondingPage === "" ||
-      formData.footerCorrespondingPage === null
+      formData.footerItemCorrespondingPage === "" ||
+      formData.footerItemCorrespondingPage === null
     ) {
-      newerrors.footerCorrespondingPage = "Corresponding Page is required";
+      newerrors.footerItemCorrespondingPage = "Corresponding Page is required";
       has = true;
     }
 
@@ -161,9 +162,9 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
                 >
                   Link
                   <RequiredSymbol />{" "}
-                  {errors.footerLink && (
+                  {errors.footerItemLink && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerLink}
+                      {errors.footerItemLink}
                     </span>
                   )}
                 </label>
@@ -174,7 +175,7 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
                   placeholder="bit.ly/1213"
                   size="lg"
                   radius="sm"
-                  name="footerLink"
+                  name="footerItemLink"
                   onChange={handleFormChange}
                 />
               </div>
@@ -185,9 +186,9 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
                 >
                   Corresponding Page
                   <RequiredSymbol />{" "}
-                  {errors.footerCorrespondingPage && (
+                  {errors.footerItemCorrespondingPage && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerCorrespondingPage}
+                      {errors.footerItemCorrespondingPage}
                     </span>
                   )}
                 </label>
@@ -198,7 +199,7 @@ const EditPages = ({ handleFooterPage, selectedCategory }) => {
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="footerCorrespondingPage"
+                  name="footerItemCorrespondingPage"
                   onChange={handleFormChange}
                 />
               </div>

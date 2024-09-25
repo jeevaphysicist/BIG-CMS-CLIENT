@@ -14,8 +14,9 @@ const ContentSection = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     subtitle: "",
-    banner: "",
+    bannerImage: "",
     description: "",
+    moduleId: false,
   });
 
   const [errors, setError] = useState({});
@@ -26,11 +27,11 @@ const ContentSection = ({ handleHomepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, bannerImage) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -40,8 +41,8 @@ const ContentSection = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.bannerImage === "" || formData.bannerImage === null) {
+      newerrors.bannerImage = "Banner is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
@@ -109,7 +110,7 @@ const ContentSection = ({ handleHomepage }) => {
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="bannerImage_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Subtitle
@@ -122,7 +123,7 @@ const ContentSection = ({ handleHomepage }) => {
               </label>
               <Input
                 type="text"
-                id="banner_desc"
+                id="bannerImage_desc"
                 placeholder="Get in touch with us for a complete Jewelry shopping experience!"
                 variant="bordered"
                 size="lg"
@@ -144,7 +145,7 @@ const ContentSection = ({ handleHomepage }) => {
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>The Following Image Dimensions are 487px X 410px</p>
                   <p className="md:mt-3 mt-2">
-                    You can edit the Banner Image and its details.
+                    You can edit the bannerImage Image and its details.
                   </p>
                 </div>
               </div>
@@ -155,7 +156,7 @@ const ContentSection = ({ handleHomepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* bannerImage */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -165,31 +166,31 @@ const ContentSection = ({ handleHomepage }) => {
                   >
                     Banner
                     <RequiredSymbol />
-                    {errors.banner && (
+                    {errors.bannerImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.bannerImage}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="bannerImage"
+                    label="bannerImage"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
+                  {formData.bannerImage && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
+                      src={FormateImageURL(formData.bannerImage)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="bannerImage_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Description
@@ -203,7 +204,7 @@ const ContentSection = ({ handleHomepage }) => {
                   <Textarea
                     type="text"
                     minRows={4}
-                    id="banner_desc"
+                    id="bannerImage_desc"
                     placeholder="Welcome to BestInGems, Inc., your premier destination for exquisite Gemstones, Beads, Drops, Gemstone Jewelry, and Semi-Mounts. Since our establishment in March 1999, we have been curating a stunning collection of Natural Gemstones sourced from around the globe. More than just a Gemstone retailer, we are dedicated to both providing you with unparalleled Gemstone offerings and educating you on the quality and unique characteristics of each Gemstone in our inventory."
                     variant="bordered"
                     size="lg"

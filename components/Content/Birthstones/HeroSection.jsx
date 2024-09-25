@@ -9,9 +9,10 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const HeroSection = ({ handleBirthStones }) => {
   const [formData, setFormData] = useState({
-    banner: "",
+    headerBannerImage: "",
     headerTitle: "",
     bannerTitle: "",
+    moduleId: null,
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -31,11 +32,11 @@ const HeroSection = ({ handleBirthStones }) => {
     }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, headerBannerImage) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [headerBannerImage]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -45,8 +46,11 @@ const HeroSection = ({ handleBirthStones }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (
+      formData.headerBannerImage === "" ||
+      formData.headerBannerImage === null
+    ) {
+      newerrors.headerBannerImage = "Banner is required";
       has = true;
     }
     if (formData.headerTitle === "" || formData.headerTitle === null) {
@@ -109,24 +113,24 @@ const HeroSection = ({ handleBirthStones }) => {
             <label htmlFor="" className=" text-[16px] font-medium flex gap-1">
               Header Banner
               <RequiredSymbol />{" "}
-              {errors.banner && (
+              {errors.headerBannerImage && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.banner}
+                  {errors.headerBannerImage}
                 </span>
               )}
             </label>
             <DragAndDropImage
               accept={`images/*`}
               label="banner image"
-              id="banner"
+              id="headerBannerImage"
               width={1248}
               height={356}
               onImageSelect={handleImageSelect}
             />
-            {formData.banner && (
+            {formData.headerBannerImage && (
               <img
                 className="h-[150px] mx-auto w-[150px]"
-                src={FormateImageURL(formData.banner)}
+                src={FormateImageURL(formData.headerBannerImage)}
                 alt="Image Preview"
               />
             )}

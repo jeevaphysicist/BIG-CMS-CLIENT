@@ -9,6 +9,7 @@ const MoreAboutGemstones = ({ handleGuide }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     mainContent: "",
+    moduleId: null,
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);

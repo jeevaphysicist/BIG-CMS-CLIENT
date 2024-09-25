@@ -12,12 +12,13 @@ import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import RequiredSymbol from "../Content/RequiredSymbol";
 
-const Faqs = ({ handleClose }) => {
+const Faqs = ({ handleHomepage }) => {
   const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
   const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    questions: [{ question: "", answer: "" }],
+    sectionTitle: "",
+    selectedCategory: "",
+    faqs: [{ question: "", answer: "" }],
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -32,7 +33,7 @@ const Faqs = ({ handleClose }) => {
       i === index ? { ...q, [field]: value } : q
     );
     setQuestions(updatedQuestions);
-    setFormData((prevData) => ({ ...prevData, questions: updatedQuestions }));
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
   };
 
   const handleFormChange = (e) => {
@@ -55,15 +56,18 @@ const Faqs = ({ handleClose }) => {
     let newerrors = {};
     let has = false;
 
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Section Title is required";
+    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+      newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.category === "" || formData.category === null) {
-      newerrors.category = "Category is required";
+    if (
+      formData.selectedCategory === "" ||
+      formData.selectedCategory === null
+    ) {
+      newerrors.selectedCategory = "Category is required";
       has = true;
     }
-    formData.questions.forEach((questionObj, index) => {
+    formData.faqs.forEach((questionObj, index) => {
       if (!questionObj.question) {
         newerrors[`question_${index}`] = "Question is required";
         has = true;
@@ -102,7 +106,7 @@ const Faqs = ({ handleClose }) => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="section_title"
+                htmlFor="section_Title"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Section Title
@@ -115,12 +119,12 @@ const Faqs = ({ handleClose }) => {
               </label>
               <Input
                 type="text"
-                id="section_title"
+                id="section_Title"
                 placeholder="Frequently Asked Questions"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="title"
+                name="sectionTitle"
                 onChange={handleFormChange}
               />
             </div>
@@ -136,8 +140,8 @@ const Faqs = ({ handleClose }) => {
                 </h2>
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>
-                    To Edit your FAQs, Add New Question and Edit your Section
-                    Contents.
+                    To Edit your FAQs, Select the selectedCategory and Edit your
+                    Section Contents.
                   </p>
                 </div>
               </div>
@@ -149,7 +153,32 @@ const Faqs = ({ handleClose }) => {
             {/* Banner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
-               
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="banner_month"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Select the Category
+                    <RequiredSymbol />
+                    {errors.selectedCategory && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.selectedCategory}
+                      </span>
+                    )}
+                  </label>
+                  <Select
+                    type="text"
+                    id="banner_month"
+                    placeholder="Select selectedCategory"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="selectedCategory"
+                    onChange={handleFormChange}
+                  >
+                    <SelectItem>Genaral</SelectItem>
+                  </Select>
+                </div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions
@@ -170,7 +199,7 @@ const Faqs = ({ handleClose }) => {
                         htmlFor={`question-${index}`}
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
-                        Question 
+                        Question {index + 1}
                         <RequiredSymbol />
                         {errors[`question_${index}`] && (
                           <span className="font-regular text-[12px] text-red-600">
@@ -200,7 +229,7 @@ const Faqs = ({ handleClose }) => {
                         htmlFor={`answer-${index}`}
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
-                        Answer 
+                        Answer {index + 1}
                         <RequiredSymbol />
                         {errors[`answer_${index}`] && (
                           <span className="font-regular text-[12px] text-red-600">
@@ -232,7 +261,7 @@ const Faqs = ({ handleClose }) => {
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
-            onClick={handleClose}
+            onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
           >

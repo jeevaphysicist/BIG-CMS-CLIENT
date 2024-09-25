@@ -10,11 +10,12 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 const LogoAndContact = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     logo: "",
-    phoneNumber1: "",
-    phoneNumber2: "",
+    phoneNumberOne: "",
+    phoneNumberTwo: "",
     email: "",
     location: "",
     fax: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -42,12 +43,12 @@ const LogoAndContact = ({ handleHomepage }) => {
       newerrors.logo = "Logo is required";
       has = true;
     }
-    if (formData.phoneNumber1 === "" || formData.phoneNumber1 === null) {
-      newerrors.phoneNumber1 = "Phone Number 1 is required";
+    if (formData.phoneNumberOne === "" || formData.phoneNumberOne === null) {
+      newerrors.phoneNumberOne = "Phone Number 1 is required";
       has = true;
     }
-    if (formData.phoneNumber2 === "" || formData.phoneNumber2 === null) {
-      newerrors.phoneNumber2 = "Phone Number 2 is required";
+    if (formData.phoneNumberTwo === "" || formData.phoneNumberTwo === null) {
+      newerrors.phoneNumberTwo = "Phone Number 2 is required";
       has = true;
     }
     if (formData.email === "" || formData.email === null) {
@@ -143,9 +144,9 @@ const LogoAndContact = ({ handleHomepage }) => {
                   >
                     Phone Number 1
                     <RequiredSymbol />
-                    {errors.phoneNumber1 && (
+                    {errors.phoneNumberOne && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.phoneNumber1}
+                        {errors.phoneNumberOne}
                       </span>
                     )}
                   </label>
@@ -156,7 +157,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="phoneNumber1"
+                    name="phoneNumberOne"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -167,9 +168,9 @@ const LogoAndContact = ({ handleHomepage }) => {
                   >
                     Phone Number 2
                     <RequiredSymbol />
-                    {errors.phoneNumber2 && (
+                    {errors.phoneNumberTwo && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.phoneNumber2}
+                        {errors.phoneNumberTwo}
                       </span>
                     )}
                   </label>
@@ -180,7 +181,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="phoneNumber2"
+                    name="phoneNumberTwo"
                     onChange={handleFormChange}
                   />
                 </div>

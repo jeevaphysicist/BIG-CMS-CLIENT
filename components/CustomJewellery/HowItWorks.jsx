@@ -11,13 +11,13 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 const HowItWorks = ({ handleCustomJeweleryPage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    icon1: "",
-    description1: "",
-    icon2: "",
-    description2: "",
-    icon3: "",
-    description3: "",
-    enableIcons: false,
+    iconOneImage: "",
+    iconOneDescription: "",
+    iconTwoImage: "",
+    iconTwoDescription: "",
+    iconThreeImage: "",
+    iconThreeDescription: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -47,32 +47,41 @@ const HowItWorks = ({ handleCustomJeweleryPage }) => {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.icon1 === "" || formData.icon1 === null) {
-      newerrors.icon1 = "Icon 1 is required";
+    if (formData.iconOneImage === "" || formData.iconOneImage === null) {
+      newerrors.iconOneImage = "Icon 1 is required";
       has = true;
     }
 
-    if (formData.icon2 === "" || formData.icon2 === null) {
-      newerrors.icon2 = "Icon 2 is required";
+    if (formData.iconTwoImage === "" || formData.iconTwoImage === null) {
+      newerrors.iconTwoImage = "Icon 2 is required";
       has = true;
     }
-    if (formData.icon3 === "" || formData.icon3 === null) {
-      newerrors.icon3 = "Icon 3 is required";
-      has = true;
-    }
-
-    if (formData.description1 === "" || formData.description1 === null) {
-      newerrors.description1 = "Icon description is required";
+    if (formData.iconThreeImage === "" || formData.iconThreeImage === null) {
+      newerrors.iconThreeImage = "Icon 3 is required";
       has = true;
     }
 
-    if (formData.description2 === "" || formData.description2 === null) {
-      newerrors.description2 = "Icon description is required";
+    if (
+      formData.iconOneDescription === "" ||
+      formData.iconOneDescription === null
+    ) {
+      newerrors.iconOneDescription = "Icon description is required";
       has = true;
     }
 
-    if (formData.description3 === "" || formData.description3 === null) {
-      newerrors.description3 = "Icon description is required";
+    if (
+      formData.iconTwoDescription === "" ||
+      formData.iconTwoDescription === null
+    ) {
+      newerrors.iconTwoDescription = "Icon description is required";
+      has = true;
+    }
+
+    if (
+      formData.iconThreeDescription === "" ||
+      formData.iconThreeDescription === null
+    ) {
+      newerrors.iconThreeDescription = "Icon description is required";
       has = true;
     }
 
@@ -167,49 +176,49 @@ const HowItWorks = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 1
                         <RequiredSymbol />{" "}
-                        {errors.icon1 && (
+                        {errors.iconOneImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon1}
+                            {errors.iconOneImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon1"
+                        id="iconOneImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon1 && (
+                      {formData.iconOneImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon1)}
+                          src={FormateImageURL(formData.iconOneImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="description1"
+                        htmlFor="iconOneDescription"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Description
                         <RequiredSymbol />{" "}
-                        {errors.description1 && (
+                        {errors.iconOneDescription && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.description1}
+                            {errors.iconOneDescription}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="description1"
+                        id="iconOneDescription"
                         placeholder="Choose a semi-mount to complement and showcase your selected gemstone."
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="description1"
+                        name="iconOneDescription"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -223,49 +232,49 @@ const HowItWorks = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 2
                         <RequiredSymbol />{" "}
-                        {errors.icon2 && (
+                        {errors.iconTwoImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon2}
+                            {errors.iconTwoImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon2"
+                        id="iconTwoImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon2 && (
+                      {formData.iconTwoImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon2)}
+                          src={FormateImageURL(formData.iconTwoImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="description2"
+                        htmlFor="iconTwoDescription"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Description
                         <RequiredSymbol />{" "}
-                        {errors.description2 && (
+                        {errors.iconTwoDescription && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.description2}
+                            {errors.iconTwoDescription}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="description2"
+                        id="iconTwoDescription"
                         placeholder="Choose a semi-mount to complement and showcase your selected gemstone."
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="description2"
+                        name="iconTwoDescription"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -279,49 +288,49 @@ const HowItWorks = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 3
                         <RequiredSymbol />{" "}
-                        {errors.icon3 && (
+                        {errors.iconThreeImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon3}
+                            {errors.iconThreeImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon3"
+                        id="iconThreeImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon3 && (
+                      {formData.iconThreeImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon3)}
+                          src={FormateImageURL(formData.iconThreeImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="description3"
+                        htmlFor="iconThreeDescription"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Description
                         <RequiredSymbol />{" "}
-                        {errors.description3 && (
+                        {errors.iconThreeDescription && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.description3}
+                            {errors.iconThreeDescription}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="description3"
+                        id="iconThreeDescription"
                         placeholder="Choose a semi-mount to complement and showcase your selected gemstone."
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="description3"
+                        name="iconThreeDescription"
                         onChange={handleFormChange}
                       />
                     </div>

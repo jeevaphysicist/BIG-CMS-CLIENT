@@ -12,12 +12,12 @@ const AddReviews = ({ handleReviewPage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [formData, setFormData] = useState({
     customerName: "",
-    category: "",
-    product: "",
+    selectedCategory: "",
+    selectedProduct: "",
     rating: "",
-    title: "",
-    descripiton: "",
-    verifiedCustomer: false,
+    reviewTitle: "",
+    reviewDescription: "",
+    verfiedCustomerStatus: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -79,8 +79,8 @@ const AddReviews = ({ handleReviewPage }) => {
             </p>
           </div>
           <Tabs aria-label="Options">
-            <Tab key="draft" title="Draft"></Tab>
-            <Tab key="publish" title="Publish"></Tab>
+            <Tab key="draft" reviewTitle="Draft"></Tab>
+            <Tab key="publish" reviewTitle="Publish"></Tab>
           </Tabs>
         </div>
         <div className="flex gap-[24px] h-10">
@@ -132,7 +132,7 @@ const AddReviews = ({ handleReviewPage }) => {
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category"
+                    htmlFor="selectedCategory"
                     className=" text-[16px] font-medium flex gap-1"
                   >
                     Select Category
@@ -140,7 +140,7 @@ const AddReviews = ({ handleReviewPage }) => {
                   <select
                     className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                     aria-label="Select section to edit"
-                    name="category"
+                    name="selectedCategory"
                     onChange={handleFormChange}
                   >
                     <option value="company">Company</option>
@@ -165,7 +165,7 @@ const AddReviews = ({ handleReviewPage }) => {
                 <select
                   className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
                   aria-label="Select section to edit"
-                  name="product"
+                  name="selectedProduct"
                   onChange={handleFormChange}
                 >
                   <option value="company">Company</option>
@@ -195,19 +195,19 @@ const AddReviews = ({ handleReviewPage }) => {
               </div>
               <div className="flex flex-col gap-3">
                 <label
-                  htmlFor="title"
+                  htmlFor="reviewTitle"
                   className=" text-[16px] font-medium flex gap-1"
                 >
                   Review Title
                 </label>
                 <Input
                   type="text"
-                  id="title"
+                  id="reviewTitle"
                   variant="bordered"
                   placeholder="Hero banner"
                   size="lg"
                   radius="sm"
-                  name="title"
+                  name="reviewTitle"
                   onChange={handleFormChange}
                 />
               </div>
@@ -226,7 +226,7 @@ const AddReviews = ({ handleReviewPage }) => {
                   placeholder="Write Page Introduction"
                   size="lg"
                   radius="sm"
-                  name="description"
+                  name="reviewDescription"
                   onChange={handleFormChange}
                 />
               </div>
@@ -238,8 +238,8 @@ const AddReviews = ({ handleReviewPage }) => {
                   Verified Customer
                 </label>
                 <Switch
-                  checked={formData.verifiedCustomer}
-                  onChange={() => handleSwitchChange("verifiedCustomer")}
+                  checked={formData.verfiedCustomerStatus}
+                  onChange={() => handleSwitchChange("verfiedCustomerStatus")}
                   aria-label="Verified Customer"
                 />
               </div>

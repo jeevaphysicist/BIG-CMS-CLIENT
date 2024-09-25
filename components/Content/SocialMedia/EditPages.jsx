@@ -9,8 +9,8 @@ import { FiSave } from "react-icons/fi";
 
 const EditPages = ({ handleSocialMedias }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    link: "",
+    socialMediaTitle: "",
+    socialMediaLink: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,12 +27,15 @@ const EditPages = ({ handleSocialMedias }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Social Media Title is required";
+    if (
+      formData.socialMediaTitle === "" ||
+      formData.socialMediaTitle === null
+    ) {
+      newerrors.socialMediaTitle = "Social Media socialMediaTitle is required";
       has = true;
     }
-    if (formData.link === "" || formData.link === null) {
-      newerrors.link = "Link is required";
+    if (formData.socialMediaLink === "" || formData.socialMediaLink === null) {
+      newerrors.socialMediaLink = "socialMediaLink is required";
       has = true;
     }
 
@@ -68,59 +71,59 @@ const EditPages = ({ handleSocialMedias }) => {
               </p>
             </div>
             <Tabs aria-label="Options">
-              <Tab key="draft" title="Draft"></Tab>
-              <Tab key="publish" title="Publish"></Tab>
+              <Tab key="draft" socialMediaTitle="Draft"></Tab>
+              <Tab key="publish" socialMediaTitle="Publish"></Tab>
             </Tabs>
           </div>
         </div>
         <div className="pt-2 no-scrollbar md:min-h-[75vh]">
           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
             <label
-              htmlFor="mediaTitle"
+              htmlFor="mediasocialMediaTitle"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Social Media Title
               <RequiredSymbol />
-              {errors.title && (
+              {errors.socialMediaTitle && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.title}
+                  {errors.socialMediaTitle}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="mediaTitle"
+              id="mediasocialMediaTitle"
               variant="bordered"
               placeholder="Facebook"
               size="lg"
               radius="sm"
-              name="title"
+              name="socialMediaTitle"
               onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
             <label
-              htmlFor="link"
+              htmlFor="socialMediaLink"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Link
               <RequiredSymbol />
-              {errors.link && (
+              {errors.socialMediaLink && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.link}
+                  {errors.socialMediaLink}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="link"
+              id="socialMediaLink"
               variant="bordered"
               placeholder="facebook.com"
               size="lg"
               radius="sm"
-              name="link"
+              name="socialMediaLink"
               onChange={handleFormChange}
             />
           </div>

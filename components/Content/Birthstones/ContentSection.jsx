@@ -9,8 +9,9 @@ import { toast } from "react-toastify";
 
 const ContentSection = ({ handleBirthStones }) => {
   const [formData, setFormData] = useState({
-    banner: "",
+    bannerImage: "",
     bannerTitle: "",
+    moduleId: null,
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -23,11 +24,11 @@ const ContentSection = ({ handleBirthStones }) => {
     }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, bannerImage) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -37,8 +38,8 @@ const ContentSection = ({ handleBirthStones }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.bannerImage === "" || formData.bannerImage === null) {
+      newerrors.bannerImage = "Banner is required";
       has = true;
     }
     if (formData.headerTitle === "" || formData.headerTitle === null) {
@@ -76,24 +77,24 @@ const ContentSection = ({ handleBirthStones }) => {
             <label htmlFor="" className=" text-[16px] font-medium flex gap-1">
               Banner
               <RequiredSymbol />{" "}
-              {errors.banner && (
+              {errors.bannerImage && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.banner}
+                  {errors.bannerImage}
                 </span>
               )}
             </label>
             <DragAndDropImage
               accept={`images/*`}
               label="banner image"
-              id="banner"
+              id="bannerImage"
               width={487}
               height={410}
               onImageSelect={handleImageSelect}
             />
-            {formData.banner && (
+            {formData.bannerImage && (
               <img
                 className="h-[150px] mx-auto w-[150px]"
-                src={FormateImageURL(formData.banner)}
+                src={FormateImageURL(formData.bannerImage)}
                 alt="Image Preview"
               />
             )}

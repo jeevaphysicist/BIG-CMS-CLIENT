@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 const Introduction = ({ handleBirthStones }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    content: "",
+    sectionContent: "",
+    moduleId: null,
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -16,14 +17,14 @@ const Introduction = ({ handleBirthStones }) => {
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+    setFormData((prevData) => ({ ...prevData, sectionContent: content }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.content === "" || formData.content === null) {
-      newerrors.content = "Section Content is required";
+    if (formData.sectionContent === "" || formData.sectionContent === null) {
+      newerrors.sectionContent = "Section Content is required";
       has = true;
     }
     setError(newerrors);
@@ -55,9 +56,9 @@ const Introduction = ({ handleBirthStones }) => {
             >
               Section Content
               <RequiredSymbol />
-              {errors.content && (
+              {errors.sectionContent && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.content}
+                  {errors.sectionContent}
                 </span>
               )}
             </label>

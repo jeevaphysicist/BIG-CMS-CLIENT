@@ -11,14 +11,13 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 const IconBox = ({ handleCustomJeweleryPage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    banner: "",
-    icon1: "",
-    title1: "",
-    icon2: "",
-    title2: "",
-    icon3: "",
-    title3: "",
-    enableIcons: false,
+    iconOneImage: "",
+    iconOneTitle: "",
+    iconTwoImage: "",
+    iconTwoTitle: "",
+    iconThreeImage: "",
+    iconThreeTitle: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -52,32 +51,32 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.icon1 === "" || formData.icon1 === null) {
-      newerrors.icon1 = "Icon 1 is required";
+    if (formData.iconOneImage === "" || formData.iconOneImage === null) {
+      newerrors.iconOneImage = "Icon 1 is required";
       has = true;
     }
 
-    if (formData.icon2 === "" || formData.icon2 === null) {
-      newerrors.icon2 = "Icon 2 is required";
+    if (formData.iconTwoImage === "" || formData.iconTwoImage === null) {
+      newerrors.iconTwoImage = "Icon 2 is required";
       has = true;
     }
-    if (formData.icon3 === "" || formData.icon3 === null) {
-      newerrors.icon3 = "Icon 3 is required";
-      has = true;
-    }
-
-    if (formData.title1 === "" || formData.title1 === null) {
-      newerrors.title1 = "Icon title is required";
+    if (formData.iconThreeImage === "" || formData.iconThreeImage === null) {
+      newerrors.iconThreeImage = "Icon 3 is required";
       has = true;
     }
 
-    if (formData.title2 === "" || formData.title2 === null) {
-      newerrors.title2 = "Icon title is required";
+    if (formData.iconOneTitle === "" || formData.iconOneTitle === null) {
+      newerrors.iconOneTitle = "Icon title is required";
       has = true;
     }
 
-    if (formData.title3 === "" || formData.title3 === null) {
-      newerrors.title3 = "Icon title is required";
+    if (formData.iconTwoTitle === "" || formData.iconTwoTitle === null) {
+      newerrors.iconTwoTitle = "Icon title is required";
+      has = true;
+    }
+
+    if (formData.iconThreeTitle === "" || formData.iconThreeTitle === null) {
+      newerrors.iconThreeTitle = "Icon title is required";
       has = true;
     }
 
@@ -166,24 +165,24 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 1
                         <RequiredSymbol />{" "}
-                        {errors.icon1 && (
+                        {errors.iconOneImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon1}
+                            {errors.iconOneImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon1"
+                        id="iconOneImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon1 && (
+                      {formData.iconOneImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon1)}
+                          src={FormateImageURL(formData.iconOneImage)}
                           alt="Image Preview"
                         />
                       )}
@@ -195,9 +194,9 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title1 && (
+                        {errors.iconOneTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title1}
+                            {errors.iconOneTitle}
                           </span>
                         )}
                       </label>
@@ -208,7 +207,7 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title1"
+                        name="iconOneTitle"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -222,49 +221,49 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 2
                         <RequiredSymbol />{" "}
-                        {errors.icon2 && (
+                        {errors.iconTwoImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon2}
+                            {errors.iconTwoImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon2"
+                        id="iconTwoImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon2 && (
+                      {formData.iconTwoImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon2)}
+                          src={FormateImageURL(formData.iconTwoImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="banner_title2"
+                        htmlFor="banner_iconTwoTitle"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title2 && (
+                        {errors.iconTwoTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title2}
+                            {errors.iconTwoTitle}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="banner_title2"
+                        id="banner_iconTwoTitle"
                         placeholder="2. Select Gemstone"
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title2"
+                        name="iconTwoTitle"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -278,49 +277,49 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                       >
                         Icon 3
                         <RequiredSymbol />{" "}
-                        {errors.icon3 && (
+                        {errors.iconThreeImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon3}
+                            {errors.iconThreeImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon3"
+                        id="iconThreeImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon3 && (
+                      {formData.iconThreeImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon3)}
+                          src={FormateImageURL(formData.iconThreeImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="banner_title3"
+                        htmlFor="banner_iconThreeTitle"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title3 && (
+                        {errors.iconThreeTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title3}
+                            {errors.iconThreeTitle}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="banner_title3"
+                        id="banner_iconThreeTitle"
                         placeholder="3. Place Order"
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title3"
+                        name="iconThreeTitle"
                         onChange={handleFormChange}
                       />
                     </div>

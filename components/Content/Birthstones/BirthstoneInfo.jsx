@@ -7,17 +7,18 @@ import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 
-const BirthStoneInfo = ({ handleBirthStones }) => {
+const BirthStoneInfo = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
-    month: "",
-    banner: "",
+    birthStoneMonth: "",
+    birthStoneImage: "",
     selectionImage: "",
     title: "",
     description: "",
     readMoreLink: "",
     productLink: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -42,8 +43,8 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.birthStoneImage === "" || formData.birthStoneImage === null) {
+      newerrors.birthStoneImage = "BirthStone Image is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
@@ -62,15 +63,15 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
       has = true;
     }
     if (formData.description === "" || formData.title === null) {
-      newerrors.description = "Title is required";
+      newerrors.description = "Description is required";
       has = true;
     }
     if (formData.selectionImage === "" || formData.selectionImage === null) {
       newerrors.selectionImage = "Selection image is required";
       has = true;
     }
-    if (formData.month === "" || formData.month === null) {
-      newerrors.month = "Selection image is required";
+    if (formData.birthStoneMonth === "" || formData.birthStoneMonth === null) {
+      newerrors.birthStoneMonth = "Birthstone Month is required";
       has = true;
     }
 
@@ -126,10 +127,10 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="birthStoneImage_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
-                Description
+                Section Description
                 <RequiredSymbol />
                 {errors.sectionDescription && (
                   <span className="font-regular text-[12px] text-red-600">
@@ -139,7 +140,7 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
               </label>
               <Input
                 type="text"
-                id="banner_desc"
+                id="birthStoneImage_desc"
                 placeholder="Gemstone name"
                 variant="bordered"
                 size="lg"
@@ -159,10 +160,12 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                   Guidelines
                 </h2>
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
-                  <p>The Following Banner Dimensions are 619px X 578px</p>
+                  <p>
+                    The Following birthStoneImage Dimensions are 619px X 578px
+                  </p>
                   <p className="md:mt-3 mt-2">
-                    You can edit the Banner Title,Description and Call to Action
-                    in the edit section.
+                    You can edit the birthStoneImage Title,Description and Call
+                    to Action in the edit section.
                   </p>
                 </div>
               </div>
@@ -173,30 +176,30 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* birthStoneImage */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_month"
+                    htmlFor="birthStoneImage_birthStoneMonth"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Birthstone Month
                     <RequiredSymbol />
-                    {errors.month && (
+                    {errors.birthStoneMonth && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.month}
+                        {errors.birthStoneMonth}
                       </span>
                     )}
                   </label>
                   <Select
                     type="text"
-                    id="banner_month"
-                    placeholder="Select Birthstone Month"
+                    id="birthStoneImage_birthStoneMonth"
+                    placeholder="Select Birthstone birthStoneMonth"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="month"
+                    name="birthStoneMonth"
                     onChange={handleFormChange}
                   >
                     <SelectItem value="January">January</SelectItem>
@@ -218,22 +221,29 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                     htmlFor="icon"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Birthstone Banner
+                    Birthstone Image
                     <RequiredSymbol />
-                    {errors.banner && (
+                    {errors.birthStoneImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.birthStoneImage}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="birthStoneImage"
+                    label="birthStoneImage"
                     accept={`images/*`}
                     width={619}
                     height={578}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.birthStoneImage && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.birthStoneImage)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -256,10 +266,17 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                     height={578}
                     onImageSelect={handleImageSelect}
                   />
+                  {formData.selectionImage && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.selectionImage)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_title"
+                    htmlFor="birthStoneImage_title"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
@@ -272,7 +289,7 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                   </label>
                   <Input
                     type="text"
-                    id="banner_title"
+                    id="birthStoneImage_title"
                     placeholder="Aquamarine - March"
                     variant="bordered"
                     size="lg"
@@ -283,7 +300,7 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="birthStoneImage_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Description
@@ -296,7 +313,7 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
                   </label>
                   <Textarea
                     type="text"
-                    id="banner_desc"
+                    id="birthStoneImage_desc"
                     placeholder="Birthstones are good"
                     variant="bordered"
                     size="lg"
@@ -350,7 +367,7 @@ const BirthStoneInfo = ({ handleBirthStones }) => {
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
-            onClick={handleBirthStones}
+            onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
           >

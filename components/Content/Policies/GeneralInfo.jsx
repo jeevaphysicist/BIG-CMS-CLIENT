@@ -11,7 +11,7 @@ const GeneralInfo = ({ handlePolicies }) => {
   const [formData, setFormData] = useState({
     pageTitle: "",
     header: "",
-    content: "",
+    mainContent: "",
   });
 
   const [errors, setError] = useState({});
@@ -25,7 +25,7 @@ const GeneralInfo = ({ handlePolicies }) => {
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+    setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
   const handleVadilation = () => {
@@ -39,8 +39,8 @@ const GeneralInfo = ({ handlePolicies }) => {
       newerrors.header = "Header is required";
       has = true;
     }
-    if (formData.content === "" || formData.content === null) {
-      newerrors.content = "Main Content is required";
+    if (formData.mainContent === "" || formData.mainContent === null) {
+      newerrors.mainContent = "Main Content is required";
       has = true;
     }
 
@@ -121,9 +121,9 @@ const GeneralInfo = ({ handlePolicies }) => {
               >
                 Main Content
                 <RequiredSymbol />
-                {errors.content && (
+                {errors.mainContent && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.content}
+                    {errors.mainContent}
                   </span>
                 )}
               </label>

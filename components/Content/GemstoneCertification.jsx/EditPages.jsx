@@ -11,7 +11,8 @@ const EditPages = ({ handleGemstoneCertification }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
     title: "",
-    content: "",
+    mainContent: "",
+    moduleId: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ const EditPages = ({ handleGemstoneCertification }) => {
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+    setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
   const handleVadilation = () => {
@@ -38,8 +39,8 @@ const EditPages = ({ handleGemstoneCertification }) => {
       newerrors.title = "Title is required";
       has = true;
     }
-    if (formData.content === "" || formData.content === null) {
-      newerrors.content = "Content is required";
+    if (formData.mainContent === "" || formData.mainContent === null) {
+      newerrors.mainContent = "Content is required";
       has = true;
     }
     setError(newerrors);
@@ -112,14 +113,14 @@ const EditPages = ({ handleGemstoneCertification }) => {
                 >
                   Main Content
                   <RequiredSymbol />{" "}
-                  {errors.content && (
+                  {errors.mainContent && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.content}
+                      {errors.mainContent}
                     </span>
                   )}
                 </label>
                 <TextEditor
-                  value={formData.content}
+                  value={formData.mainContent}
                   handleContentChange={handleProcedureContentChange}
                 />
               </div>

@@ -13,6 +13,7 @@ const About = ({ handleSitepage }) => {
     header: "",
     introduction: "",
     content: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -159,7 +160,10 @@ const About = ({ handleSitepage }) => {
                 )}
               </label>
               {/* Text editor */}
-              <TextEditor value={formData.content} handleContentChange={handleProcedureContentChange} />
+              <TextEditor
+                value={formData.content}
+                handleContentChange={handleProcedureContentChange}
+              />
             </div>
           </div>
         </div>

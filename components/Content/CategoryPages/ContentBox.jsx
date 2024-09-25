@@ -12,6 +12,7 @@ const ContentBox = ({ handleCategoryPage }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});

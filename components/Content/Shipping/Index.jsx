@@ -153,7 +153,6 @@ const Index = () => {
               name="method"
               // onChange={handleFormChange}
             />
-            {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
           </div>
           <div className="flex flex-col gap-3">
             <label
@@ -179,7 +178,6 @@ const Index = () => {
               name="cost"
               // onChange={handleFormChange}
             />
-            {/* {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />} */}
           </div>
         </div>
       </EditModal>

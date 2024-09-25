@@ -8,12 +8,13 @@ import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 
-const Offers = ({ handleSitepage }) => {
+const Offers = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    description: "",
-    banner: "",
-    callToActionTitle: "",
+    sectionDescription: "",
+    bannerImage: "",
+    buttonTitle: "",
+    moduleId: false,
   });
 
   const [errors, setError] = useState({});
@@ -24,11 +25,11 @@ const Offers = ({ handleSitepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, bannerImage) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -38,23 +39,23 @@ const Offers = ({ handleSitepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.bannerImage === "" || formData.bannerImage === null) {
+      newerrors.bannerImage = "Banner is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (
-      formData.callToActionTitle === "" ||
-      formData.callToActionTitle === null
-    ) {
-      newerrors.callToActionTitle = "Call to action title is required";
+    if (formData.buttonTitle === "" || formData.buttonTitle === null) {
+      newerrors.buttonTitle = "Call to action title is required";
       has = true;
     }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Description is required";
       has = true;
     }
 
@@ -110,26 +111,26 @@ const Offers = ({ handleSitepage }) => {
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="bannerImage_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
                 <RequiredSymbol />
-                {errors.description && (
+                {errors.sectionDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.description}
+                    {errors.sectionDescription}
                   </span>
                 )}
               </label>
               <Textarea
                 type="text"
                 minRows={3}
-                id="banner_desc"
+                id="bannerImage_desc"
                 placeholder="Subscribe now to 'Unlock Exclusive Savings and Updates.' Be the first to enjoy discounts and stay updated on our latest Gemstone arrivals, ensuring you never miss out on the allure of exclusive offers"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="description"
+                name="sectionDescription"
                 onChange={handleFormChange}
               />
             </div>
@@ -154,7 +155,7 @@ const Offers = ({ handleSitepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* bannerImage */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -164,50 +165,50 @@ const Offers = ({ handleSitepage }) => {
                   >
                     Banner
                     <RequiredSymbol />
-                    {errors.banner && (
+                    {errors.bannerImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.bannerImage}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="bannerImage"
+                    label="bannerImage"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
+                  {formData.bannerImage && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
+                      src={FormateImageURL(formData.bannerImage)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="bannerImage_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action title
                     <RequiredSymbol />
-                    {errors.callToActionTitle && (
+                    {errors.buttonTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.callToActionTitle}
+                        {errors.buttonTitle}
                       </span>
                     )}
                   </label>
                   <Input
                     type="text"
                     minRows={4}
-                    id="banner_desc"
+                    id="bannerImage_desc"
                     placeholder="Subscribe"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="callToActionTitle"
+                    name="buttonTitle"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -217,10 +218,10 @@ const Offers = ({ handleSitepage }) => {
         </div>
 
         {/* Save and cancel buttons */}
-        <div className="w-full sticky bottom-0 py-3 bg-white z-50 flex justify-end gap-4">
+        <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
-            onClick={handleSitepage}
+            onClick={handleHomepage}
             variant="bordered"
             className="font-semibold"
           >
@@ -232,12 +233,11 @@ const Offers = ({ handleSitepage }) => {
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
           >
-            Save New Page
+            Save
           </Button>
         </div>
       </form>
     </Fragment>
   );
 };
-
 export default Offers;

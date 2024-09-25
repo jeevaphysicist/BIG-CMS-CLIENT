@@ -10,17 +10,18 @@ import DragAndDropImage from "../DragDropImage";
 
 const EditPages = ({ handleSizeGuide }) => {
   const [formData, setFormData] = useState({
-    image: "",
+    headerBanner: "",
+    moduleId: null,
   });
 
   const [loading, setLoading] = useState({});
-  const [errors, setErrors] = useState(false);
+  const [errors, setError] = useState(false);
 
-  const handleImageSelect = async (file, width, height, image) => {
+  const handleImageSelect = async (file, width, height, headerBanner) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [image]: file }));
+        setFormData((prevData) => ({ ...prevData, [headerBanner]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -30,8 +31,8 @@ const EditPages = ({ handleSizeGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.image === "" || formData.image === null) {
-      newerrors.image = "Image is required";
+    if (formData.headerBanner === "" || formData.headerBanner === null) {
+      newerrors.headerBanner = "Header Banner is required";
       has = true;
     }
 
@@ -82,24 +83,24 @@ const EditPages = ({ handleSizeGuide }) => {
                 >
                   Header Banner
                   <RequiredSymbol />{" "}
-                  {errors.image && (
+                  {errors.headerBanner && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.image}
+                      {errors.headerBanner}
                     </span>
                   )}
                 </label>
                 <DragAndDropImage
                   accept={`images/*`}
                   label="banner image"
-                  id="image"
+                  id="headerBanner"
                   width={580}
                   height={465}
                   onImageSelect={handleImageSelect}
                 />
-                {formData.image && (
+                {formData.headerBanner && (
                   <img
                     className="h-[150px] mx-auto w-[150px]"
-                    src={FormateImageURL(formData.image)}
+                    src={FormateImageURL(formData.headerBanner)}
                     alt="Image Preview"
                   />
                 )}

@@ -12,15 +12,16 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 const CustomJewellery = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    description: "",
-    banner: "",
-    icon1: "",
-    title1: "",
-    icon2: "",
-    title2: "",
-    icon3: "",
-    title3: "",
-    enableIcons: false,
+    sectionDescription: "",
+    sectionBanner: "",
+    bannerIconStatus: "",
+    iconOneImage: false,
+    iconOneTitle: "",
+    iconTwoImage: "",
+    iconTwoTitle: "",
+    iconThreeImage: "",
+    iconThreeTitle: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -46,44 +47,47 @@ const CustomJewellery = ({ handleHomepage }) => {
     let newerrors = {};
     let has = false;
 
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.sectionBanner === "" || formData.sectionBanner === null) {
+      newerrors.sectionBanner = "Banner is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Description is required";
       has = true;
     }
-    if (formData.icon1 === "" || formData.icon1 === null) {
-      newerrors.icon1 = "Icon 1 is required";
-      has = true;
-    }
-
-    if (formData.icon2 === "" || formData.icon2 === null) {
-      newerrors.icon2 = "Icon 2 is required";
-      has = true;
-    }
-    if (formData.icon3 === "" || formData.icon3 === null) {
-      newerrors.icon3 = "Icon 3 is required";
+    if (formData.iconOneImage === "" || formData.iconOneImage === null) {
+      newerrors.iconOneImage = "Icon 1 is required";
       has = true;
     }
 
-    if (formData.title1 === "" || formData.title1 === null) {
-      newerrors.title1 = "Icon title is required";
+    if (formData.iconTwoImage === "" || formData.iconTwoImage === null) {
+      newerrors.iconTwoImage = "Icon 2 is required";
+      has = true;
+    }
+    if (formData.iconThreeImage === "" || formData.iconThreeImage === null) {
+      newerrors.iconThreeImage = "Icon 3 is required";
       has = true;
     }
 
-    if (formData.title2 === "" || formData.title2 === null) {
-      newerrors.title2 = "Icon title is required";
+    if (formData.iconOneTitle === "" || formData.iconOneTitle === null) {
+      newerrors.iconOneTitle = "Icon title is required";
       has = true;
     }
 
-    if (formData.title3 === "" || formData.title3 === null) {
-      newerrors.title3 = "Icon title is required";
+    if (formData.iconTwoTitle === "" || formData.iconTwoTitle === null) {
+      newerrors.iconTwoTitle = "Icon title is required";
+      has = true;
+    }
+
+    if (formData.iconThreeTitle === "" || formData.iconThreeTitle === null) {
+      newerrors.iconThreeTitle = "Icon title is required";
       has = true;
     }
 
@@ -139,25 +143,25 @@ const CustomJewellery = ({ handleHomepage }) => {
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="sectionBanner_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
                 <RequiredSymbol />{" "}
-                {errors.description && (
+                {errors.sectionDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.description}
+                    {errors.sectionDescription}
                   </span>
                 )}
               </label>
               <Textarea
                 type="text"
-                id="banner_desc"
+                id="sectionBanner_desc"
                 placeholder="Dive into our 'Custom Gemstone Jewelry' section, where your unique vision takes center stage. Design personalized masterpieces that tell your story, blending style and sentiment in every handpicked Gemstone"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="description"
+                name="sectionDescription"
                 onChange={handleFormChange}
               />
             </div>
@@ -174,14 +178,14 @@ const CustomJewellery = ({ handleHomepage }) => {
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>
                     This is a Content box that contains Icon, Title and a short
-                    Description.
+                    sectionDescription.
                   </p>
                   <p className="md:mt-5 mt-2">
-                    You can edit the Content Title, Description and the icon in
-                    the edit section.
+                    You can edit the Content Title, sectionDescription and the
+                    icon in the edit section.
                   </p>
                   <h2 className="text-[18px] font-semibold py-2 text-start">
-                    Banner
+                    sectionBanner
                   </h2>
                   <div className="py-2">
                     <img src={"/images/image 16.png"} alt="content" />
@@ -195,7 +199,7 @@ const CustomJewellery = ({ handleHomepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* sectionBanner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -203,26 +207,26 @@ const CustomJewellery = ({ handleHomepage }) => {
                     htmlFor="icon"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    SectionBanner
+                    Section Banner
                     <RequiredSymbol />{" "}
-                    {errors.banner && (
+                    {errors.sectionBanner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.sectionBanner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="sectionBanner"
+                    label="sectionBanner"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
+                  {formData.sectionBanner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
+                      src={FormateImageURL(formData.sectionBanner)}
                       alt="Image Preview"
                     />
                   )}
@@ -249,49 +253,49 @@ const CustomJewellery = ({ handleHomepage }) => {
                       >
                         Icon 1
                         <RequiredSymbol />{" "}
-                        {errors.icon1 && (
+                        {errors.iconOneImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon1}
+                            {errors.iconOneImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon1"
+                        id="iconOneImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon1 && (
+                      {formData.iconOneImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon1)}
+                          src={FormateImageURL(formData.iconOneImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="banner_title"
+                        htmlFor="sectionBanner_title"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title1 && (
+                        {errors.iconOneTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title1}
+                            {errors.iconOneTitle}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="banner_title"
+                        id="sectionBanner_title"
                         placeholder="Select Gemstone"
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title1"
+                        name="iconOneTitle"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -305,49 +309,49 @@ const CustomJewellery = ({ handleHomepage }) => {
                       >
                         Icon 2
                         <RequiredSymbol />{" "}
-                        {errors.icon2 && (
+                        {errors.iconTwoImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon2}
+                            {errors.iconTwoImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon2"
+                        id="iconTwoImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon2 && (
+                      {formData.iconTwoImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon2)}
+                          src={FormateImageURL(formData.iconTwoImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="banner_title2"
+                        htmlFor="sectionBanner_iconTwoTitle"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title2 && (
+                        {errors.iconTwoTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title2}
+                            {errors.iconTwoTitle}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="banner_title2"
+                        id="sectionBanner_iconTwoTitle"
                         placeholder="Pick Semi-mount"
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title2"
+                        name="iconTwoTitle"
                         onChange={handleFormChange}
                       />
                     </div>
@@ -361,49 +365,49 @@ const CustomJewellery = ({ handleHomepage }) => {
                       >
                         Icon 3
                         <RequiredSymbol />{" "}
-                        {errors.icon3 && (
+                        {errors.iconThreeImage && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.icon3}
+                            {errors.iconThreeImage}
                           </span>
                         )}
                       </label>
                       <DragAndDropImage
-                        id="icon3"
+                        id="iconThreeImage"
                         label="icon"
                         accept={`images/*`}
                         width={264}
                         height={264}
                         onImageSelect={handleImageSelect}
                       />
-                      {formData.icon3 && (
+                      {formData.iconThreeImage && (
                         <img
                           className="h-[150px] mx-auto w-[150px]"
-                          src={FormateImageURL(formData.icon3)}
+                          src={FormateImageURL(formData.iconThreeImage)}
                           alt="Image Preview"
                         />
                       )}
                     </div>
                     <div className="flex flex-col gap-3">
                       <label
-                        htmlFor="banner_title3"
+                        htmlFor="sectionBanner_iconThreeTitle"
                         className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                       >
                         Title
                         <RequiredSymbol />{" "}
-                        {errors.title3 && (
+                        {errors.iconThreeTitle && (
                           <span className="font-regular text-[12px] text-red-600">
-                            {errors.title3}
+                            {errors.iconThreeTitle}
                           </span>
                         )}
                       </label>
                       <Input
                         type="text"
-                        id="banner_title3"
+                        id="sectionBanner_iconThreeTitle"
                         placeholder="Place Order"
                         variant="bordered"
                         size="lg"
                         radius="sm"
-                        name="title3"
+                        name="iconThreeTitle"
                         onChange={handleFormChange}
                       />
                     </div>

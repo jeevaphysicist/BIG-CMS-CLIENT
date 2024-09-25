@@ -31,6 +31,7 @@ const EditPages = ({ handleBirthStones }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     media: "",
+    moduleId: null,
   });
 
   const [loading, setLoading] = useState(false);
