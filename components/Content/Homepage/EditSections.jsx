@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Herosection from "./Herosection";
 import ContentBox from "./ContentBox";
 import Categories from "./Categories";
@@ -21,11 +21,32 @@ import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
 import SeoAttributes from "../SeoAttributes";
 import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
+import { handleGetHomepageSection } from "@/API/api";
 
 const EditSections = ({ handleHomepage }) => {
   const  { template } = GetCurrentUserDetails();  
   const [selectedSection, setSelectedSection] = useState("hero-section");
   const [activeTab, setActiveTab] = useState("generalInfo");
+  const [sectionData,setSectionData]= useState({});
+
+  useEffect(()=>{
+        fetchSectionData();
+  },[selectedSection])
+
+  const fetchSectionData = async ()=>{
+       try {
+         const response = await handleGetHomepageSection('homepage',selectedSection);
+          if(response.status >=200 && response.status <=209 ){
+              setSectionData(response.data.data);
+          } 
+          else{
+             setSectionData({});
+          }
+         console.log("response",response);
+        } catch (error) {
+           setSectionData({});
+       }
+  }
 
   const handleChange = (tab) => {
     setActiveTab(tab);
@@ -39,6 +60,8 @@ const EditSections = ({ handleHomepage }) => {
     const findmodule = template?.find(temp=>temp.moduleSlug === slug );
     return findmodule || {};
   }
+
+ 
 
   console.log("template",template);
 
@@ -102,10 +125,10 @@ const EditSections = ({ handleHomepage }) => {
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "hero-section" && (
-              <Herosection handleHomepage={handleHomepage} />
+              <Herosection sectionData={sectionData} handleHomepage={handleHomepage} />
             )}
             {selectedSection === "content-box" && (
-              <ContentBox handleHomepage={handleHomepage} />
+              <ContentBox sectionData={sectionData} handleHomepage={handleHomepage} />
             )}
             {selectedSection === "categories" && (
               <Categories handleHomepage={handleHomepage} />

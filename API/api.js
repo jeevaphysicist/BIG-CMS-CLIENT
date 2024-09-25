@@ -127,17 +127,26 @@ export const handleGetTemplate = async () => {
 };
 
 // S.No 03
-// Get Template Handler
-export const handleHomepageCreateEditSection = async () => {
+// Get Create Edit Homepage section Handler
+export const handleHomepageCreateEditSection = async (data) => {
   try {
-    const response = await publicFrontendApi.post(
-      "/api/homepage/create-edit-section",
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+    const response = await publicApi.post("/api/homepage/create-edit-section",data,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
     );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 04
+// Get Homepage Sections
+export const handleGetHomepageSection = async (moduleSlug,sectionSlug) => {
+  try {
+    const response = await publicApi.get(`/api/homepage/section/${moduleSlug}/${sectionSlug}`);
     return response;
   } catch (error) {
     return error;
