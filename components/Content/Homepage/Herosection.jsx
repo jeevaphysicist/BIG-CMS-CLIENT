@@ -100,7 +100,15 @@ const Herosection = ({ handleHomepage }) => {
       return null;
     }
 
+    // status 200 - 209
+    // response.data
+
+    // status 210 - 505 
+    // response.response.data
+    // setError(response.response.data)
     // API Call Here
+
+
 
     // console.log("Form submitted with data:", formData);
   };
@@ -213,77 +221,44 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Timer
                 </label>
                 <Switch
+                id="timer"
                   checked={formData.enableTimer}
                   onChange={() => handleSwitchChange("enableTimer")}
                   aria-label="Enable Timer"
                 />
               </div>
               <div className="w-full flex justify-between md:gap-4 gap-2">
-                <div className="grid gap-2">
+                <div className="w-[100%] gap-2">
                   <label
                     htmlFor="days"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
-                    Days
+                    Start Date
                   </label>
                   <Input
-                    type="text"
+                    type="date"
                     id="banner_desc"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="days"
+                    name="bannerOneStartDate"
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="grid gap-2">
+                <div className="w-[100%] gap-2">
                   <label
-                    htmlFor="days"
+                    htmlFor="end-date"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
-                    Hours
+                    End Date
                   </label>
                   <Input
-                    type="text"
-                    id="banner_desc"
+                    type="date"
+                    id="end-date"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="hours"
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Minutes
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                    name="minutes"
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Seconds
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                    name="seconds"
+                    name="bannerOneEndDate"
                     onChange={handleFormChange}
                   />
                 </div>

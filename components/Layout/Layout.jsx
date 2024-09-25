@@ -18,9 +18,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiOutlineLogout } from "react-icons/hi";
 import { CgMenuRightAlt } from "react-icons/cg";
-import { handleGetTemplate } from "@/API/api";
-import { useDispatch } from "react-redux";
-import {  UpdateTemplatesHandler } from "@/app/Redux/Features/userSlice";
+
 
 const MenuItems = ({ handleAside }) => {
   const [openMenu, setOpenMenu] = useState({

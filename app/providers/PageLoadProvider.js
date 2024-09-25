@@ -6,10 +6,10 @@ import { refreshAccessToken } from '@/API/api';
 import { performLogout } from '@/utils/LogoutHandle';
 import { store } from '../Redux/Store';
 
-const handleLogout = () => {
-    const dispatch = store.dispatch; 
-    performLogout(dispatch); 
-};
+// const handleLogout = () => {
+//     const dispatch = store.dispatch; 
+//     performLogout(dispatch); 
+// };
 
 export const PageLoadProvider = ({ children }) => {
   useEffect(() => {
@@ -19,7 +19,7 @@ export const PageLoadProvider = ({ children }) => {
         if(refreshToken){
             const refreshed = await refreshAccessToken(); 
             if (!refreshed) {             
-                handleLogout();
+                // handleLogout();
             }
         }
       return null;

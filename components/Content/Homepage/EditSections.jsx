@@ -20,9 +20,11 @@ import ContentSection from "./ContentSection";
 import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
 import SeoAttributes from "../SeoAttributes";
+import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
 
 const EditSections = ({ handleHomepage }) => {
-  const [selectedSection, setSelectedSection] = useState("herosection");
+  const  { template } = GetCurrentUserDetails();  
+  const [selectedSection, setSelectedSection] = useState("hero-section");
   const [activeTab, setActiveTab] = useState("generalInfo");
 
   const handleChange = (tab) => {
@@ -32,6 +34,13 @@ const EditSections = ({ handleHomepage }) => {
   const handleSeoSubmit = (formData) => {
     console.log("Submitting data for Homepage", formData);
   };
+
+  const handleSelectDropDown = (slug)=>{
+    const findmodule = template?.find(temp=>temp.moduleSlug === slug );
+    return findmodule || {};
+  }
+
+  console.log("template",template);
 
   return (
     <Fragment>
@@ -85,43 +94,17 @@ const EditSections = ({ handleHomepage }) => {
               onChange={(e) => setSelectedSection(e.target.value)}
               aria-label="Select section to edit"
             >
-              <option value="herosection">Hero Section (Section 1)</option>
-              <option value="contentbox">Content Box (Section 2)</option>
-              <option value="categories">Categories (Section 3)</option>
-              <option value="recommended">Recommended (Section 4)</option>
-              <option value="exploregemstones">
-                Explore Gemstones (Section 5)
-              </option>
-              <option value="explorejewelry">
-                Explore Jewellery (Section 6)
-              </option>
-              <option value="dropsbeads">Drops & Beads (Section 7)</option>
-              <option value="semimounts">Semi-Mounts (Section 8)</option>
-              <option value="gifts">Gifts (Section 9)</option>
-              <option value="offers">Offers (Section 10)</option>
-              <option value="birthstoneinfo">
-                Birthstone Information (Section 11)
-              </option>
-              <option value="gemshows">Gemshows (Section 12)</option>
-              <option value="testimonials">Testimonials (Section 13)</option>
-              <option value="customjewellery">
-                Custom Jewellery (Section 14)
-              </option>
-              <option value="faqs">
-                Frequently Asked Questions (Section 15)
-              </option>
-              <option value="contentsection">
-                Content Section (Section 16)
-              </option>
-              <option value="updates">Updates Section (Section 17)</option>
-              <option value="socialfollow">Social Follow (Section 18)</option>
+              {handleSelectDropDown('homepage')?.sections?.map((item,index)=> 
+              <option value={`${item.sectionSlug}`}>{item.sectionName}</option>
+            )}
+             
             </select>
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
-            {selectedSection === "herosection" && (
+            {selectedSection === "hero-section" && (
               <Herosection handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "contentbox" && (
+            {selectedSection === "content-box" && (
               <ContentBox handleHomepage={handleHomepage} />
             )}
             {selectedSection === "categories" && (
@@ -130,16 +113,16 @@ const EditSections = ({ handleHomepage }) => {
             {selectedSection === "recommended" && (
               <Recommended handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "exploregemstones" && (
+            {selectedSection === "explore-gemstones" && (
               <ExploreGemstones handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "explorejewelry" && (
+            {selectedSection === "explore-jewelry" && (
               <ExploreJwellery handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "dropsbeads" && (
+            {selectedSection === "drops-beads" && (
               <DropsBeads handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "semimounts" && (
+            {selectedSection === "semi-mounts" && (
               <SemiMounts handleHomepage={handleHomepage} />
             )}
             {selectedSection === "gifts" && (
@@ -148,7 +131,7 @@ const EditSections = ({ handleHomepage }) => {
             {selectedSection === "offers" && (
               <Offers handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "birthstoneinfo" && (
+            {selectedSection === "birthstone-information" && (
               <BirthStoneInfo handleHomepage={handleHomepage} />
             )}
             {selectedSection === "gemshows" && (
@@ -157,19 +140,19 @@ const EditSections = ({ handleHomepage }) => {
             {selectedSection === "testimonials" && (
               <Testimonials handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "customjewellery" && (
+            {selectedSection === "custom-jewelry" && (
               <CustomJewellery handleHomepage={handleHomepage} />
             )}
             {selectedSection === "faqs" && (
               <Faqs handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "contentsection" && (
+            {selectedSection === "content-section" && (
               <ContentSection handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "updates" && (
+            {selectedSection === "update-section" && (
               <Updates handleHomepage={handleHomepage} />
             )}
-            {selectedSection === "socialfollow" && (
+            {selectedSection === "social-media" && (
               <SocialFollow handleHomepage={handleHomepage} />
             )}
           </div>

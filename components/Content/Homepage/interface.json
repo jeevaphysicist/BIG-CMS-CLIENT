@@ -1,15 +1,15 @@
 [
   {
     "sectionName": "Herosection",
-    "sectionslug": "herosection",
+    "sectionslug": "hero-section",
     "id": 1,
     "content": {
       "bannerOneTitle": "",
       "bannerOneImage": "",
       "bannerOneDescription": "",
       "bannerOneEnableTimerStatus": "",
-      "startDate": "",
-      "startEnd": "",
+      "bannerOneStartDate": "",
+      "bannerOneEndDate": "",
       "bannerTwoTitle": "",
       "bannerTwoImage": "",
       "bannerTwoDescription": "",
@@ -82,8 +82,8 @@
     }
   },
   {
-    "sectionName": "Explore Jewlery",
-    "sectionslug": "explore-jewlery",
+    "sectionName": "Explore Jewelry",
+    "sectionslug": "explore-jewelry",
     "id": 6,
     "content": {
       "sectionTitle": "",
@@ -211,7 +211,7 @@
   },
   {
     "sectionName": "Frequently Asked Questions",
-    "sectionslug": "frequently-asked-questions",
+    "sectionslug": "faqs",
     "id": 15,
     "content": {
       "sectionTitle": "",
@@ -232,7 +232,7 @@
   },
   {
     "sectionName": "Updates Section",
-    "sectionslug": "updates-section",
+    "sectionslug": "update-section",
     "id": 17,
     "content": {
       "sectionTitle": "",
@@ -242,8 +242,8 @@
     }
   },
   {
-    "sectionName": "Social Follow",
-    "sectionslug": "social-follow",
+    "sectionName": "Social Media",
+    "sectionslug": "social-media",
     "id": 18,
     "content": {
       "sectionTitle": "",

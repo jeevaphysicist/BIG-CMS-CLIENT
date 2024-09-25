@@ -21,11 +21,11 @@
             },
             {
                 "sectionName":"Explore Gemstones (Section 5)",
-                "sectionSlug":"hero-section"                
+                "sectionSlug":"explore-gemstones"                
             },
             {
-                "sectionName":"Explore Jewellery (Section 6)",
-                "sectionSlug":"explore-jewellery"                
+                "sectionName":"Explore Jewelry (Section 6)",
+                "sectionSlug":"explore-jewelry"                
             },
             {
                 "sectionName":"Drops & Beads (Section 7)",
@@ -56,8 +56,8 @@
                 "sectionSlug":"testimonials"                
             },
             {
-                "sectionName":"Custom Jewellery (Section 14) ",
-                "sectionSlug":"custom-jewellery"                
+                "sectionName":"Custom Jewelry (Section 14) ",
+                "sectionSlug":"custom-jewelry"                
             },
             {
                 "sectionName":"Frequently Asked Questions (Section 15)",
@@ -206,8 +206,8 @@
         ]
     },
     {
-        "moduleName":"Custom Jewellery",
-        "moduleSlug":"custom-jewellery",
+        "moduleName":"Custom Jewelry",
+        "moduleSlug":"custom-jewelry",
         "sections":[
             {
                 "sectionName":"Icon Box(Section 1)",
