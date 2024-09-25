@@ -7,6 +7,7 @@ import DragAndDropImage from "../DragDropImage";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
 const Herosection = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
@@ -90,7 +91,7 @@ const Herosection = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -99,15 +100,15 @@ const Herosection = ({ handleHomepage }) => {
       return null;
     }
 
-    // status 200 - 209
-    // response.data
-
-    // status 210 - 505
-    // response.response.data
-    // setError(response.response.data)
-    // API Call Here
-
-    // console.log("Form submitted with data:", formData);
+    try {
+      const response = await handleHomepageCreateEditSection();
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+      }
+      console.log("response", response);
+    } catch (error) {
+      //  console.log("error",error);
+    }
   };
 
   return (
