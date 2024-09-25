@@ -18,8 +18,7 @@ export const DataCollectProvider = ({ children }) => {
           if(response.status >= 200 && response.status <= 209){
             let data = response.data;
             dispatch(UpdateTemplatesHandler(data));
-          }
-          
+          }          
           // console.log("response",response);
       } catch (error) {
         //  console.log("error",error);

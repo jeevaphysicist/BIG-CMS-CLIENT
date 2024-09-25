@@ -13,9 +13,10 @@ const Recommended = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
-    banner: "",
+    image: "",
     title: "",
     description: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -26,11 +27,11 @@ const Recommended = ({ handleHomepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, image) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [image]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -40,8 +41,8 @@ const Recommended = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.image === "" || formData.image === null) {
+      newerrors.image = "image is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
@@ -116,7 +117,7 @@ const Recommended = ({ handleHomepage }) => {
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="image_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
@@ -129,7 +130,7 @@ const Recommended = ({ handleHomepage }) => {
               </label>
               <Input
                 type="text"
-                id="banner_desc"
+                id="image_desc"
                 placeholder="Gemstone name"
                 variant="bordered"
                 size="lg"
@@ -151,7 +152,7 @@ const Recommended = ({ handleHomepage }) => {
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>The Following Image Dimensions are 487px X 410px</p>
                   <p className="md:mt-5 mt-2">
-                    You can edit the Banner Image and its details and Call to
+                    You can edit the image Image and its details and Call to
                     Action
                   </p>
                 </div>
@@ -163,7 +164,7 @@ const Recommended = ({ handleHomepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* image */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -171,33 +172,33 @@ const Recommended = ({ handleHomepage }) => {
                     htmlFor="icon"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Banner
+                    image
                     <RequiredSymbol />
-                    {errors.banner && (
+                    {errors.image && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.image}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="image"
+                    label="image"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
+                  {formData.image && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
+                      src={FormateImageURL(formData.image)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_title"
+                    htmlFor="image_title"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
@@ -210,7 +211,7 @@ const Recommended = ({ handleHomepage }) => {
                   </label>
                   <Input
                     type="text"
-                    id="banner_title"
+                    id="image_title"
                     placeholder="Gemstones"
                     variant="bordered"
                     size="lg"
@@ -221,7 +222,7 @@ const Recommended = ({ handleHomepage }) => {
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="image_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Description
@@ -234,7 +235,7 @@ const Recommended = ({ handleHomepage }) => {
                   </label>
                   <Input
                     type="text"
-                    id="banner_desc"
+                    id="image_desc"
                     placeholder="Get 10% Discount on All the Gemstones"
                     variant="bordered"
                     size="lg"

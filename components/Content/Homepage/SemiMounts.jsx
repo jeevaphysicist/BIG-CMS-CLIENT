@@ -8,10 +8,11 @@ import { toast } from "react-toastify";
 
 const SemiMounts = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    callToAction: "",
-    callToActionLink: "",
+    sectionTitle: "",
+    sectionDescription: "",
+    buttonName: "",
+    buttonLink: "",
+    moduleId: null,
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -24,23 +25,23 @@ const SemiMounts = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Title is required";
-      has = true;
-    }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
-      has = true;
-    }
-    if (formData.callToAction === "" || formData.callToAction === null) {
-      newerrors.callToAction = "Call to action is required";
+    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+      newerrors.sectionTitle = "sectionTitle is required";
       has = true;
     }
     if (
-      formData.callToActionLink === "" ||
-      formData.callToActionLink === null
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
     ) {
-      newerrors.callToActionLink = "Call to action link is required";
+      newerrors.sectionDescription = "sectionDescription is required";
+      has = true;
+    }
+    if (formData.buttonName === "" || formData.buttonName === null) {
+      newerrors.buttonName = "Call to action is required";
+      has = true;
+    }
+    if (formData.buttonLink === "" || formData.buttonLink === null) {
+      newerrors.buttonLink = "Call to action link is required";
       has = true;
     }
 
@@ -97,25 +98,25 @@ const SemiMounts = ({ handleHomepage }) => {
             <div className="w-full flex flex-col gap-8">
               <div className="flex flex-col gap-3">
                 <label
-                  htmlFor="sec_title"
+                  htmlFor="sec_sectionTitle"
                   className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                 >
                   Section Title
                   <RequiredSymbol />
-                  {errors.title && (
+                  {errors.sectionTitle && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.title}
+                      {errors.sectionTitle}
                     </span>
                   )}
                 </label>
                 <Input
                   type="text"
-                  id="sec_title"
+                  id="sec_sectionTitle"
                   placeholder="Explore Semi-Mounts Collection"
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="title"
+                  name="sectionTitle"
                   onChange={handleFormChange}
                 />
               </div>
@@ -126,9 +127,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Description
                   <RequiredSymbol />
-                  {errors.description && (
+                  {errors.sectionDescription && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.description}
+                      {errors.sectionDescription}
                     </span>
                   )}
                 </label>
@@ -139,7 +140,7 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="description"
+                  name="sectionDescription"
                   onChange={handleFormChange}
                 />
               </div>
@@ -150,9 +151,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Call to Action
                   <RequiredSymbol />
-                  {errors.callToAction && (
+                  {errors.buttonName && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.callToAction}
+                      {errors.buttonName}
                     </span>
                   )}
                 </label>
@@ -163,7 +164,7 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="callToAction"
+                  name="buttonName"
                   onChange={handleFormChange}
                 />
               </div>
@@ -174,9 +175,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Call to Action Link
                   <RequiredSymbol />
-                  {errors.callToActionLink && (
+                  {errors.buttonLink && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.callToActionLink}
+                      {errors.buttonLink}
                     </span>
                   )}
                 </label>
@@ -187,7 +188,7 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="callToActionLink"
+                  name="buttonLink"
                   onChange={handleFormChange}
                 />
               </div>
