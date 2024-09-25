@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Switch } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
@@ -7,24 +7,52 @@ import DragAndDropImage from "../DragDropImage";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
-const Herosection = ({ handleHomepage }) => {
+function convertObjectToFormData(data, formData = new FormData(), parentKey = '') {
+  for (const key in data) {
+    // Check if the data has the key (to avoid inherited properties)
+    if (data.hasOwnProperty(key)) {
+      // Create a key for nested objects (e.g., contents[bannerOneTitle])
+      const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+
+      // Check if the value is an object and not a File
+      if (typeof data[key] === 'object' && !(data[key] instanceof File)) {
+        // If the value is another nested object, call the function recursively
+        convertObjectToFormData(data[key], formData, fullKey);
+      } else {
+        // Append other types of data (File, String, Boolean, etc.) directly
+        formData.append(fullKey, data[key] !== null ? data[key] : '');
+      }
+    }
+  }
+  return formData;
+}
+
+
+const Herosection = ({ handleHomepage ,sectionData  }) => {
   const [formData, setFormData] = useState({
     bannerOneImage: "",
     bannerOneTitle: "",
     bannerOneDescription: "",
-    bannerOneEnableTimerStatus: false,
+    bannerOneEnableTimerStatus: 'Active',
     bannerOneStartDate: "",
     bannerOneEndDate: "",
     bannerTwoImage: "",
     bannerTwoTitle: "",
     bannerTwoDescription: "",
+    bannerTwoButtonStatus: "Active",
     bannerTwoButtonContent: "",
     bannerTwoButtonLink: "",
     moduleId: null,
   });
+
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    
+  },[sectionData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +65,7 @@ const Herosection = ({ handleHomepage }) => {
   const handleSwitchChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: !prevData[field],
+      [field]: prevData[field] == "Inactive" ? "Active":"Inactive",
     }));
   };
 
@@ -90,7 +118,7 @@ const Herosection = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -98,15 +126,29 @@ const Herosection = ({ handleHomepage }) => {
       toast.error("Please fill required details correctly !");
       return null;
     }
-
-    // status 200 - 209
-    // response.data
-
-    // status 210 - 505
-    // response.response.data
-    // API Call Here
-
-    // console.log("Form submitted with data:", formData);
+    let bodyData = {
+      contents:formData ,
+      moduleSlug:"homepage",
+      moduleName:"HomePage",
+      sectionSlug:"hero-section",
+      sectionName:"Herosection",
+      pageName:"Homepage",
+      pageSlug:"homepage"
+    } 
+    
+    try {
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+      }
+      else{
+        toast.error('Failed to process herosection')
+      }
+      // console.log("response", response);
+    } catch (error) {
+      //  console.log("error",error);
+    }
   };
 
   return (
@@ -222,7 +264,7 @@ const Herosection = ({ handleHomepage }) => {
                 </label>
                 <Switch
                   id="timer"
-                  checked={formData.bannerOneEnableTimerStatus}
+                  isSelected={formData.bannerOneEnableTimerStatus === "Active"}
                   onChange={() =>
                     handleSwitchChange("bannerOneEnableTimerStatus")
                   }
@@ -373,8 +415,8 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.bannerTwoButtonLink}
-                  onChange={() => handleSwitchChange("bannerTwoButtonLink")}
+                  isSelected={formData.bannerTwoButtonStatus === "Active"}
+                  onChange={() => handleSwitchChange("bannerTwoButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -392,7 +434,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonContent"
+                name="bannerTwoButtonContent"
                 onChange={handleFormChange}
               />
             </div>
@@ -409,7 +451,7 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonLink"
+                name="bannerTwoButtonLink"
                 onChange={handleFormChange}
               />
             </div>
