@@ -102,10 +102,9 @@ const Herosection = ({ handleHomepage }) => {
 
     // status 200 - 209
     // response.data
-
-    // status 210 - 505 
+    
+    //  status 210 - 505 
     // response.response.data
-    // setError(response.response.data)
     // API Call Here
 
 
