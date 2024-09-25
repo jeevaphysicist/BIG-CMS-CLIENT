@@ -10,18 +10,19 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const ContentBox = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
-    icon1: "",
-    icon1Title: "",
-    icon1Description: "",
-    icon2: "",
-    icon2Title: "",
-    icon2Description: "",
-    icon3: "",
-    icon3Title: "",
-    icon3Description: "",
-    icon4: "",
-    icon4Title: "",
-    icon4Description: "",
+    iconOne: "",
+    iconOneTitle: "",
+    iconOneDescription: "",
+    iconTwo: "",
+    iconTwoTitle: "",
+    iconTwoDescription: "",
+    iconThree: "",
+    iconThreeTitle: "",
+    iconThreeDescription: "",
+    iconFour: "",
+    iconFourTitle: "",
+    iconFourDescription: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -46,64 +47,64 @@ const ContentBox = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.icon1 === "" || formData.icon1 === null) {
-      newerrors.icon1 = "Icon 1 required";
+    if (formData.iconOne === "" || formData.iconOne === null) {
+      newerrors.iconOne = "Icon 1 required";
       has = true;
     }
-    if (formData.icon2 === "" || formData.icon2 === null) {
-      newerrors.icon2 = "Icon 2 required";
+    if (formData.iconTwo === "" || formData.iconTwo === null) {
+      newerrors.iconTwo = "Icon 2 required";
       has = true;
     }
-    if (formData.icon3 === "" || formData.icon3 === null) {
-      newerrors.icon3 = "Icon 3 required";
+    if (formData.iconThree === "" || formData.iconThree === null) {
+      newerrors.iconThree = "Icon 3 required";
       has = true;
     }
-    if (formData.icon4 === "" || formData.icon4 === null) {
-      newerrors.icon4 = "Icon 4 required";
+    if (formData.iconFour === "" || formData.iconFour === null) {
+      newerrors.iconFour = "Icon 4 required";
       has = true;
     }
-    if (formData.icon1Title === "" || formData.icon1Title === null) {
-      newerrors.icon1Title = "Icon title required";
-      has = true;
-    }
-    if (
-      formData.icon1Description === "" ||
-      formData.icon1Description === null
-    ) {
-      newerrors.icon1Description = "Icon description required";
-      has = true;
-    }
-    if (formData.icon2Title === "" || formData.icon2Title === null) {
-      newerrors.icon2Title = "Icon title required";
+    if (formData.iconOneTitle === "" || formData.iconOneTitle === null) {
+      newerrors.iconOneTitle = "Icon title required";
       has = true;
     }
     if (
-      formData.icon2Description === "" ||
-      formData.icon2Description === null
+      formData.iconOneDescription === "" ||
+      formData.iconOneDescription === null
     ) {
-      newerrors.icon2Description = "Icon description required";
+      newerrors.iconOneDescription = "Icon description required";
       has = true;
     }
-    if (formData.icon3Title === "" || formData.icon3Title === null) {
-      newerrors.icon3Title = "Icon title required";
+    if (formData.iconTwoTitle === "" || formData.iconTwoTitle === null) {
+      newerrors.iconTwoTitle = "Icon title required";
       has = true;
     }
     if (
-      formData.icon3Description === "" ||
-      formData.icon3Description === null
+      formData.iconTwoDescription === "" ||
+      formData.iconTwoDescription === null
     ) {
-      newerrors.icon3Description = "Icon description required";
+      newerrors.iconTwoDescription = "Icon description required";
       has = true;
     }
-    if (formData.icon4Title === "" || formData.icon4Title === null) {
-      newerrors.icon4Title = "Icon title required";
+    if (formData.iconThreeTitle === "" || formData.iconThreeTitle === null) {
+      newerrors.iconThreeTitle = "Icon title required";
       has = true;
     }
     if (
-      formData.icon4Description === "" ||
-      formData.icon4Description === null
+      formData.iconThreeDescription === "" ||
+      formData.iconThreeDescription === null
     ) {
-      newerrors.icon4Description = "Icon description required";
+      newerrors.iconThreeDescription = "Icon description required";
+      has = true;
+    }
+    if (formData.iconFourTitle === "" || formData.iconFourTitle === null) {
+      newerrors.iconFourTitle = "Icon title required";
+      has = true;
+    }
+    if (
+      formData.iconFourDescription === "" ||
+      formData.iconFourDescription === null
+    ) {
+      newerrors.iconFourDescription = "Icon description required";
       has = true;
     }
     setError(newerrors);
@@ -172,21 +173,27 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 1
                     <RequiredSymbol />
-                    {errors.icon1 && (
+                    {errors.iconOne && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon1}
+                        {errors.iconOne}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="icon1"
+                    id="iconOne"
                     label="icon"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                 {formData.icon1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon1 )} alt="Image Preview" />}
+                  {formData.iconOne && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.iconOne)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -195,9 +202,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />{" "}
-                    {errors.icon1Title && (
+                    {errors.iconOneTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon1Title}
+                        {errors.iconOneTitle}
                       </span>
                     )}
                   </label>
@@ -208,7 +215,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon1Title"
+                    name="iconOneTitle"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -219,9 +226,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
-                    {errors.icon1Description && (
+                    {errors.iconOneDescription && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon1Description}
+                        {errors.iconOneDescription}
                       </span>
                     )}
                   </label>
@@ -232,7 +239,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon1Description"
+                    name="iconOneDescription"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -248,22 +255,27 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 2
                     <RequiredSymbol />
-                    {errors.icon2 && (
+                    {errors.iconTwo && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon2}
+                        {errors.iconTwo}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="icon2"
+                    id="iconTwo"
                     label="icon"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                 {formData.icon2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon2 )} alt="Image Preview" />}
-
+                  {formData.iconTwo && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.iconTwo)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -272,9 +284,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />{" "}
-                    {errors.icon2Title && (
+                    {errors.iconTwoTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon2Title}
+                        {errors.iconTwoTitle}
                       </span>
                     )}
                   </label>
@@ -285,7 +297,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon2Title"
+                    name="iconTwoTitle"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -296,9 +308,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
-                    {errors.icon2Description && (
+                    {errors.iconTwoDescription && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon2Description}
+                        {errors.iconTwoDescription}
                       </span>
                     )}
                   </label>
@@ -309,7 +321,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon2Description"
+                    name="iconTwoDescription"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -325,22 +337,27 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 3
                     <RequiredSymbol />
-                    {errors.icon3 && (
+                    {errors.iconThree && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon3}
+                        {errors.iconThree}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="icon3"
+                    id="iconThree"
                     label="icon"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                 {formData.icon3 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon3 )} alt="Image Preview" />}
-
+                  {formData.iconThree && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.iconThree)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -349,9 +366,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />{" "}
-                    {errors.icon3Title && (
+                    {errors.iconThreeTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon3Title}
+                        {errors.iconThreeTitle}
                       </span>
                     )}
                   </label>
@@ -362,7 +379,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon3Title"
+                    name="iconThreeTitle"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -373,9 +390,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
-                    {errors.icon3Description && (
+                    {errors.iconThreeDescription && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon3Description}
+                        {errors.iconThreeDescription}
                       </span>
                     )}
                   </label>
@@ -386,7 +403,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon3Description"
+                    name="iconThreeDescription"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -402,22 +419,27 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Icon 4
                     <RequiredSymbol />
-                    {errors.icon4 && (
+                    {errors.iconFour && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon4}
+                        {errors.iconFour}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="icon4"
+                    id="iconFour"
                     label="icon"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                 {formData.icon4 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.icon4 )} alt="Image Preview" />}
-
+                  {formData.iconFour && (
+                    <img
+                      className="h-[150px] mx-auto w-[150px]"
+                      src={FormateImageURL(formData.iconFour)}
+                      alt="Image Preview"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -426,9 +448,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />{" "}
-                    {errors.icon4Title && (
+                    {errors.iconFourTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon4Title}
+                        {errors.iconFourTitle}
                       </span>
                     )}
                   </label>
@@ -439,7 +461,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon4Title"
+                    name="iconFourTitle"
                     onChange={handleFormChange}
                   />
                 </div>
@@ -450,9 +472,9 @@ const ContentBox = ({ handleHomepage }) => {
                   >
                     Description
                     <RequiredSymbol />
-                    {errors.icon4Description && (
+                    {errors.iconFourDescription && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.icon4Description}
+                        {errors.iconFourDescription}
                       </span>
                     )}
                   </label>
@@ -463,7 +485,7 @@ const ContentBox = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="icon4Description"
+                    name="iconFourDescription"
                     onChange={handleFormChange}
                   />
                 </div>

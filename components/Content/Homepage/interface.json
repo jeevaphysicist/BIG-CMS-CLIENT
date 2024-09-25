@@ -23,16 +23,16 @@
     "id": 2,
     "content": {
       "iconOne": "",
-      "iconOneTile": "",
+      "iconOneTitle": "",
       "iconOneDescription": "",
       "iconTwo": "",
-      "iconTwoTile": "",
+      "iconTwoTitle": "",
       "iconTwoDescription": "",
       "iconThree": "",
-      "iconThreeTile": "",
+      "iconThreeTitle": "",
       "iconThreeDescription": "",
       "iconFour": "",
-      "iconFourTile": "",
+      "iconFourTitle": "",
       "iconFourDescription": ""
     }
   },
@@ -216,7 +216,7 @@
     "content": {
       "sectionTitle": "",
       "selectedCategory": "",
-      "faqs":[{"question": "","answer": ""}]
+      "faqs": [{ "question": "", "answer": "" }]
     }
   },
   {

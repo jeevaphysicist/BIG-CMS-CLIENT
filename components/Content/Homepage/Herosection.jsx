@@ -10,19 +10,18 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 
 const Herosection = ({ handleHomepage }) => {
   const [formData, setFormData] = useState({
-    banner1: "",
-    banner1Title: "",
-    banner1Description: "",
-    banner2: "",
-    banner2Title: "",
-    banner2Description: "",
-    bannerContent: "",
-    enableTimer: false,
-    enableButton: false,
-    days: "",
-    hours: "",
-    minutes: "",
-    seconds: "",
+    bannerOneImage: "",
+    bannerOneTitle: "",
+    bannerOneDescription: "",
+    bannerOneEnableTimerStatus: false,
+    bannerOneStartDate: "",
+    bannerOneEndDate: "",
+    bannerTwoImage: "",
+    bannerTwoTitle: "",
+    bannerTwoDescription: "",
+    bannerTwoButtonContent: "",
+    bannerTwoButtonLink: "",
+    moduleId: null,
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -57,34 +56,34 @@ const Herosection = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner1 === "" || formData.banner1 === null) {
-      newerrors.banner1 = "Banner 1 required";
+    if (formData.bannerOneImage === "" || formData.bannerOneImage === null) {
+      newerrors.bannerOneImage = "Banner 1 required";
       has = true;
     }
-    if (formData.banner2 === "" || formData.banner2 === null) {
-      newerrors.banner2 = "Banner 2 required";
+    if (formData.bannerTwoImage === "" || formData.bannerTwoImage === null) {
+      newerrors.bannerTwoImage = "Banner 2 required";
       has = true;
     }
-    if (formData.banner1Title === "" || formData.banner1Title === null) {
-      newerrors.banner1Title = "Banner title required";
-      has = true;
-    }
-    if (
-      formData.banner1Description === "" ||
-      formData.banner1Description === null
-    ) {
-      newerrors.banner1Description = "Banner description required";
-      has = true;
-    }
-    if (formData.banner2Title === "" || formData.banner2Title === null) {
-      newerrors.banner2Title = "Banner title required";
+    if (formData.bannerOneTitle === "" || formData.bannerOneTitle === null) {
+      newerrors.bannerOneTitle = "Banner title required";
       has = true;
     }
     if (
-      formData.banner2Description === "" ||
-      formData.banner2Description === null
+      formData.bannerOneDescription === "" ||
+      formData.bannerOneDescription === null
     ) {
-      newerrors.banner2Description = "Banner description required";
+      newerrors.bannerOneDescription = "Banner description required";
+      has = true;
+    }
+    if (formData.bannerTwoTitle === "" || formData.bannerTwoTitle === null) {
+      newerrors.bannerTwoTitle = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.bannerTwoDescription === "" ||
+      formData.bannerTwoDescription === null
+    ) {
+      newerrors.bannerTwoDescription = "Banner description required";
       has = true;
     }
     setError(newerrors);
@@ -103,12 +102,10 @@ const Herosection = ({ handleHomepage }) => {
     // status 200 - 209
     // response.data
 
-    // status 210 - 505 
+    // status 210 - 505
     // response.response.data
     // setError(response.response.data)
     // API Call Here
-
-
 
     // console.log("Form submitted with data:", formData);
   };
@@ -133,7 +130,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 1.png"} alt="banner1" />
+                <img src={"/images/image 1.png"} alt="bannerOneImage" />
               </div>
             </div>
           </div>
@@ -145,24 +142,28 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner 1
                 <RequiredSymbol />
-                {errors.banner1 && (
+                {errors.bannerOneImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1}
+                    {errors.bannerOneImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="banner1"
+                id="bannerOneImage"
                 label="banner image"
                 accept={`images/*`}
                 width={318}
                 height={548}
                 onImageSelect={handleImageSelect}
               />
-              
-             {formData.banner1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner1 )} alt="Image Preview" />}
 
-              
+              {formData.bannerOneImage && (
+                <img
+                  className="h-[150px] mx-auto w-[150px]"
+                  src={FormateImageURL(formData.bannerOneImage)}
+                  alt="Image Preview"
+                />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -171,15 +172,15 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner1Title && (
+                {errors.bannerOneTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Title}
+                    {errors.bannerOneTitle}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
-                name="banner1Title"
+                name="bannerOneTitle"
                 id="banner_title"
                 placeholder="Engagement Rings"
                 variant="bordered"
@@ -195,16 +196,16 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner1Description && (
+                {errors.bannerOneDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Description}
+                    {errors.bannerOneDescription}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_desc"
-                name="banner1Description"
+                name="bannerOneDescription"
                 placeholder="Start the journey toward finding your perfect ring"
                 variant="bordered"
                 size="lg"
@@ -221,9 +222,11 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Timer
                 </label>
                 <Switch
-                id="timer"
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableTimer")}
+                  id="timer"
+                  checked={formData.bannerOneEnableTimerStatus}
+                  onChange={() =>
+                    handleSwitchChange("bannerOneEnableTimerStatus")
+                  }
                   aria-label="Enable Timer"
                 />
               </div>
@@ -283,7 +286,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 2.png"} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="bannerTwoImage" />
               </div>
             </div>
           </div>
@@ -295,22 +298,27 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner 2
                 <RequiredSymbol />{" "}
-                {errors.banner2 && (
+                {errors.bannerTwoImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
+                    {errors.bannerTwoImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
                 accept={`images/*`}
                 label="banner image"
-                id="banner2"
+                id="bannerTwoImage"
                 width={1122}
                 height={318}
                 onImageSelect={handleImageSelect}
               />
-             {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />}
-
+              {formData.bannerTwoImage && (
+                <img
+                  className="h-[150px] mx-auto w-[150px]"
+                  src={FormateImageURL(formData.bannerTwoImage)}
+                  alt="Image Preview"
+                />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -319,16 +327,16 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner2Title && (
+                {errors.bannerTwoTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Title}
+                    {errors.bannerTwoTitle}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_title1"
-                name="banner2Title"
+                name="bannerTwoTitle"
                 placeholder="Valentines Day"
                 variant="bordered"
                 size="lg"
@@ -343,16 +351,16 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner2Description && (
+                {errors.bannerTwoDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Description}
+                    {errors.bannerTwoDescription}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_desc1"
-                name="banner2Description"
+                name="bannerTwoDescription"
                 placeholder="Enjoy the added benefit of obtaining free shipping within United"
                 variant="bordered"
                 size="lg"
@@ -366,8 +374,8 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableButton}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  checked={formData.bannerTwoButtonLink}
+                  onChange={() => handleSwitchChange("bannerTwoButtonLink")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -394,8 +402,8 @@ const Herosection = ({ handleHomepage }) => {
                 htmlFor="btn_content"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Button Link 
-             </label>
+                Button Link
+              </label>
               <Input
                 type="text"
                 id="btn_content"
