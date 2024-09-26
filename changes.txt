@@ -1,0 +1,11 @@
+1. Home page - Category section 3-Call to action link missing in all category
+2. Home page -Explore Jewelry (Section 6)-Change the spelling of Jewellery to Jewelry in all the places
+3. Home page-offer section-banner 2 and banner 3 section- "Banner content change to Button Content".
+4. Home page-Birthstone information section-Description field - change the tilte is required to Description is required.
+5. Home page-Birthstone information section -Validation Error while selecting the month field dropdown  :Please fill the Required fields Correctly error message is displaying
+6. Home page -Custom jewelry (Section 14)-Change the spelling of Jewellery to Jewelry in all the places. 
+7. Home page -Custom jewelry (Section 14)- Enable icons-Toggle button is not working.
+8. Home page -FAQ section- select the category-Need Drop Down option(general,delivery,quality and payment)
+9. Home page-SEO Attributes- Description change to SEO Description.
+10. 500x500 px (Social Follow)
+11. 
