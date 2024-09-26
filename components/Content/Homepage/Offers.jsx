@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Switch } from "@nextui-org/react";
 import bannerOneImage from "../../../assets/image 12.png";
@@ -9,8 +9,10 @@ import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Offers = ({ handleHomepage }) => {
+const Offers = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
     bannerOneImage: "",
     bannerOneTitle: "",
@@ -19,6 +21,7 @@ const Offers = ({ handleHomepage }) => {
     bannerOneCouponStatus: false,
     bannerOneCouponCode: "",
     bannerOneAdditionalDiscount: "",
+    bannerOneAdditionalDiscountButttonStatus: false,
     bannerTwoImage: "",
     bannerTwoTitle: "",
     bannerTwoDescription: "",
@@ -48,7 +51,7 @@ const Offers = ({ handleHomepage }) => {
   const handleSwitchChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: !prevData[field],
+      [field]: prevData[field] == "Inactive" ? "Active" : "Inactive",
     }));
   };
 
@@ -129,18 +132,70 @@ const Offers = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        bannerOneImage: sectionData.bannerOneImage || "",
+        bannerOneTitle: sectionData.bannerOneTitle || "",
+        bannerOneDescription: sectionData.bannerOneDescription || "",
+        bannerOneLink: sectionData.bannerOneLink || "",
+        bannerOneCouponStatus: sectionData.bannerOneCouponStatus || false,
+        bannerOneCouponCode: sectionData.bannerOneCouponCode || "",
+        bannerOneAdditionalDiscount:
+          sectionData.bannerOneAdditionalDiscount || "",
+        bannerOneAdditionalDiscountButttonStatus:
+          sectionData.bannerOneAdditionalDiscountButttonStatus || false,
+        bannerTwoImage: sectionData.bannerTwoImage || "",
+        bannerTwoTitle: sectionData.bannerTwoTitle || "",
+        bannerTwoDescription: sectionData.bannerTwoDescription || "",
+        bannerTwoButtonStatus: sectionData.bannerTwoButtonStatus || false,
+        bannerTwoButtonContent: sectionData.bannerTwoButtonContent || "",
+        bannerTwoButtonLink: sectionData.bannerTwoButtonLink || "",
+        bannerThreeImage: sectionData.bannerThreeImage || "",
+        bannerThreeTitle: sectionData.bannerThreeTitle || "",
+        bannerThreeDescription: sectionData.bannerThreeDescription || "",
+        bannerThreeButtonStatus: sectionData.bannerThreeButtonStatus || false,
+        bannerThreeButtonContent: sectionData.bannerThreeButtonContent || "",
+        bannerThreeButtonLink: sectionData.bannerThreeButtonLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -221,6 +276,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerOneTitle"
+                value={formData.bannerOneTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -245,6 +301,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerOneDescription"
+                value={formData.bannerOneDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -269,6 +326,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerOneLink"
+                value={formData.bannerOneLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -281,8 +339,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Coupon
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableCoupon")}
+                  isSelected={formData.bannerOneCouponStatus === "Active"}
+                  value={formData.bannerOneCouponStatus}
+                  onChange={() => handleSwitchChange("bannerOneCouponStatus")}
                   aria-label="Enable Coupon"
                 />
               </div>
@@ -300,7 +359,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="code"
+                    name="bannerOneCouponCode"
+                    value={formData.bannerOneCouponCode}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -310,7 +370,19 @@ const Offers = ({ handleHomepage }) => {
                     className="md:text-[18px] text-[16px] gilroy-medium flex justify-between"
                   >
                     Additional Discount
-                    <Switch defaultSelected aria-label="Automatic updates" />
+                    <Switch
+                      isSelected={
+                        formData.bannerOneAdditionalDiscountButttonStatus ===
+                        "Active"
+                      }
+                      value={formData.bannerOneAdditionalDiscountButttonStatus}
+                      onChange={() =>
+                        handleSwitchChange(
+                          "bannerOneAdditionalDiscountButttonStatus"
+                        )
+                      }
+                      aria-label="Enable Additional Discount"
+                    />
                   </label>
                   <Input
                     type="text"
@@ -318,7 +390,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="additionalDiscount"
+                    name="bannerOneAdditionalDiscount"
+                    value={formData.bannerOneAdditionalDiscount}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -396,6 +469,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoTitle"
+                value={formData.bannerTwoTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -420,6 +494,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoDescription"
+                value={formData.bannerTwoDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -429,8 +504,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  isSelected={formData.bannerTwoButtonStatus === "Active"}
+                  value={formData.bannerTwoButtonStatus}
+                  onChange={() => handleSwitchChange("bannerTwoButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -449,6 +525,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoButtonContent"
+                value={formData.bannerTwoButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -467,6 +544,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoButtonLink"
+                value={formData.bannerTwoButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -545,6 +623,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerThreeTitle"
+                value={formData.bannerThreeTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -569,6 +648,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerThreeDescription"
+                value={formData.bannerThreeDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -578,8 +658,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  isSelected={formData.bannerThreeButtonStatus === "Active"}
+                  value={formData.bannerThreeButtonStatus}
+                  onChange={() => handleSwitchChange("bannerThreeButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -598,6 +679,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerThreeButtonContent"
+                value={formData.bannerThreeButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -616,6 +698,7 @@ const Offers = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="bannerThreeButtonLink"
+                value={formData.bannerThreeButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -634,8 +717,10 @@ const Offers = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

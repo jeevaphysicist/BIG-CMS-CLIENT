@@ -1,62 +1,43 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
-import { Fragment, useState } from "react";
-import RequiredSymbol from "../RequiredSymbol";
+import { Fragment, useEffect, useState } from "react";
 import About from "./About";
 import Offers from "./Offers";
-import { FiSave } from "react-icons/fi";
-import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
-import { toast } from "react-toastify";
-import { validateImageDimensions } from "@/lib/imageValidator";
+import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
+import Media from "./Media";
+import { handleGetHomepageSection } from "@/API/api";
 
 const EditPages = ({ handleSitepage }) => {
+  const { template } = GetCurrentUserDetails();
   const [selectedSection, setSelectedSection] = useState("about");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    media: "",
-  });
+  const [sectionData, setSectionData] = useState({});
+  const [getSection, setGetSection] = useState({});
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    handleSelectDropDown("sitepages");
+    fetchSectionData();
+  }, [selectedSection]);
 
-  const handleImageSelect = async (file, width, height, media) => {
+  const fetchSectionData = async () => {
     try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
+      const response = await handleGetHomepageSection(
+        "sitepages",
+        selectedSection
+      );
+      if (response.status >= 200 && response.status <= 209) {
+        setSectionData(response.data.data.contents);
+      } else {
+        setSectionData({});
       }
+      console.log("response", response);
     } catch (error) {
-      toast.error(error);
+      setSectionData({});
     }
-  };
-
-  const handleVadilation = () => {
-    let newerrors = {};
-    let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
-      has = true;
-    }
-
-    setError(newerrors);
-    return has;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
-    if (validateResponse) {
-      toast.error("Please fill required details correctly !");
-      return null;
-    }
-
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
   };
 
   const handleModal = () => {
@@ -74,6 +55,25 @@ const EditPages = ({ handleSitepage }) => {
   const handleSeoSubmit = (formData) => {
     console.log("Submitting data for Sitepages", formData);
   };
+
+  const handleSelectDropDown = (slug) => {
+    const findmodule = template?.find((temp) => temp.moduleSlug === slug);
+    setGetSection(findmodule || {});
+  };
+
+  const handleSectionSlug = (value) => {
+    let currentSection = getSection?.sections?.find(
+      (item) => value === item.sectionSlug
+    );
+    currentSection = {
+      ...currentSection,
+      moduleSlug: getSection?.moduleSlug,
+      moduleName: getSection?.moduleName,
+    };
+    return currentSection || {};
+  };
+
+  // console.log("template", template);
 
   return (
     <Fragment>
@@ -137,16 +137,31 @@ const EditPages = ({ handleSitepage }) => {
               onChange={(e) => setSelectedSection(e.target.value)}
               aria-label="Select section to edit"
             >
-              <option value="about">About (Section 1)</option>
-              <option value="offers">Offers (Section 2)</option>
+              {getSection?.sections?.map((item, index) => (
+                <option value={`${item.sectionSlug}`}>
+                  {item.sectionName}
+                </option>
+              ))}
+              {/* <option value="about">About (Section 1)</option>
+              <option value="offers">Offers (Section 2)</option> */}
             </select>
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "about" && (
-              <About handleSitepage={handleSitepage} />
+              <About
+                handleSitepage={handleSitepage}
+                currentSection={handleSectionSlug(selectedSection)}
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+              />
             )}
             {selectedSection === "offers" && (
-              <Offers handleSitepage={handleSitepage} />
+              <Offers
+                handleSitepage={handleSitepage}
+                currentSection={handleSectionSlug(selectedSection)}
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+              />
             )}
           </div>
         </section>
@@ -154,52 +169,7 @@ const EditPages = ({ handleSitepage }) => {
       {activeTab === "seoAttributes" && (
         <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
       )}
-      {activeTab === "media" && (
-        <form
-          onSubmit={handleSubmit}
-          className="w-full md:px-8 px-4 py-8  space-y-6"
-        >
-          <div className="w-full min-h-[60vh] flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <DragAndDropImage
-                id="media"
-                label="media"
-                accept={`images/*`}
-                width={487}
-                height={410}
-                onImageSelect={handleImageSelect}
-              />
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="file"
-                  className="md:text-[18px] text-[14px] gilroy-medium flex gap-1"
-                >
-                  Uploaded Files
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Save and cancel buttons */}
-          <div className="w-full sticky bottom-0 py-3 bg-white z-20 flex justify-end gap-4">
-            <Button
-              onClick={handleSitepage}
-              variant="bordered"
-              className="font-semibold"
-            >
-              Back to list
-            </Button>
-            <Button
-              color="primary"
-              className="font-semibold text-white"
-              startContent={<FiSave size={20} />}
-              onClick={handleModal}
-            >
-              Save New Page
-            </Button>
-          </div>
-        </form>
-      )}
+      {activeTab === "media" && <Media handleSitepage={handleSitepage} />}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

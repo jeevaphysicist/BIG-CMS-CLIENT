@@ -1,13 +1,21 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { FormateImageURL } from "@/lib/FormateImageURL";
 
-const Categories = ({ handleHomepage }) => {
+const Categories = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     categoryOneImage: "",
     categoryOneTitle: "",
@@ -152,18 +160,63 @@ const Categories = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        categoryOneImage: sectionData.categoryOneImage || "",
+        categoryOneTitle: sectionData.categoryOneTitle || "",
+        categoryOneLink: sectionData.categoryOneLink || "",
+        categoryTwoImage: sectionData.categoryTwoImage || "",
+        categoryTwoTitle: sectionData.categoryTwoTitle || "",
+        categoryTwoLink: sectionData.categoryTwoLink || "",
+        categoryThreeImage: sectionData.categoryThreeImage || "",
+        categoryThreeTitle: sectionData.categoryThreeTitle || "",
+        categoryThreeLink: sectionData.categoryThreeLink || "",
+        categoryFourImage: sectionData.categoryFourImage || "",
+        categoryFourTitle: sectionData.categoryFourTitle || "",
+        categoryFourLink: sectionData.categoryFourLink || "",
+        categoryFiveImage: sectionData.categoryFiveImage || "",
+        categoryFiveTitle: sectionData.categoryFiveTitle || "",
+        categoryFiveLink: sectionData.categoryFiveLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -245,6 +298,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryOneTitle"
+                    value={formData.categoryOneTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -269,6 +323,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryOneLink"
+                    value={formData.categoryOneLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -327,6 +382,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryTwoTitle"
+                    value={formData.categoryTwoTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -351,6 +407,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryTwoLink"
+                    value={formData.categoryTwoLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -409,6 +466,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryThreeTitle"
+                    value={formData.categoryThreeTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -433,6 +491,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryThreeLink"
+                    value={formData.categoryThreeLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -491,6 +550,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryFourTitle"
+                    value={formData.categoryFourTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -515,6 +575,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryFourLink"
+                    value={formData.categoryFourLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -572,6 +633,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryFiveTitle"
+                    value={formData.categoryFiveTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -596,6 +658,7 @@ const Categories = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="categoryFiveLink"
+                    value={formData.categoryFiveLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -617,8 +680,10 @@ const Categories = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

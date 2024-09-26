@@ -8,34 +8,19 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-function convertObjectToFormData(data, formData = new FormData(), parentKey = '') {
-  for (const key in data) {
-    // Check if the data has the key (to avoid inherited properties)
-    if (data.hasOwnProperty(key)) {
-      // Create a key for nested objects (e.g., contents[bannerOneTitle])
-      const fullKey = parentKey ? `${parentKey}[${key}]` : key;
-
-      // Check if the value is an object and not a File
-      if (typeof data[key] === 'object' && !(data[key] instanceof File)) {
-        // If the value is another nested object, call the function recursively
-        convertObjectToFormData(data[key], formData, fullKey);
-      } else {
-        // Append other types of data (File, String, Boolean, etc.) directly
-        formData.append(fullKey, data[key] !== null ? data[key] : '');
-      }
-    }
-  }
-  return formData;
-}
-
-
-const Herosection = ({ handleHomepage ,sectionData  }) => {
+const Herosection = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     bannerOneImage: "",
     bannerOneTitle: "",
     bannerOneDescription: "",
-    bannerOneEnableTimerStatus: 'Active',
+    bannerOneEnableTimerStatus: "Active",
     bannerOneStartDate: "",
     bannerOneEndDate: "",
     bannerTwoImage: "",
@@ -50,9 +35,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    
-  },[sectionData])
+  console.log("currentSection", currentSection);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -65,7 +48,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
   const handleSwitchChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: prevData[field] == "Inactive" ? "Active":"Inactive",
+      [field]: prevData[field] == "Inactive" ? "Active" : "Inactive",
     }));
   };
 
@@ -118,6 +101,29 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
     return has;
   };
 
+  useEffect(() => {
+    // console.log("section data", sectionData);
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        bannerOneImage: sectionData.bannerOneImage || "",
+        bannerOneTitle: sectionData.bannerOneTitle || "",
+        bannerOneDescription: sectionData.bannerOneDescription || "",
+        bannerOneEnableTimerStatus:
+          sectionData.bannerOneEnableTimerStatus || "Active",
+        bannerOneStartDate: sectionData.bannerOneStartDate || "",
+        bannerOneEndDate: sectionData.bannerOneEndDate || "",
+        bannerTwoImage: sectionData.bannerTwoImage || "",
+        bannerTwoTitle: sectionData.bannerTwoTitle || "",
+        bannerTwoDescription: sectionData.bannerTwoDescription || "",
+        bannerTwoButtonStatus: sectionData.bannerTwoButtonStatus || "Active",
+        bannerTwoButtonContent: sectionData.bannerTwoButtonContent || "",
+        bannerTwoButtonLink: sectionData.bannerTwoButtonLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
@@ -127,27 +133,32 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
       return null;
     }
     let bodyData = {
-      contents:formData ,
-      moduleSlug:"homepage",
-      moduleName:"HomePage",
-      sectionSlug:"hero-section",
-      sectionName:"Herosection",
-      pageName:"Homepage",
-      pageSlug:"homepage"
-    } 
-    
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
+
     try {
+      setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
       const response = await handleHomepageCreateEditSection(bodyData);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
-      }
-      else{
-        toast.error('Failed to process herosection')
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.data.message);
       }
       // console.log("response", response);
     } catch (error) {
+      toast.error("Internal server error");
       //  console.log("error",error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -200,7 +211,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
 
               {formData.bannerOneImage && (
                 <img
-                  className="h-[150px] mx-auto w-[150px]"
+                  className=" mx-auto w-[150px]"
                   src={FormateImageURL(formData.bannerOneImage)}
                   alt="Image Preview"
                 />
@@ -227,6 +238,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerOneTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -251,6 +263,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerOneDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -264,6 +277,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 </label>
                 <Switch
                   id="timer"
+                  value={formData.bannerOneEnableTimerStatus}
                   isSelected={formData.bannerOneEnableTimerStatus === "Active"}
                   onChange={() =>
                     handleSwitchChange("bannerOneEnableTimerStatus")
@@ -286,6 +300,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                     size="lg"
                     radius="sm"
                     name="bannerOneStartDate"
+                    value={formData.bannerOneStartDate}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -303,6 +318,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                     size="lg"
                     radius="sm"
                     name="bannerOneEndDate"
+                    value={formData.bannerOneEndDate}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -355,7 +371,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
               />
               {formData.bannerTwoImage && (
                 <img
-                  className="h-[150px] mx-auto w-[150px]"
+                  className="h-[150px] mx-auto"
                   src={FormateImageURL(formData.bannerTwoImage)}
                   alt="Image Preview"
                 />
@@ -382,6 +398,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerTwoTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -406,6 +423,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerTwoDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -416,6 +434,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 </label>
                 <Switch
                   isSelected={formData.bannerTwoButtonStatus === "Active"}
+                  value={formData.bannerTwoButtonStatus}
                   onChange={() => handleSwitchChange("bannerTwoButtonStatus")}
                   aria-label="Enable Button"
                 />
@@ -435,6 +454,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoButtonContent"
+                value={formData.bannerTwoButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -452,6 +472,7 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
                 size="lg"
                 radius="sm"
                 name="bannerTwoButtonLink"
+                value={formData.bannerTwoButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -470,8 +491,10 @@ const Herosection = ({ handleHomepage ,sectionData  }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
@@ -7,8 +7,15 @@ import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const BirthStoneInfo = ({ handleHomepage }) => {
+const BirthStoneInfo = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
@@ -80,18 +87,57 @@ const BirthStoneInfo = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        sectionTitle: sectionData.sectionTitle || "",
+        sectionDescription: sectionData.sectionDescription || "",
+        birthStoneMonth: sectionData.birthStoneMonth || "",
+        birthStoneImage: sectionData.birthStoneImage || "",
+        selectionImage: sectionData.selectionImage || "",
+        title: sectionData.title || "",
+        description: sectionData.description || "",
+        readMoreLink: sectionData.readMoreLink || "",
+        productLink: sectionData.productLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,6 +169,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionTitle"
+                value={formData.sectionTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -147,6 +194,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionDescription"
+                value={formData.sectionDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -193,29 +241,28 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                       </span>
                     )}
                   </label>
-                  <Select
+                  <select
                     type="text"
                     id="birthStoneImage_birthStoneMonth"
                     placeholder="Select Birthstone birthStoneMonth"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
+                    className="w-full h-[46px] rounded-[8px] border-1.5 border-[#D0D5DD] px-[10px] cursor-pointer"
                     name="birthStoneMonth"
+                    value={formData.birthStoneMonth}
                     onChange={handleFormChange}
                   >
-                    <SelectItem value="January">January</SelectItem>
-                    <SelectItem value="Febraury">Febraury</SelectItem>
-                    <SelectItem value="March">March</SelectItem>
-                    <SelectItem value="April">April</SelectItem>
-                    <SelectItem value="May">May</SelectItem>
-                    <SelectItem value="January">June</SelectItem>
-                    <SelectItem value="June">July</SelectItem>
-                    <SelectItem value="August">August</SelectItem>
-                    <SelectItem value="September">September</SelectItem>
-                    <SelectItem value="October">October</SelectItem>
-                    <SelectItem value="November">November</SelectItem>
-                    <SelectItem value="December">December</SelectItem>
-                  </Select>
+                    <option value="January">January</option>
+                    <option value="Febraury">Febraury</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="January">June</option>
+                    <option value="June">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </select>
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
@@ -296,6 +343,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="title"
+                    value={formData.title}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -320,6 +368,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="description"
+                    value={formData.description}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -338,6 +387,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                       size="lg"
                       radius="sm"
                       name="readMoreLink"
+                      value={formData.readMoreLink}
                       onChange={handleFormChange}
                     />
                   </div>
@@ -355,6 +405,7 @@ const BirthStoneInfo = ({ handleHomepage }) => {
                       size="lg"
                       radius="sm"
                       name="productLink"
+                      value={formData.productLink}
                       onChange={handleFormChange}
                     />
                   </div>
@@ -377,8 +428,10 @@ const BirthStoneInfo = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

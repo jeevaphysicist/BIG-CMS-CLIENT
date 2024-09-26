@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -7,14 +7,21 @@ import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
-const Updates = ({ handleHomepage }) => {
+const Updates = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
     bannerImage: "",
     buttonTitle: "",
-    moduleId: false,
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -63,18 +70,52 @@ const Updates = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        sectionTitle: sectionData.sectionTitle || "",
+        sectionDescription: sectionData.sectionDescription || "",
+        bannerImage: sectionData.bannerImage || "",
+        buttonTitle: sectionData.buttonTitle || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -106,6 +147,7 @@ const Updates = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionTitle"
+                value={formData.sectionTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -131,6 +173,7 @@ const Updates = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionDescription"
+                value={formData.sectionDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -209,6 +252,7 @@ const Updates = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="buttonTitle"
+                    value={formData.buttonTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -230,8 +274,10 @@ const Updates = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

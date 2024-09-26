@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import giftImg from "../../../assets/image 11.png";
@@ -8,8 +8,10 @@ import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Gifts = ({ handleHomepage }) => {
+const Gifts = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
     giftOneImage: "",
     giftOneTitle: "",
@@ -86,18 +88,57 @@ const Gifts = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        giftOneImage: sectionData.giftOneImage || "",
+        giftOneTitle: sectionData.giftOneTitle || "",
+        giftOneLink: sectionData.giftOneLink || "",
+        giftTwoImage: sectionData.giftTwoImage || "",
+        giftTwoTitle: sectionData.giftTwoTitle || "",
+        giftTwoLink: sectionData.giftTwoLink || "",
+        giftThreeTitle: sectionData.giftThreeTitle || "",
+        giftThreeImage: sectionData.giftThreeImage || "",
+        giftThreeLink: sectionData.giftThreeLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -182,6 +223,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftOneTitle"
+                    value={formData.giftOneTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -206,6 +248,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftOneLink"
+                    value={formData.giftOneLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -263,6 +306,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftTwoTitle"
+                    value={formData.giftTwoTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -287,6 +331,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftTwoLink"
+                    value={formData.giftTwoLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -343,6 +388,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftThreeTitle"
+                    value={formData.giftThreeTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -367,6 +413,7 @@ const Gifts = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="giftThreeLink"
+                    value={formData.giftThreeLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -388,8 +435,10 @@ const Gifts = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>
