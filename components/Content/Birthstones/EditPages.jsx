@@ -132,33 +132,32 @@ const EditPages = ({ handleBirthStones }) => {
       {activeTab === "generalInfo" && (
         <section>
           <div className="md:top-28 sticky z-20 bg-white">
-            {selectedSection === "herosection" && (
-              <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
-                <label
-                  htmlFor="page-title"
-                  className="text-[16px]  font-semibold flex gap-1"
-                >
-                  Page Title
-                  <RequiredSymbol />
-                  {/* {errors.introduction && (
+            <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
+              <label
+                htmlFor="page-title"
+                className="text-[16px]  font-semibold flex gap-1"
+              >
+                Page Title
+                <RequiredSymbol />
+                {/* {errors.introduction && (
                   <span className="font-regular text-[12px] text-red-600">
                     {errors.introduction}
                   </span>
                 )} */}
-                </label>
-                <Input
-                  type="text"
-                  minRows={4}
-                  id="page-title"
-                  variant="bordered"
-                  placeholder="Meaning of Emerald Gemstone"
-                  size="lg"
-                  radius="sm"
-                  name="pageTitle"
-                  // onChange={handleFormChange}
-                />
-              </div>
-            )}
+              </label>
+              <Input
+                type="text"
+                minRows={4}
+                id="page-title"
+                variant="bordered"
+                placeholder="Meaning of Emerald Gemstone"
+                size="md"
+                radius="sm"
+                name="pageTitle"
+                // onChange={handleFormChange}
+              />
+            </div>
+
             <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3   ">
               <h3 className="text-[16px] font-semibold">
                 Select your Section to Edit
@@ -220,11 +219,11 @@ const EditPages = ({ handleBirthStones }) => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        modeltitle="About Us"
+        modeltitle="May Birthstone"
       >
         <div className="flex gap-4 h-10 border-b-1 px-8 pt-3 sticky top-0 bg-white">
           <button
-            className={`text-[16px] border-b-3 border-[#434CE7] text-black font-semibold  `}
+            className={`text-[16px] border-b-3 border-[#434CE7] text-black font-semibold`}
           >
             Details
           </button>
@@ -236,7 +235,7 @@ const EditPages = ({ handleBirthStones }) => {
                 <div className="space-y-1">
                   <h4 className="text-[16px] font-semibold">Header</h4>
                   <p className="text-[14px] text-black/70">
-                    May Birthstone: Emerald - Gem Of Spring And Prosperity
+                    May Birthstone: Emerald - Gem Of Spring and Prosperity
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -264,14 +263,38 @@ const EditPages = ({ handleBirthStones }) => {
                     authenticity, we steadfastly avoid artificial, synthetic, or
                     simulated gemstones, ensuring that each piece in our
                     collection is a genuine work of natures art. Our commitment
-                    to transparency and education sets us apart.
+                    to transparency and education sets us apart. We believe in
+                    empowering our customers with knowledge about the unique
+                    characteristics and origins of each gemstone. Beyond being a
+                    retailer, we are your partners in exploration, guiding you
+                    through the fascinating world of gemstones and helping you
+                    make informed choices. Ethics and integrity form the
+                    cornerstone of our operations. From responsible sourcing to
+                    our state-of-the-art factory in Jaipur, India, where over 40
+                    skilled artisans bring our gemstones to life, we uphold the
+                    highest standards. Each gemstone undergoes meticulous
+                    cutting and shaping, transforming raw beauty into timeless
+                    pieces that reflect our dedication to craftsmanship. Beyond
+                    the allure of gemstones, our business is built on a
+                    foundation of reliability, service, and dependability. When
+                    you choose Best In Gems, you are not just making a purchase;
+                    you are entering into a relationship grounded in trust and
+                    excellence. Our team is here to ensure your experience is
+                    seamless, from selecting the perfect gemstone to enjoying
+                    its beauty for years to come. As we celebrate over 25 years
+                    in the industry, we extend our gratitude to our patrons who
+                    have made this journey possible. Join us at Best In Gems,
+                    where the essence of natures wonders meets the artistry of
+                    human hands, and every gemstone is a testament to the
+                    enduring beauty of our Earth. Thank you for being part of
+                    our story.
                   </p>
                 </div>
-                <div className="w-full">
+                <div className="w-[100%]">
                   <img
                     src="/images/guidegemstone.svg"
                     alt=""
-                    className="w-full"
+                    className="object-cover w-[100%] h-[100%]"
                   />
                 </div>
               </div>

@@ -1,23 +1,24 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
-import RequiredSymbol from "../RequiredSymbol";
-
-import { toast } from "react-toastify";
-import { validateImageDimensions } from "@/lib/imageValidator";
+import { Fragment, useEffect, useState } from "react";
+import RequiredSymbol from "../Content/RequiredSymbol";
 import { FiSave } from "react-icons/fi";
-import DragAndDropImage from "../DragDropImage";
-import TextEditor from "../TextEditor";
 
-const EditPages = ({ handleGiftGuide }) => {
-  const [content, setContent] = useState("");
+const EditFooterLinks = ({
+  selectedCategory,
+  handleFooterPage,
+  selectedItem,
+}) => {
   const [formData, setFormData] = useState({
-    title: "",
-    mainContent: "",
+    footerLinkName: "",
+    footerLink: "",
+    moduleId: null,
   });
 
+  console.log("in footer", selectedItem);
+
   const [loading, setLoading] = useState(false);
-  const [errors, setError] = useState({});
+  const [errors, setError] = useState("");
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -27,23 +28,27 @@ const EditPages = ({ handleGiftGuide }) => {
     }));
   };
 
-  const handleProcedureContentChange = (content) => {
-    // console.log("content---->", content);
-    setContent(content);
-    setFormData((prevData) => ({ ...prevData, mainContent: content }));
-  };
+  useEffect(() => {
+    if (selectedCategory) {
+      setFormData((prevData) => ({
+        ...prevData,
+        footerCategory: selectedItem?.name,
+      }));
+    }
+  }, [selectedItem]);
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Title is required";
+    if (formData.footerLinkName === "" || formData.footerLinkName === null) {
+      newerrors.footerLinkName = "Link name is required";
       has = true;
     }
-    if (formData.mainContent === "" || formData.mainContent === null) {
-      newerrors.mainContent = "Content is required";
+    if (formData.footerLink === "" || formData.footerLink === null) {
+      newerrors.footerLink = "Link is required";
       has = true;
     }
+
     setError(newerrors);
     return has;
   };
@@ -64,36 +69,53 @@ const EditPages = ({ handleGiftGuide }) => {
 
   return (
     <Fragment>
-      <section className="h-full w-full">
-        <div className="w-full md:h-20  overflow-x-hidden no-scrollbar flex flex-col gap-2 px-4 pt-4 sticky top-0 z-30 bg-white justify-between">
-          <div className="flex md:flex-row flex-col gap-4 justify-between">
-            <div>
-              <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-                Edit Holiday Gift Guide
-              </h2>
-              <p className="text-[#4A5367] md:text-[14px] text-[12px]">
-                Enter Page Contents
-              </p>
-            </div>
-            <Tabs aria-label="Options">
-              <Tab key="draft" title="Draft"></Tab>
-              <Tab key="publish" title="Publish"></Tab>
-            </Tabs>
-          </div>
-        </div>
+      <form onSubmit={handleSubmit} className="h-full w-full">
         <div className="pt-2 no-scrollbar md:min-h-[75vh]">
           <div className="flex items-start lg:pr-5  my-5 justify-between w-[100%] lg:flex-row flex-col ">
-            <div className="w-[100%] md:px-8 px-4 space-y-6">
+            <div className="w-[100%] space-y-6 md:px-8 px-4">
+              <div className="flex flex-col gap-3">
+                <label
+                  htmlFor="category"
+                  className=" text-[16px] font-medium flex gap-1"
+                >
+                  Link Name
+                  <RequiredSymbol />{" "}
+                  {errors.footerLinkName && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.footerLinkName}
+                    </span>
+                  )}
+                </label>
+                <select
+                  className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
+                  aria-label="Select section to edit"
+                  value={selectedItem.name}
+                  onChange={handleFormChange}
+                  name="footerLinkName"
+                  disabled={true}
+                >
+                  <option value="Pendant Mount">Pendant Mount</option>
+                  <option value="Aquamarine Gemstone">
+                    Aquamarine Gemstone
+                  </option>
+                  <option value="Opal Gemstone">Opal Gemstone</option>
+                  <option value="diamond-gemstone">Diamond Gemstone</option>
+                  <option value="garnet-gemstone">Garnet Gemstone</option>
+                  <option value="emerald-gemstone">Emerald Gemstone</option>
+                  <option value="sappire-gemstone">Sappire Gemstone</option>
+                  <option value="topaz-gemstone">Topaz Gemstone</option>
+                </select>
+              </div>
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="title"
                   className=" text-[16px] font-medium flex gap-1"
                 >
-                  Title
+                  Link
                   <RequiredSymbol />{" "}
-                  {errors.title && (
+                  {errors.footerLink && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.title}
+                      {errors.footerLink}
                     </span>
                   )}
                 </label>
@@ -102,29 +124,11 @@ const EditPages = ({ handleGiftGuide }) => {
                   minRows={4}
                   id="title"
                   variant="bordered"
-                  placeholder="Holiday gift guide"
+                  placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="title"
+                  name="footerLink"
                   onChange={handleFormChange}
-                />
-              </div>
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="main_content"
-                  className=" text-[16px] font-medium flex gap-1"
-                >
-                  Main Content
-                  <RequiredSymbol />{" "}
-                  {errors.mainContent && (
-                    <span className="font-regular text-[12px] text-red-600">
-                      {errors.mainContent}
-                    </span>
-                  )}
-                </label>
-                <TextEditor
-                  value={formData.mainContent}
-                  handleContentChange={handleProcedureContentChange}
                 />
               </div>
             </div>
@@ -134,7 +138,7 @@ const EditPages = ({ handleGiftGuide }) => {
         <div className="w-full  sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4 pr-5">
           <Button
             type="button"
-            onClick={handleGiftGuide}
+            onClick={handleFooterPage}
             variant="bordered"
             className="font-semibold"
           >
@@ -151,8 +155,8 @@ const EditPages = ({ handleGiftGuide }) => {
             Save
           </Button>
         </div>
-      </section>
+      </form>
     </Fragment>
   );
 };
-export default EditPages;
+export default EditFooterLinks;

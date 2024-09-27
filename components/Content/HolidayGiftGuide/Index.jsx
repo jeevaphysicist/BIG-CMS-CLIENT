@@ -42,7 +42,7 @@ const Index = () => {
           <div className="flex items-center justify-between w-[100%]">
             <div className="flex flex-col items-start justify-start">
               <h1 className="flex text-[#0A1215] font-medium text-[20px]">
-                Holiday gift guide
+                Holiday Gift Guide
               </h1>
               <p className="text-[#4A5367]">Edit Holiday gift guide</p>
             </div>

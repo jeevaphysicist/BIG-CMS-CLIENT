@@ -19,18 +19,23 @@ const Categories = ({
   const [formData, setFormData] = useState({
     categoryOneImage: "",
     categoryOneTitle: "",
+    categoryOneButton: "",
     categoryOneLink: "",
     categoryTwoImage: "",
     categoryTwoTitle: "",
+    categoryTwoButton: "",
     categoryTwoLink: "",
     categoryThreeImage: "",
     categoryThreeTitle: "",
+    categoryThreeButton: "",
     categoryThreeLink: "",
     categoryFourImage: "",
     categoryFourTitle: "",
+    categoryFourButton: "",
     categoryFourLink: "",
     categoryFiveImage: "",
     categoryFiveTitle: "",
+    categoryFiveButton: "",
     categoryFiveLink: "",
     moduleId: null,
   });
@@ -127,33 +132,68 @@ const Categories = ({
       newerrors.categoryFiveTitle = "Title is required";
       has = true;
     }
+    if (
+      formData.categoryOneButton === "" ||
+      formData.categoryOneButton === null
+    ) {
+      newerrors.categoryOneButton = "Call to Action is required";
+      has = true;
+    }
+    if (
+      formData.categoryTwoButton === "" ||
+      formData.categoryTwoButton === null
+    ) {
+      newerrors.categoryTwoButton = "Call to Action is required";
+      has = true;
+    }
+    if (
+      formData.categoryThreeButton === "" ||
+      formData.categoryThreeButton === null
+    ) {
+      newerrors.categoryThreeButton = "Call to Action is required";
+      has = true;
+    }
+    if (
+      formData.categoryFourButton === "" ||
+      formData.categoryFourButton === null
+    ) {
+      newerrors.categoryFourButton = "Call to Action is required";
+      has = true;
+    }
+    if (
+      formData.categoryFiveButton === "" ||
+      formData.categoryFiveButton === null
+    ) {
+      newerrors.categoryFiveButton = "Call to Action is required";
+      has = true;
+    }
     if (formData.categoryOneLink === "" || formData.categoryOneLink === null) {
-      newerrors.categoryOneLink = "Call to Action is required";
+      newerrors.categoryOneLink = "Call to Action Link is required";
       has = true;
     }
     if (formData.categoryTwoLink === "" || formData.categoryTwoLink === null) {
-      newerrors.categoryTwoLink = "Call to Action is required";
+      newerrors.categoryTwoLink = "Call to Action Link is required";
       has = true;
     }
     if (
       formData.categoryThreeLink === "" ||
       formData.categoryThreeLink === null
     ) {
-      newerrors.categoryThreeLink = "Call to Action is required";
+      newerrors.categoryThreeLink = "Call to Action Link is required";
       has = true;
     }
     if (
       formData.categoryFourLink === "" ||
       formData.categoryFourLink === null
     ) {
-      newerrors.categoryFourLink = "Call to Action is required";
+      newerrors.categoryFourLink = "Call to Action Link is required";
       has = true;
     }
     if (
       formData.categoryFiveLink === "" ||
       formData.categoryFiveLink === null
     ) {
-      newerrors.categoryFiveLink = "Call to Action is required";
+      newerrors.categoryFiveLink = "Call to Action Link is required";
       has = true;
     }
     setError(newerrors);
@@ -309,6 +349,31 @@ const Categories = ({
                   >
                     Call to action
                     <RequiredSymbol />
+                    {errors.categoryOneButton && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.categoryOneButton}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_desc"
+                    placeholder="Explore"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="categoryOneButton"
+                    value={formData.categoryOneButton}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_desc"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action Link
+                    <RequiredSymbol />
                     {errors.categoryOneLink && (
                       <span className="font-regular text-[12px] text-red-600">
                         {errors.categoryOneLink}
@@ -388,10 +453,35 @@ const Categories = ({
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc1"
+                    htmlFor="category_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action
+                    <RequiredSymbol />
+                    {errors.categoryTwoButton && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.categoryTwoButton}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_desc"
+                    placeholder="Explore"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="categoryTwoButton"
+                    value={formData.categoryTwoButton}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_desc1"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action Link
                     <RequiredSymbol />
                     {errors.categoryTwoLink && (
                       <span className="font-regular text-[12px] text-red-600">
@@ -472,10 +562,35 @@ const Categories = ({
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc2"
+                    htmlFor="category_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action
+                    <RequiredSymbol />
+                    {errors.categoryThreeButton && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.categoryThreeButton}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_desc"
+                    placeholder="Explore"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="categoryThreeButton"
+                    value={formData.categoryThreeButton}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_desc2"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action Link
                     <RequiredSymbol />
                     {errors.categoryThreeLink && (
                       <span className="font-regular text-[12px] text-red-600">
@@ -556,10 +671,35 @@ const Categories = ({
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc3"
+                    htmlFor="category_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action
+                    <RequiredSymbol />
+                    {errors.categoryFourButton && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.categoryFourButton}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_desc"
+                    placeholder="Explore"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="categoryFourButton"
+                    value={formData.categoryFourButton}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_desc3"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action Link
                     <RequiredSymbol />
                     {errors.categoryFourLink && (
                       <span className="font-regular text-[12px] text-red-600">
@@ -639,10 +779,35 @@ const Categories = ({
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc4"
+                    htmlFor="category_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action
+                    <RequiredSymbol />
+                    {errors.categoryFiveButton && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.categoryFiveButton}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_desc"
+                    placeholder="Explore"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="categoryFiveButton"
+                    value={formData.categoryFiveButton}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_desc4"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action Link
                     <RequiredSymbol />
                     {errors.categoryFiveLink && (
                       <span className="font-regular text-[12px] text-red-600">

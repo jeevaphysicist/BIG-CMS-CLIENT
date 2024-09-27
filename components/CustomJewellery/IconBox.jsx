@@ -118,7 +118,7 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
             <Input
               type="text"
               id="section_title"
-              placeholder="Craft Your Ideal Gemstone Jewellery"
+              placeholder="Craft Your Ideal Gemstone Jewelry"
               variant="bordered"
               size="md"
               radius="sm"
@@ -143,7 +143,7 @@ const IconBox = ({ handleCustomJeweleryPage }) => {
                   </p>
                   <div className="py-2 flex items-center justify-between">
                     <img src={"/images/image 22.png"} alt="content" />
-                    <img src={"/images/customjewellery.svg"} alt="content" />
+                    <img src={"/images/customJewelry.svg"} alt="content" />
                   </div>
                 </div>
               </div>

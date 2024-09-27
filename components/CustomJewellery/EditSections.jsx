@@ -27,7 +27,7 @@ const EditSections = ({ handleCustomJeweleryPage }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Edit Custom Jewellery
+              Edit Custom Jewelry
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Select and Edit Sections to Personalize Your Content.

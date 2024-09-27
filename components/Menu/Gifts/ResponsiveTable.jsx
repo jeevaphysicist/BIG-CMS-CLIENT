@@ -42,7 +42,7 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
             <tr>
               <th className="w-[60%] px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Gemstone Type <PiArrowDownBold />
+                  Gifts Type <PiArrowDownBold />
                 </span>
               </th>
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">

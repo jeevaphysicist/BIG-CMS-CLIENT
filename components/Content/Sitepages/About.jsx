@@ -111,33 +111,8 @@ const About = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="page_title"
-                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
-              >
-                Page Title
-                <RequiredSymbol />
-                {errors.pageTitle && (
-                  <span className="font-regular text-[12px] text-red-600">
-                    {errors.pageTitle}
-                  </span>
-                )}
-              </label>
-              <Input
-                type="text"
-                id="page_title"
-                placeholder="About Us"
-                variant="bordered"
-                size="lg"
-                radius="sm"
-                name="pageTitle"
-                value={formData.pageTitle}
-                onChange={handleFormChange}
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <label
                 htmlFor="header"
-                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
+                className="md:text-[18px] text-[16px] font-medium flex gap-1"
               >
                 Header
                 <RequiredSymbol />

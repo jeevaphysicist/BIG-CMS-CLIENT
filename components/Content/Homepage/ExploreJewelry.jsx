@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 import { handleHomepageCreateEditSection } from "@/API/api";
 
-const ExploreJwellery = ({
+const ExploreJewelry = ({
   handleHomepage,
   sectionData,
   fetchData,
@@ -153,7 +153,7 @@ const ExploreJwellery = ({
                 <Input
                   type="text"
                   id="sec_sectionTitle"
-                  placeholder="Explore Gemstone Jewellery Collection"
+                  placeholder="Explore Gemstone Jewelry Collection"
                   variant="bordered"
                   size="lg"
                   radius="sm"
@@ -178,7 +178,7 @@ const ExploreJwellery = ({
                 <Input
                   type="text"
                   id="explore_desc"
-                  placeholder="Our latest additions in the Gemstone Jewellery, showcasing"
+                  placeholder="Our latest additions in the Gemstone Jewelry, showcasing"
                   variant="bordered"
                   size="lg"
                   radius="sm"
@@ -203,7 +203,7 @@ const ExploreJwellery = ({
                 <Input
                   type="text"
                   id="action_desc"
-                  placeholder="Explore All Jewellery"
+                  placeholder="Explore All Jewelry"
                   variant="bordered"
                   size="lg"
                   radius="sm"
@@ -266,4 +266,4 @@ const ExploreJwellery = ({
     </Fragment>
   );
 };
-export default ExploreJwellery;
+export default ExploreJewelry;

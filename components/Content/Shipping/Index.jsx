@@ -124,7 +124,7 @@ const Index = () => {
       <EditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        modaltitle="Add New Shipping method"
+        modaltitle="Add New Shipping Method"
         subtitle="Seamlessly Add shipping Method"
         buttonname="Save"
       >

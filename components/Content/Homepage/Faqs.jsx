@@ -1,20 +1,13 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  Link,
-  Select,
-  SelectItem,
-  Textarea,
-} from "@nextui-org/react";
-import faqImg from "../../../assets/image 17.png";
+import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
-import { FaPlus } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 import { handleHomepageCreateEditSection } from "@/API/api";
+import AlertModel from "@/components/AlertModal";
 
 const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
@@ -27,9 +20,22 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
 
   const addNewQuestion = () => {
+    if (questions.length >= 5) {
+      toast.error("You can only add up to 5 questions.");
+      return;
+    }
     setQuestions([...questions, { question: "", answer: "" }]);
+  };
+
+  const handleDeleteQuestion = () => {
+    const updatedQuestions = questions.filter((_, i) => i !== questionToDelete);
+    setQuestions(updatedQuestions);
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+    setOpenAlertModal(false);
   };
 
   const handleQuestionChange = (index, field, value) => {
@@ -43,17 +49,6 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleImageSelect = async (file, width, height, banner) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
   };
 
   const handleVadilation = () => {
@@ -215,37 +210,56 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                     onChange={handleFormChange}
                   >
                     <option value="general">General</option>
-                    <option value="dummy">Dummy</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="quality">Quality</option>
+                    <option value="payment">Payment</option>
                   </select>
                 </div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions
                   </label>
-                  <Link
-                    className="font-bold flex gap-1 items-center cursor-pointer "
-                    onClick={addNewQuestion}
-                  >
-                    <FaPlus size={10} />
-                    Add New Question
-                  </Link>
+                  <div>
+                    <Link
+                      className="font-bold flex gap-1 items-center cursor-pointer "
+                      onClick={addNewQuestion}
+                    >
+                      <FaPlus size={10} />
+                      Add New Question
+                    </Link>
+                    <p className="text-[10px] text-[#667085] text-end">
+                      Max 5 FAQs can be generated
+                    </p>
+                  </div>
                 </div>
 
                 {questions.map((que, index) => (
                   <div className="flex flex-col space-y-6 mb-8" key={index}>
                     <div className="flex flex-col gap-3">
-                      <label
-                        htmlFor={`question-${index}`}
-                        className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
-                      >
-                        Question {index + 1}
-                        <RequiredSymbol />
-                        {errors[`question_${index}`] && (
-                          <span className="font-regular text-[12px] text-red-600">
-                            {errors[`question_${index}`]}
-                          </span>
-                        )}
-                      </label>
+                      <div className="flex justify-between items-center">
+                        <label
+                          htmlFor={`question-${index}`}
+                          className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                        >
+                          Question {index + 1}
+                          <RequiredSymbol />
+                          {errors[`question_${index}`] && (
+                            <span className="font-regular text-[12px] text-red-600">
+                              {errors[`question_${index}`]}
+                            </span>
+                          )}
+                        </label>
+                        <Link
+                          className="font-bold flex gap-1 items-center cursor-pointer text-red-500"
+                          onClick={() => {
+                            setQuestionToDelete(index);
+                            setOpenAlertModal(true);
+                          }}
+                        >
+                          <FaMinus size={12} className="pt-1" /> Delete Question
+                        </Link>
+                      </div>
+
                       <Input
                         type="text"
                         id={`question-${index}`}
@@ -318,6 +332,13 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
           </Button>
         </div>
       </form>
+      <AlertModel
+        isVisible={openAlertModal}
+        modeltitle="Delete Question"
+        message="Are you sure you want to delete this question?"
+        onConfirm={handleDeleteQuestion}
+        onCancel={() => setOpenAlertModal(false)}
+      />
     </Fragment>
   );
 };

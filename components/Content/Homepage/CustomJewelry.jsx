@@ -11,7 +11,7 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 import { handleHomepageCreateEditSection } from "@/API/api";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const CustomJewellery = ({
+const CustomJewelry = ({
   handleHomepage,
   sectionData,
   fetchData,
@@ -504,4 +504,4 @@ const CustomJewellery = ({
   );
 };
 
-export default CustomJewellery;
+export default CustomJewelry;

@@ -1,7 +1,7 @@
 import Index from "@/components/CustomJewellery/Index";
 import { Fragment } from "react";
 
-const CustomJewellery = () => {
+const CustomJewelry = () => {
   return (
     <Fragment>
       <Index />
@@ -9,4 +9,4 @@ const CustomJewellery = () => {
   );
 };
 
-export default CustomJewellery;
+export default CustomJewelry;

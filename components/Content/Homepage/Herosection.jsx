@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-import { Button, Input, Switch } from "@nextui-org/react";
+import { Button, DatePicker, Input, Switch } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { handleHomepageCreateEditSection } from "@/API/api";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { now, getLocalTimeZone } from "@internationalized/date";
 
 const Herosection = ({
   handleHomepage,
@@ -268,7 +269,7 @@ const Herosection = ({
               />
             </div>
             <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-2">
                 <label
                   htmlFor="timer"
                   className="md:text-[18px] text-[16px] gilroy-medium"
@@ -286,40 +287,36 @@ const Herosection = ({
                 />
               </div>
               <div className="w-full flex justify-between md:gap-4 gap-2">
-                <div className="w-[100%] gap-2">
+                <div className="w-[100%] space-y-2">
                   <label
                     htmlFor="days"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
                     Start Date
                   </label>
-                  <Input
-                    type="date"
-                    id="banner_desc"
+                  <DatePicker
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="bannerOneStartDate"
-                    value={formData.bannerOneStartDate}
-                    onChange={handleFormChange}
+                    hideTimeZone
+                    showMonthAndYearPickers
+                    defaultValue={now(getLocalTimeZone())}
                   />
                 </div>
-                <div className="w-[100%] gap-2">
+                <div className="w-[100%] space-y-2">
                   <label
                     htmlFor="end-date"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
                     End Date
                   </label>
-                  <Input
-                    type="date"
-                    id="end-date"
+                  <DatePicker
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="bannerOneEndDate"
-                    value={formData.bannerOneEndDate}
-                    onChange={handleFormChange}
+                    hideTimeZone
+                    showMonthAndYearPickers
+                    defaultValue={now(getLocalTimeZone())}
                   />
                 </div>
               </div>

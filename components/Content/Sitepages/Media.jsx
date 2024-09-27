@@ -5,7 +5,13 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 import { Button } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 
-const Media = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
+const Media = ({
+  handleSitepage,
+  sectionData,
+  fetchData,
+  currentSection,
+  handler,
+}) => {
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -128,8 +134,9 @@ const Media = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
             color="primary"
             className="font-semibold text-white"
             startContent={<FiSave size={20} />}
+            onClick={handler}
           >
-            Save New Page
+            Save
           </Button>
         </div>
       </form>

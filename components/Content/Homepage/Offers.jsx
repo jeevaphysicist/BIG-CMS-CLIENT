@@ -516,7 +516,7 @@ const Offers = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                 htmlFor="btn_content"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Banner Content
+                Button Content
               </label>
               <Input
                 type="text"
@@ -670,7 +670,7 @@ const Offers = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                 htmlFor="btn_content1"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Banner Content
+                Button Content
               </label>
               <Input
                 type="text"

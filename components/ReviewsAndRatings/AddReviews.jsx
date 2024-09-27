@@ -146,7 +146,7 @@ const AddReviews = ({ handleReviewPage }) => {
                     <option value="company">Company</option>
                     <option value="policies">Policies</option>
                     <option value="gemstones">Gemstones</option>
-                    <option value="jewellery">Jewellery</option>
+                    <option value="Jewelry">Jewelry</option>
                     <option value="dropsBeads">Drops & Beads</option>
                     <option value="gifts">Gifts</option>
                     <option value="semiMounts">Semi-Mounts</option>
@@ -171,7 +171,7 @@ const AddReviews = ({ handleReviewPage }) => {
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
                   <option value="gemstones">Gemstones</option>
-                  <option value="jewellery">Jewellery</option>
+                  <option value="Jewelry">Jewelry</option>
                   <option value="dropsBeads">Drops & Beads</option>
                   <option value="gifts">Gifts</option>
                   <option value="semiMounts">Semi-Mounts</option>

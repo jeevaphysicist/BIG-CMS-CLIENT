@@ -112,7 +112,7 @@ const EditPages = ({ handleCategoryPage }) => {
                 htmlFor="page-title"
                 className="text-[16px]  font-semibold flex gap-1"
               >
-                Title
+                Page Title
                 <RequiredSymbol />
                 {/* {errors.introduction && (
                   <span className="font-regular text-[12px] text-red-600">
@@ -122,7 +122,6 @@ const EditPages = ({ handleCategoryPage }) => {
               </label>
               <Input
                 type="text"
-                minRows={4}
                 id="page-title"
                 variant="bordered"
                 placeholder="Gemstones"

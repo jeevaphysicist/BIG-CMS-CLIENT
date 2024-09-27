@@ -118,7 +118,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
               htmlFor="seo_desc"
               className="md:text-[18px] text-[14px] gilroy-medium flex gap-1"
             >
-              Description
+              SEO Description
               <RequiredSymbol />
               {errors.description && (
                 <span className="font-regular text-[12px] text-red-600">
@@ -182,7 +182,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
           type="submit"
           onClick={handleModal}
         >
-          Save New Page
+          Save
         </Button>
       </div>
     </form>

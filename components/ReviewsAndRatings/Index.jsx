@@ -35,13 +35,15 @@ const Index = ({ handleSitepage }) => {
                   Add and view Your Reviews
                 </p>
               </div>
-              <button
-                className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-                onClick={handleReviewPage}
-              >
-                <CiCirclePlus />
-                Add New Review
-              </button>
+              {activeTab === "clientReviews" || (
+                <button
+                  className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
+                  onClick={handleReviewPage}
+                >
+                  <CiCirclePlus />
+                  Add New Review
+                </button>
+              )}
             </div>
             <div className="flex gap-[24px] h-10">
               <button

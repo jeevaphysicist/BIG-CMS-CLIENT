@@ -101,15 +101,6 @@ const ResponsiveTable = ({ initialData, handleGemstonePage }) => {
                         <td className="px-4 py-4 text-[14px]">
                           <div className="flex items-center gap-5">
                             <Switch size="sm" aria-label="Automatic updates" />
-                            <button className="text-[20px] text-[#475467]">
-                              <PiTrashBold />
-                            </button>
-                            <button
-                              className="text-[20px] text-[#475467]"
-                              onClick={handleGemstonePage}
-                            >
-                              <FiEdit2 />
-                            </button>
                           </div>
                         </td>
                       </tr>

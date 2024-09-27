@@ -20,19 +20,19 @@
         "sectionSlug": "recommended"
       },
       {
-        "sectionName": "Explore Gemstones (Section 5)",
-        "sectionSlug": "explore-gemstones"
+        "sectionName": "Gemstones (Section 5)",
+        "sectionSlug": "gemstones"
       },
       {
-        "sectionName": "Explore Jewelry (Section 6)",
-        "sectionSlug": "explore-jewelry"
+        "sectionName": "Jewelry (Section 6)",
+        "sectionSlug": "jewelry"
       },
       {
         "sectionName": "Drops & Beads (Section 7)",
         "sectionSlug": "drops-beads"
       },
       {
-        "sectionName": "Semi-Mount (Section 8)",
+        "sectionName": "Semi-Mounts (Section 8)",
         "sectionSlug": "semi-mounts"
       },
       {
@@ -72,8 +72,8 @@
         "sectionSlug": "update-section"
       },
       {
-        "sectionName": "Social Media (Section 18)",
-        "sectionSlug": "social-media"
+        "sectionName": "Social Follow (Section 18)",
+        "sectionSlug": "social-follow"
       }
     ]
   },
@@ -86,12 +86,8 @@
         "sectionSlug": "about"
       },
       {
-        "sectionName": "Offer (Section 2)",
+        "sectionName": "Offers (Section 2)",
         "sectionSlug": "offers"
-      },
-      {
-        "sectionName": "Media (Section 3)",
-        "sectionSlug": "media"
       }
     ]
   },
@@ -256,8 +252,8 @@
         "sectionSlug": "gemstone"
       },
       {
-        "sectionName": "Jewellery",
-        "sectionSlug": "jewellery"
+        "sectionName": "Jewelry",
+        "sectionSlug": "Jewelry"
       },
       {
         "sectionName": "Drops & Beads",

@@ -10,9 +10,15 @@ import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 
-const ResponsiveTable = ({ initialData, handleFooterPage }) => {
+const ResponsiveTable = ({
+  initialData,
+  handleFooterPage,
+  handleSelectedRow,
+}) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleTableHead = data.some((row) => row.page);
 
   const toggleSelectAll = () => {
     if (selectedRows.length === data.length) {
@@ -26,6 +32,12 @@ const ResponsiveTable = ({ initialData, handleFooterPage }) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
+  };
+
+  const handleEdit = (row) => {
+    if (handleSelectedRow) {
+      handleSelectedRow(row);
+    }
   };
 
   return (
@@ -42,11 +54,13 @@ const ResponsiveTable = ({ initialData, handleFooterPage }) => {
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
                 Link
               </th>
-              <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
-                <span className="flex items-center gap-2">
-                  Corresponding Page <PiArrowDownBold />
-                </span>
-              </th>
+              {handleTableHead && (
+                <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
+                  <span className="flex items-center gap-2">
+                    Corresponding Page <PiArrowDownBold />
+                  </span>
+                </th>
+              )}
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
                 Status
               </th>
@@ -77,9 +91,11 @@ const ResponsiveTable = ({ initialData, handleFooterPage }) => {
                 <td className="px-4 py-4 font-regular text-[14px] ">
                   <p className="text-balance w-[150px]">{row.link}</p>
                 </td>
-                <td className="px-4 py-4 font-regular text-[14px] ">
-                  <p className="text-balance w-[200px]">{row.page}</p>
-                </td>
+                {handleTableHead && (
+                  <td className="px-4 py-4 font-regular text-[14px] ">
+                    <p className="text-balance w-[200px]">{row.page}</p>
+                  </td>
+                )}
                 <td className="px-4 py-2 text-[14px]">
                   {row.status === "Active" ? (
                     <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
@@ -96,12 +112,9 @@ const ResponsiveTable = ({ initialData, handleFooterPage }) => {
                 <td className="px-4 py-4 text-[14px]">
                   <div className="flex items-center gap-5">
                     <Switch size="sm" aria-label="Automatic updates" />
-                    <button className="text-[20px] text-[#475467]">
-                      <PiTrashBold />
-                    </button>
                     <button
                       className="text-[20px] text-[#475467]"
-                      onClick={handleFooterPage}
+                      onClick={() => handleEdit(row)}
                     >
                       <FiEdit2 />
                     </button>

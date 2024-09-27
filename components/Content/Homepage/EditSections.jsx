@@ -6,7 +6,7 @@ import Categories from "./Categories";
 import { Tab, Tabs } from "@nextui-org/react";
 import Recommended from "./Recommended";
 import ExploreGemstones from "./ExploreGemstones";
-import ExploreJwellery from "./ExploreJwellery";
+import ExploreJewelry from "./ExploreJewelry";
 import DropsBeads from "./DropsBeads";
 import SemiMounts from "./SemiMounts";
 import Gifts from "./Gifts";
@@ -14,7 +14,7 @@ import Offers from "./Offers";
 import BirthStoneInfo from "./BirthStoneInfo";
 import Gemshows from "./Gemshows";
 import Testimonials from "./Testimonials";
-import CustomJewellery from "./CustomJewellery";
+import CustomJewelry from "./CustomJewelry";
 import Faqs from "./Faqs";
 import ContentSection from "./ContentSection";
 import Updates from "./Updates";
@@ -180,7 +180,7 @@ const EditSections = ({ handleHomepage }) => {
               />
             )}
             {selectedSection === "explore-jewelry" && (
-              <ExploreJwellery
+              <ExploreJewelry
                 sectionData={sectionData}
                 fetchData={fetchSectionData}
                 handleHomepage={handleHomepage}
@@ -244,7 +244,7 @@ const EditSections = ({ handleHomepage }) => {
               />
             )}
             {selectedSection === "custom-jewelry" && (
-              <CustomJewellery
+              <CustomJewelry
                 sectionData={sectionData}
                 fetchData={fetchSectionData}
                 handleHomepage={handleHomepage}

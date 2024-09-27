@@ -11,9 +11,8 @@ import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
-const ResponsiveTable = ({ initialData, handleJewelryPage }) => {
+const ResponsiveTable = ({ initialData }) => {
   const [data, setData] = useState(initialData);
-  const [selectedRows, setSelectedRows] = useState([]);
   const [openList, setOpenList] = useState("by-type");
 
   // const toggleSelectAll = () => {
@@ -42,7 +41,7 @@ const ResponsiveTable = ({ initialData, handleJewelryPage }) => {
             <tr>
               <th className="w-[60%] px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
                 <span className="flex items-center gap-2">
-                  Gemstone Type <PiArrowDownBold />
+                  Jewelry Type <PiArrowDownBold />
                 </span>
               </th>
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
@@ -98,15 +97,6 @@ const ResponsiveTable = ({ initialData, handleJewelryPage }) => {
                         <td className="px-4 py-4 text-[14px]">
                           <div className="flex items-center gap-5">
                             <Switch size="sm" aria-label="Automatic updates" />
-                            <button className="text-[20px] text-[#475467]">
-                              <PiTrashBold />
-                            </button>
-                            <button
-                              className="text-[20px] text-[#475467]"
-                              onClick={handleJewelryPage}
-                            >
-                              <FiEdit2 />
-                            </button>
                           </div>
                         </td>
                       </tr>

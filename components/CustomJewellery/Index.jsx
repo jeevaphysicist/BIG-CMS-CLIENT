@@ -36,10 +36,10 @@ const Index = () => {
       {homePage ? (
         <div className=" p-5 no-scrollbar">
           <h2 className="font-semibold text-black text-[20px]">
-            Customize Jewellery
+            Customize Jewelry
           </h2>
           <p className="text-[#4A5367] font-regular text-[16px] mb-8">
-            Edit Your Custom Jewellery page
+            Edit Your Custom Jewelry page
           </p>
 
           <div className="w-[100%] overflow-x-auto rounded-[10px] border no-scrollbar ">
@@ -57,12 +57,12 @@ const Index = () => {
                   </span>
                 </TableColumn>
                 <TableColumn>Status</TableColumn>
-                <TableColumn></TableColumn>
+                <TableColumn>Action</TableColumn>
               </TableHeader>
               <TableBody>
                 <TableRow key="1">
                   <TableCell>
-                    <p className="text-nowrap">Custom Jewellery</p>
+                    <p className="text-nowrap">Custom Jewelry</p>
                   </TableCell>
                   <TableCell>
                     {isChecked ? (

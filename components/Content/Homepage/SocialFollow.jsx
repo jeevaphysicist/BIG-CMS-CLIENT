@@ -189,8 +189,8 @@ const SocialFollow = ({
                 id="thumbnailImage"
                 label="thumbnailImage"
                 accept={`images/*`}
-                width={264}
-                height={264}
+                width={500}
+                height={500}
                 onImageSelect={handleImageSelect}
               />
               {formData.thumbnailImage && (

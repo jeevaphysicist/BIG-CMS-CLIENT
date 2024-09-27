@@ -13,6 +13,11 @@ import { PiArrowDownBold } from "react-icons/pi";
 const ResponsiveTable = ({ initialData, handleTicker }) => {
   const [data, setData] = useState(initialData);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedSwitch, setSelectedSwitch] = useState(null);
+
+  const handleSwitch = (id) => {
+    setSelectedSwitch(id === selectedSwitch ? null : id);
+  };
 
   const toggleSelectAll = () => {
     if (selectedRows.length === data.length) {
@@ -82,7 +87,12 @@ const ResponsiveTable = ({ initialData, handleTicker }) => {
                 </td>
                 <td className="px-4 py-4 text-[14px]">
                   <div className="flex items-center gap-5">
-                    <Switch size="sm" aria-label="Automatic updates" />
+                    <Switch
+                      size="sm"
+                      aria-label="Active Inactive"
+                      isSelected={selectedSwitch === row.id}
+                      onChange={() => handleSwitch(row.id)}
+                    />
                     <button className="text-[20px] text-[#475467]">
                       <PiTrashBold />
                     </button>

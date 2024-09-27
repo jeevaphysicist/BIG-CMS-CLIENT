@@ -70,11 +70,62 @@ const initialData = [
   // ... more data
 ];
 
+const footerData = [
+  {
+    id: "1",
+    name: "Pendant Mount",
+    link: "bit.ly/1213",
+    status: "Active",
+  },
+  {
+    id: "2",
+    name: "Aquamarine Gemstone",
+    link: "bit.ly/4353",
+    status: "Active",
+  },
+  {
+    id: "3",
+    name: "Opal Gemstone",
+    link: "bit.ly/1213",
+    status: "Active",
+  },
+  {
+    id: "4",
+    name: "Diamond Gemstone",
+    link: "bit.ly/1213",
+    status: "Active",
+  },
+  {
+    id: "5",
+    name: "Garnet Gemstone",
+    link: "bit.ly/1255",
+    status: "Active",
+  },
+  {
+    id: "6",
+    name: "Emerald Gemstone",
+    link: "bit.ly/5253",
+    status: "Active",
+  },
+  {
+    id: "7",
+    name: "Sappire Gemstone",
+    link: "bit.ly/5555",
+    status: "Active",
+  },
+  {
+    id: "8",
+    name: "Topaz Gemstone",
+    link: "bit.ly/3253",
+    status: "Active",
+  },
+  // ... more data
+];
+
 const Index = () => {
   const [isTable, setIsTable] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSection, setSelectedSection] = useState("jewellery");
+  const [selectedSection, setSelectedSection] = useState("logo-contact");
+  const [selectedItem, setSelectedItem] = useState("");
   const itemsClasses = {
     table: " bg-white  ",
     thead: "bg-white border ",
@@ -89,7 +140,10 @@ const Index = () => {
     setIsTable(!isTable);
   };
 
-  const handleAddSitePage = () => {};
+  const handleSelectedRow = (item) => {
+    setIsTable(!isTable);
+    setSelectedItem(item);
+  };
 
   return (
     <div className="w-[100%] relative">
@@ -122,15 +176,16 @@ const Index = () => {
                   onChange={(e) => setSelectedSection(e.target.value)}
                   aria-label="Select section to edit"
                 >
-                  <option value="logoContact">Logo and Contact</option>
+                  <option value="logo-contact">Logo and Contact</option>
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
                   <option value="gemstones">Gemstones</option>
-                  <option value="jewellery">Jewellery</option>
-                  <option value="dropsBeads">Drops & Beads</option>
+                  <option value="jewelry">Jewelry</option>
+                  <option value="drops-beads">Drops & Beads</option>
                   <option value="gifts">Gifts</option>
-                  <option value="semiMounts">Semi-Mounts</option>
+                  <option value="semi-mounts">Semi-Mounts</option>
                   <option value="guide">Guide</option>
+                  <option value="footer-links">Footer Links</option>
                 </select>
               </div>
               <div className="flex relative items-center justify-start">
@@ -145,13 +200,70 @@ const Index = () => {
           </div>
 
           <div className="w-[100%] mt-4 overflow-x-auto no-scrollbar">
-            {selectedSection === "logoContact" && (
+            {selectedSection === "logo-contact" && (
               <LogoAndContact handleFooterPage={handleFooterPage} />
             )}
-            {selectedSection !== "logoContact" && (
+            {selectedSection === "company" && (
               <ResponsiveTable
                 initialData={initialData}
                 handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "policies" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "gemstones" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "jewelry" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "drops-beads" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "gifts" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "semi-mounts" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "guide" && (
+              <ResponsiveTable
+                initialData={initialData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
+              />
+            )}
+            {selectedSection === "footer-links" && (
+              <ResponsiveTable
+                initialData={footerData}
+                handleFooterPage={handleFooterPage}
+                handleSelectedRow={handleSelectedRow}
               />
             )}
           </div>
@@ -160,6 +272,7 @@ const Index = () => {
         <EditPages
           handleFooterPage={handleFooterPage}
           selectedCategory={selectedSection}
+          selectedItem={selectedItem}
         />
       )}
     </div>

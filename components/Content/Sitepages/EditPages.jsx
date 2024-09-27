@@ -8,6 +8,7 @@ import SeoAttributes from "../SeoAttributes";
 import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
 import Media from "./Media";
 import { handleGetHomepageSection } from "@/API/api";
+import RequiredSymbol from "../RequiredSymbol";
 
 const EditPages = ({ handleSitepage }) => {
   const { template } = GetCurrentUserDetails();
@@ -128,6 +129,29 @@ const EditPages = ({ handleSitepage }) => {
       {activeTab === "generalInfo" && (
         <section>
           <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-20 bg-white">
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="page_title"
+                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
+              >
+                Page Title
+                <RequiredSymbol />
+                {/* {errors.pageTitle && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.pageTitle}
+                  </span>
+                )} */}
+              </label>
+              <Input
+                type="text"
+                id="page_title"
+                placeholder="About Us"
+                variant="bordered"
+                size="md"
+                radius="sm"
+                name="pageTitle"
+              />
+            </div>
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>
@@ -169,7 +193,12 @@ const EditPages = ({ handleSitepage }) => {
       {activeTab === "seoAttributes" && (
         <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
       )}
-      {activeTab === "media" && <Media handleSitepage={handleSitepage} />}
+      {activeTab === "media" && (
+        <Media
+          handleSitepage={handleSitepage}
+          handler={() => setIsModalOpen(true)}
+        />
+      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
