@@ -12,6 +12,7 @@ const EditModal = ({
   subtitle,
   handler,
   buttonname,
+  onSubmit,
 }) => {
   if (!isOpen) return null;
   return (
@@ -64,6 +65,7 @@ const EditModal = ({
               type="submit"
               className="font-semibold text-white"
               startContent={<FiSave size={20} />}
+              onClick={onSubmit}
             >
               {buttonname}
             </Button>
