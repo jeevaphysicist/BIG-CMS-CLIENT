@@ -253,7 +253,7 @@
       },
       {
         "sectionName": "Jewelry",
-        "sectionSlug": "Jewelry"
+        "sectionSlug": "jewelry"
       },
       {
         "sectionName": "Drops & Beads",
@@ -270,6 +270,10 @@
       {
         "sectionName": "Guide",
         "sectionSlug": "guide"
+      },
+      {
+        "sectionName": "Footer Links",
+        "sectionSlug": "footer-links"
       }
     ]
   }

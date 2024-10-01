@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import EditFooterLinks from "./EditFooterLinks";
 import EditTable from "./EditTable";
 
-const EditPages = ({ handleFooterPage, selectedCategory, selectedItem }) => {
+const EditPages = ({categoryName, fetchData, type ,handleFooterPage, selectedCategory, selectedItem }) => {
   return (
     <Fragment>
       <section className="h-full w-full">
@@ -12,10 +12,10 @@ const EditPages = ({ handleFooterPage, selectedCategory, selectedItem }) => {
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
               <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-                Add New Footer Item
+               {type ==="create" ? "Add New" :"Edit"}  Footer Item
               </h2>
               <p className="text-[#4A5367] md:text-[14px] text-[12px]">
-                Seamlessly Add New Footer Item
+                Seamlessly {type ==="create" ? "Add New" :"Edit"}  Footer Item
               </p>
             </div>
             <Tabs aria-label="Options">
@@ -26,12 +26,18 @@ const EditPages = ({ handleFooterPage, selectedCategory, selectedItem }) => {
         </div>
         {selectedCategory === "footer-links" ? (
           <EditFooterLinks
+            type={type}
+            fetchData={fetchData}
             handleFooterPage={handleFooterPage}
+            categoryName={categoryName}
             selectedCategory={selectedCategory}
             selectedItem={selectedItem}
           />
         ) : (
           <EditTable
+            type={type}
+            fetchData={fetchData}
+            categoryName={categoryName}
             handleFooterPage={handleFooterPage}
             selectedCategory={selectedCategory}
             selectedItem={selectedItem}

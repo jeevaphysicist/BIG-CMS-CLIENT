@@ -1,21 +1,34 @@
 import { Fragment, useEffect, useState } from "react";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { FiSave } from "react-icons/fi";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button, select } from "@nextui-org/react";
+import { toast } from "react-toastify";
+import { handleCreateFooter, handleFooterUpdate } from "@/API/api";
 
-const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
+const EditTable = ({categoryName,fetchData, type, selectedCategory, handleFooterPage, selectedItem }) => {
   const [formData, setFormData] = useState({
     footerCategory: "",
-    footerItemTitle: "",
-    footerItemLink: "",
-    footerItemCorrespondingPage: "",
+    title: "",
+    link: "",
+    correspondingPage: "",
     moduleId: null,
+    name:"",
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState("");
 
-  console.log("selected row in table", selectedItem);
+  useEffect(()=>{
+      setFormData({
+        footerCategory: selectedItem?.category || "",
+        title: selectedItem?.contents?.title || "",
+        link: selectedItem?.contents?.link || "",
+        correspondingPage: selectedItem?.contents?.correspondingPage || "",
+        name:selectedItem?.name || ""
+      })  
+  },[])
+
+  // console.log("selected row in table", selectedItem);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -41,38 +54,65 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
       newerrors.footerCategory = "Footer Category is required";
       has = true;
     }
-    if (formData.footerItemTitle === "" || formData.footerItemTitle === null) {
-      newerrors.footerItemTitle = "Footer Title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Footer Title is required";
       has = true;
     }
-    if (formData.footerItemLink === "" || formData.footerItemLink === null) {
-      newerrors.footerItemLink = "Footer Link is required";
+    if (formData.link === "" || formData.link === null) {
+      newerrors.link = "Footer Link is required";
       has = true;
     }
     if (
-      formData.footerItemCorrespondingPage === "" ||
-      formData.footerItemCorrespondingPage === null
+      formData.correspondingPage === "" ||
+      formData.correspondingPage === null
     ) {
-      newerrors.footerItemCorrespondingPage = "Corresponding Page is required";
+      newerrors.correspondingPage = "correspondingPage Page is required";
       has = true;
     }
-
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
+    try {
+      setLoading(true);
+      let bodyData = {
+           category:selectedCategory,
+           name:categoryName,
+           contents:{
+               title:formData.title,
+               link:formData.link,
+               correspondingPage:formData.correspondingPage
+           }
+      }
+      let response;
+      if(type === 'create'){
+        response = await handleCreateFooter(bodyData);
+      }
+      else if(type === 'edit'){
+        response = await handleFooterUpdate(selectedItem._id,bodyData); 
+      }
+     if(response.status>=200 && response.status <= 209){
+      fetchData();
+      handleFooterPage();
+     }
+    } catch (error) {
+      
+    }
+    finally{
+      setLoading(false);
+    }
 
     // API Call Here
 
-    console.log("Form submitted with data:", formData);
+    // console.log("Form submitted with data:", formData);
   };
 
   return (
@@ -104,11 +144,11 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                 >
                   <option value="company">Company</option>
                   <option value="policies">Policies</option>
-                  <option value="gemstones">Gemstones</option>
+                  <option value="gemstone">Gemstones</option>
                   <option value="Jewelry">Jewelry</option>
-                  <option value="dropsBeads">Drops & Beads</option>
+                  <option value="drops-beads">Drops & Beads</option>
                   <option value="gifts">Gifts</option>
-                  <option value="semiMounts">Semi-Mounts</option>
+                  <option value="semi-mounts">Semi-Mounts</option>
                   <option value="guide">Guide</option>
                   <option value="footer-links">Footer Links</option>
                 </select>
@@ -120,9 +160,9 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                 >
                   Footer Item Title
                   <RequiredSymbol />{" "}
-                  {errors.footerItemTitle && (
+                  {errors.title && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerItemTitle}
+                      {errors.title}
                     </span>
                   )}
                 </label>
@@ -134,7 +174,8 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="footerItemTitle"
+                  name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -145,9 +186,9 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                 >
                   Link
                   <RequiredSymbol />{" "}
-                  {errors.footerItemLink && (
+                  {errors.link && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerItemLink}
+                      {errors.link}
                     </span>
                   )}
                 </label>
@@ -158,7 +199,8 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                   placeholder="bit.ly/1213"
                   size="lg"
                   radius="sm"
-                  name="footerItemLink"
+                  name="link"
+                  value={formData.link}
                   onChange={handleFormChange}
                 />
               </div>
@@ -167,11 +209,11 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                   htmlFor="page"
                   className=" text-[16px] font-medium flex gap-1"
                 >
-                  Corresponding Page
+                  corresponding Page
                   <RequiredSymbol />{" "}
-                  {errors.footerItemCorrespondingPage && (
+                  {errors.correspondingPage && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerItemCorrespondingPage}
+                      {errors.correspondingPage}
                     </span>
                   )}
                 </label>
@@ -182,7 +224,8 @@ const EditTable = ({ selectedCategory, handleFooterPage, selectedItem }) => {
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="footerItemCorrespondingPage"
+                  value={formData.correspondingPage}
+                  name="correspondingPage"
                   onChange={handleFormChange}
                 />
               </div>

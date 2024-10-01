@@ -28,7 +28,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
       toast.error("You can only add up to 5 questions.");
       return;
     }
-    setQuestions([...questions, { question: "", answer: "" }]);
+    setQuestions([...questions, { question: "", answer: "",category:selectedCategory,error:{} }]);
   };
 
   const handleDeleteQuestion = () => {

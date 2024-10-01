@@ -16,77 +16,18 @@ import {
 } from "@/API/api";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const initialData = [
-  {
-    id: "1",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "2",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "3",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "4",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "5",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "6",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "7",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "8",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-  {
-    id: "9",
-    title:
-      "Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies",
-    status: "Active",
-  },
-
-  // ... more data
-];
-
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // Filtered data state
   const [selectedRow, setSelectedRow] = useState(null);
-
   const [formData, setFormData] = useState({
     tickerTitle: "",
   });
-
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
 
   const handleTicker = () => {
     setIsEditMode(true);
@@ -107,29 +48,26 @@ const Index = () => {
     }));
   };
 
-  const handleVadilation = () => {
-    let newerrors = {};
+  const handleValidation = () => {
+    let newErrors = {};
     let has = false;
-    if (formData.tickerTitle === "" || formData.tickerTitle === null) {
-      newerrors.tickerTitle = "Ticker Title is required";
+    if (!formData.tickerTitle) {
+      newErrors.tickerTitle = "Ticker Title is required";
       has = true;
     }
-
-    setError(newerrors);
+    setError(newErrors);
     return has;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let validateResponse = handleVadilation();
-    if (validateResponse) {
-      toast.error("Please fill required details correctly !");
-      return null;
+    if (handleValidation()) {
+      toast.error("Please fill required details correctly!");
+      return;
     }
-
     try {
       setLoading(true);
-      let bodyData = {
+      const bodyData = {
         name: formData.tickerTitle,
         status: "Inactive",
       };
@@ -167,11 +105,14 @@ const Index = () => {
       const response = await handleGetAllTickers();
       if (response.status >= 200 && response.status <= 209) {
         setTableData(response.data.ticker);
+        setFilteredData(response.data.ticker); // Set filtered data initially
       } else {
         setTableData([]);
+        setFilteredData([]);
       }
     } catch (error) {
       setTableData([]);
+      setFilteredData([]);
     }
   };
 
@@ -182,11 +123,21 @@ const Index = () => {
     handleTicker();
   };
 
-  console.log("selected row", selectedRow);
-
   useEffect(() => {
     fetchTickerData();
   }, []);
+
+  // Filter the data based on the search query
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = tableData.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(tableData);
+    }
+  }, [searchQuery, tableData]);
 
   return (
     <div className="w-[100%]">
@@ -211,12 +162,14 @@ const Index = () => {
           <input
             type="search"
             placeholder="Search"
-            className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
+            className="border-2 pl-12 py-2 pr-5 border-[#D0D5DD] rounded-[10px]"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
           />
         </div>
-        <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
+        <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar">
           <ResponsiveTable
-            initialData={tableData}
+            initialData={filteredData} // Use filtered data
             handleTicker={handleTicker}
             updateStatus={handleUpdateStatus}
             handleSelectedTicker={handleSelectedTicker}
@@ -225,13 +178,14 @@ const Index = () => {
         </div>
       </div>
       <EditModal
+        loading={loading}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         modaltitle={isEditMode ? "Edit Ticker" : "Add New Ticker"}
         subtitle={
           isEditMode ? "Seamlessly Edit Ticker" : "Seamlessly Add New Ticker"
         }
-        buttonname={isEditMode ? "Update Ticker" : "Save New Ticker"}
+        buttonname={isEditMode ? "Save" : "Save"}
         onSubmit={handleSubmit}
         fetchData={fetchTickerData}
       >

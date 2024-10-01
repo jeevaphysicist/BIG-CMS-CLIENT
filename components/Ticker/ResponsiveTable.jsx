@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { motion, Reorder } from "framer-motion";
 import { GripVertical } from "lucide-react";
-import { Button, Switch } from "@nextui-org/react";
+import { Button, Switch, Pagination } from "@nextui-org/react";
 import { FiEdit2 } from "react-icons/fi";
 import { RiDragMove2Fill } from "react-icons/ri";
 import { Checkbox } from "@nextui-org/react";
 import { PiTrashBold } from "react-icons/pi";
-import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
 import { handleTickerStatusChange } from "@/API/api";
 import { toast } from "react-toastify";
-import Loading from "../Layout/Loading";
+import Loading from "../Loading";
 
 const ResponsiveTable = ({
   initialData,
@@ -20,12 +19,17 @@ const ResponsiveTable = ({
   isLoading,
 }) => {
   const [activeTickerId, setActiveTickerId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5; // Number of rows to display per page
+
+  const totalPages = Math.ceil(initialData.length / rowsPerPage); // Calculate total pages
 
   useEffect(() => {
     const activeTicker = initialData.find((row) => row.status === "Active");
     if (activeTicker) {
       setActiveTickerId(activeTicker._id);
     }
+    setCurrentPage(1);
   }, [initialData]);
 
   const handleSwitch = async (id, currentStatus) => {
@@ -33,7 +37,6 @@ const ResponsiveTable = ({
       if (currentStatus === "Active") {
         await updateStatus(id, "Inactive");
         setActiveTickerId(null);
-        setSelectedSwitch(null);
       } else {
         if (activeTickerId) {
           await updateStatus(activeTickerId, "Inactive");
@@ -52,38 +55,50 @@ const ResponsiveTable = ({
     }
   };
 
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Get rows for the current page
+  const paginatedData = initialData.length >0 && initialData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
   return (
     <>
       <section className="w-[100%] ">
-        <div className="overflow-x-auto border-r-1 border-l-1   border-t-1 rounded-t-lg ">
+        <div className="overflow-x-auto border-r-1 border-l-1 border-t-1 rounded-t-lg ">
           {isLoading ? (
             <Loading />
           ) : (
+            paginatedData.length >0 &&
             <table className="min-w-full rounded-2xl bg-white">
               <thead className="bg-white rounded-2xl  ">
                 <tr>
-                  <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467]  text-nowrap">
+                  <th className="px-4 text-[12px] text-start py-3 border-b-1 text-[#475467] text-nowrap">
                     <span className="flex items-center gap-2">
                       Ticker Title <PiArrowDownBold />
                     </span>
                   </th>
-                  <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
+                  <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467] text-nowrap">
                     Status
                   </th>
-                  <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
+                  <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467] text-nowrap">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <Reorder.Group
+              <tbody
                 as="tbody"
                 axis="y"
-                values={initialData}
-                onReorder={initialData}
+                // values={paginatedData}
+                // onReorder={setPaginateData}
               >
-                {initialData &&
-                  initialData.map((row, index) => (
-                    <Reorder.Item
+                {paginatedData &&
+                  paginatedData.map((row, index) => (
+                    <tr
                       key={index}
                       value={row}
                       as="tr"
@@ -136,26 +151,36 @@ const ResponsiveTable = ({
                           </button>
                         </div>
                       </td>
-                    </Reorder.Item>
+                    </tr>
                   ))}
-              </Reorder.Group>
+              </tbody>
             </table>
           )}
         </div>
-        <div className="flex rounded-b-[10px] border-l-1 border-r-1 border-b-1  justify-between py-2 px-2 w-[100%] items-center gap-5">
-          <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2">
+        <div className="flex rounded-b-[10px] border-l-1 border-r-1 border-b-1 justify-between py-2 px-2 w-[100%] items-center gap-5">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2"
+          >
             <LuArrowLeft />
             Previous
           </button>
           <Pagination
             initialPage={1}
-            total={5}
+            total={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
             classNames={{
               item: "bg-transparent text-[#475467] font-medium",
-              cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium  ",
+              cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium",
             }}
           />
-          <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2"
+          >
             Next
             <LuArrowRight />
           </button>

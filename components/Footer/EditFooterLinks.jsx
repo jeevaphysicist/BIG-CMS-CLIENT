@@ -3,15 +3,20 @@ import { Button, Input, Tab, Tabs } from "@nextui-org/react";
 import { Fragment, useEffect, useState } from "react";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { FiSave } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { handleCreateFooter, handleFooterUpdate } from "@/API/api";
 
-const EditFooterLinks = ({
+const Editlinks = ({
   selectedCategory,
   handleFooterPage,
   selectedItem,
+  type,
+  fetchData,
+  categoryName
 }) => {
   const [formData, setFormData] = useState({
-    footerLinkName: "",
-    footerLink: "",
+    title: "",
+    link: "",
     moduleId: null,
   });
 
@@ -28,24 +33,22 @@ const EditFooterLinks = ({
     }));
   };
 
-  useEffect(() => {
-    if (selectedCategory) {
-      setFormData((prevData) => ({
-        ...prevData,
-        footerCategory: selectedItem?.name,
-      }));
-    }
-  }, [selectedItem]);
+  useEffect(()=>{
+    setFormData(prev=>({...prev,
+      title: selectedItem?.contents?.title,
+      link: selectedItem?.contents?.link,
+    }))
+  },[selectedItem])
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.footerLinkName === "" || formData.footerLinkName === null) {
-      newerrors.footerLinkName = "Link name is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Link name is required";
       has = true;
     }
-    if (formData.footerLink === "" || formData.footerLink === null) {
-      newerrors.footerLink = "Link is required";
+    if (formData.link === "" || formData.link === null) {
+      newerrors.link = "Link is required";
       has = true;
     }
 
@@ -53,18 +56,46 @@ const EditFooterLinks = ({
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
+    try {
+      setLoading(true);
+      let bodyData = {
+           category:selectedCategory,
+           name:categoryName,
+           contents:{
+               title:formData.title,
+               link:formData.link
+           }
+      }
+      let response;
+      if(type === 'create'){
+        response = await handleCreateFooter(bodyData);
+      }
+      else if(type === 'edit'){
+        response = await handleFooterUpdate(selectedItem._id,bodyData); 
+      }
+     if(response.status>=200 && response.status <= 209){
+      fetchData();
+      handleFooterPage();
+      toast.success(response.data.message || "Save Successfully")
+     }
+     else{
+      toast.error(response.data.data.message);
+     }
+    } catch (error) {
+      toast.error("Failed to Process!");
+    }
 
     // API Call Here
 
-    console.log("Form submitted with data:", formData);
+    // console.log("Form submitted with data:", formData);
   };
 
   return (
@@ -73,49 +104,16 @@ const EditFooterLinks = ({
         <div className="pt-2 no-scrollbar md:min-h-[75vh]">
           <div className="flex items-start lg:pr-5  my-5 justify-between w-[100%] lg:flex-row flex-col ">
             <div className="w-[100%] space-y-6 md:px-8 px-4">
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="category"
-                  className=" text-[16px] font-medium flex gap-1"
-                >
-                  Link Name
-                  <RequiredSymbol />{" "}
-                  {errors.footerLinkName && (
-                    <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerLinkName}
-                    </span>
-                  )}
-                </label>
-                <select
-                  className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
-                  aria-label="Select section to edit"
-                  value={selectedItem.name}
-                  onChange={handleFormChange}
-                  name="footerLinkName"
-                  disabled={true}
-                >
-                  <option value="Pendant Mount">Pendant Mount</option>
-                  <option value="Aquamarine Gemstone">
-                    Aquamarine Gemstone
-                  </option>
-                  <option value="Opal Gemstone">Opal Gemstone</option>
-                  <option value="diamond-gemstone">Diamond Gemstone</option>
-                  <option value="garnet-gemstone">Garnet Gemstone</option>
-                  <option value="emerald-gemstone">Emerald Gemstone</option>
-                  <option value="sappire-gemstone">Sappire Gemstone</option>
-                  <option value="topaz-gemstone">Topaz Gemstone</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
                 <label
                   htmlFor="title"
                   className=" text-[16px] font-medium flex gap-1"
                 >
-                  Link
+                  Name
                   <RequiredSymbol />{" "}
-                  {errors.footerLink && (
+                  {errors.title && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.footerLink}
+                      {errors.title}
                     </span>
                   )}
                 </label>
@@ -127,7 +125,34 @@ const EditFooterLinks = ({
                   placeholder="Rings"
                   size="lg"
                   radius="sm"
-                  name="footerLink"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleFormChange}
+                />
+              </div>
+              <div className="flex flex-col gap-3">
+                <label
+                  htmlFor="title"
+                  className=" text-[16px] font-medium flex gap-1"
+                >
+                  Link
+                  <RequiredSymbol />{" "}
+                  {errors.link && (
+                    <span className="font-regular text-[12px] text-red-600">
+                      {errors.link}
+                    </span>
+                  )}
+                </label>
+                <Input
+                  type="text"
+                  minRows={4}
+                  id="title"
+                  variant="bordered"
+                  placeholder="/Rings"
+                  size="lg"
+                  radius="sm"
+                  name="link"
+                  value={formData.link}
                   onChange={handleFormChange}
                 />
               </div>
@@ -159,4 +184,4 @@ const EditFooterLinks = ({
     </Fragment>
   );
 };
-export default EditFooterLinks;
+export default Editlinks;

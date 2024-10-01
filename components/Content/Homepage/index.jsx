@@ -74,8 +74,6 @@ const Index = () => {
   }
 
 
-  // console.log("list",list);
-
   return (
     <Fragment>
       {homePage ? (

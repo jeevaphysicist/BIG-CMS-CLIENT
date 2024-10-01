@@ -1,25 +1,63 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../Content/DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
+import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleCreateFooter, handleFooterUpdate, handleGetFooterCategoryList } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const LogoAndContact = ({ handleHomepage }) => {
+
+const LogoAndContact = ({ handleHomepage,categoryName,category }) => {
   const [formData, setFormData] = useState({
-    logo: "",
-    phoneNumberOne: "",
-    phoneNumberTwo: "",
-    email: "",
-    location: "",
-    fax: "",
-    moduleId: null,
-  });
+                                        logo: "",
+                                        phoneNumberOne: "",
+                                        phoneNumberTwo: "",
+                                        email: "",
+                                        location: "",
+                                        fax: "",
+                                      });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [logoData,setLogoData] = useState({});
+
+  useEffect(()=>{
+    fetchFooterSectionData();
+  },[])
+
+  useEffect(()=>{
+      setFormData(prev=>({...prev,
+                            logo:logoData.contents?.logo||"",
+                            phoneNumberOne: logoData.contents?.phoneNumberOne || "",
+                            phoneNumberTwo: logoData.contents?.phoneNumberTwo ||  "",
+                            email: logoData.contents?.email ||  "",
+                            location: logoData.contents?.location ||  "",
+                            fax: logoData.contents?.fax || ""                
+                          }))
+  },[logoData])
+
+  const fetchFooterSectionData = async ()=>{
+        try {
+           const response = await handleGetFooterCategoryList(category);
+          //  console.log("response",response);
+           if(response.status >= 200 && response.status <= 209){
+              setLogoData(response?.data[0])
+          //  console.log("response true",response);
+
+           }
+           else{
+             setLogoData({});
+           }
+        } catch (error) {
+          
+        }
+  }
+
+  // console.log("logoData",logoData);
+
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -63,24 +101,63 @@ const LogoAndContact = ({ handleHomepage }) => {
       newerrors.fax = "Fax is required";
       has = true;
     }
-
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate the form inputs
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
-      toast.error("Please fill required details correctly !");
+      toast.error("Please fill required details correctly!");
       return null;
     }
+  
+    try {
+      setLoading(true);
+      
+      let bodyData = {
+        category: category || "", 
+        name: categoryName || "", 
+        contents: formData,    
+      };
 
-    // API Call Here
+      bodyData = convertObjectToFormData(bodyData);
 
-    console.log("Form submitted with data:", formData);
+  
+      let response;
+      
+      // If logoData exists, make an update call; otherwise, make a create call
+      if (logoData && logoData._id) {
+        // Update API call
+        response = await handleFooterUpdate(logoData._id,bodyData);
+      } else {
+        // Create API call
+        response = await handleCreateFooter(bodyData);
+      }
+  
+      // Handle response
+      if (response.status >= 200 && response.status <= 209) {
+        fetchFooterSectionData();
+        const result = response.data;
+        toast.success(result.message || "Successfully saved!");
+      } else {
+        // const errorData = response.response.data;
+        toast.error(errorData.message || "Failed to save details.");
+      }
+      
+    } catch (error) {
+      // console.log("error",error);
+      toast.error("Failed to Process!");
+    } finally {
+      setLoading(false);
+    }
+  
+    // console.log("Form submitted with data:", formData);
   };
+  
 
   return (
     <Fragment>
@@ -126,12 +203,12 @@ const LogoAndContact = ({ handleHomepage }) => {
                     label="logo"
                     accept={`images/*`}
                     width={233}
-                    height={256}
+                    height={58}
                     onImageSelect={handleImageSelect}
                   />
                   {formData.logo && (
                     <img
-                      className="h-[150px] mx-auto w-[150px]"
+                      className="h-[58px] mx-auto w-[233px]"
                       src={FormateImageURL(formData.logo)}
                       alt="Image Preview"
                     />
@@ -158,6 +235,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="phoneNumberOne"
+                    value={formData.phoneNumberOne}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -182,6 +260,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="phoneNumberTwo"
+                    value={formData.phoneNumberTwo}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -206,6 +285,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="email"
+                    value={formData.email}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -230,6 +310,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="location"
+                    value={formData.location}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -254,6 +335,7 @@ const LogoAndContact = ({ handleHomepage }) => {
                     size="lg"
                     radius="sm"
                     name="fax"
+                    value={formData.fax}
                     onChange={handleFormChange}
                   />
                 </div>

@@ -205,7 +205,7 @@ export const handleTickerUpdate = async (id, data) => {
   }
 };
 
-// S.No 05
+// S.No 09
 // Get module List
 export const handleGetModuleList = async (moduleSlug) => {
   try {
@@ -216,12 +216,86 @@ export const handleGetModuleList = async (moduleSlug) => {
   }
 };
 
-// S.No 05
+// S.No 10
 // Get module List
 export const handleChangeModuleStatus = async (id) => {
   // console.log("id",id);
   try {
     const response = await publicApi.put(`/api/homepage/update/${id}/status`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 11
+// Create Footer Content
+export const handleCreateFooter = async (data) => {
+  try {
+    const response = await publicApi.post('/api/footer', data,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 12
+// Update Footer Content
+export const handleFooterUpdate = async (id, data) => {
+  try {
+    const response = await publicApi.put(`/api/footer/${id}`, data,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 13
+// Change Footer Status
+export const handleFooterStatusChange = async (id, data) => {
+  try {
+    const response = await publicApi.patch(`/api/footer/${id}/status`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 14
+// Delete Footer Content
+export const handleFooterDelete = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/footer/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 15
+// Get Footer Content List (optional, if needed)
+export const handleGetFooterList = async () => {
+  try {
+    const response = await publicApi.get('/api/footer');
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 15
+// Get Footer Content List (optional, if needed)
+export const handleGetFooterCategoryList = async (category) => {
+  try {
+    const response = await publicApi.get(`/api/footer/category/${category}`);
     return response;
   } catch (error) {
     return error;

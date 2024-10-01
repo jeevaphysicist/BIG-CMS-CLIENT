@@ -36,7 +36,7 @@ const Herosection = ({
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  console.log("currentSection", currentSection);
+  // console.log("currentSection", currentSection);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
