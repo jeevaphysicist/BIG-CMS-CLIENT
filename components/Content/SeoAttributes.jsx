@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "./RequiredSymbol";
 import { toast } from "react-toastify";
 
-const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
+const SeoAttributes = ({isLoading ,sectionData , onSubmit, handler, handleModal }) => {
   const [formData, setFormData] = useState({
-    slug: "",
-    title: "",
-    description: "",
-    tags: "",
+    slug:"",
+    title:"",
+    description:"",
+    tags:""
   });
+
+  useEffect(()=>{
+     setFormData(prev=>({...prev,
+      slug: sectionData?.slug ||  "",
+      title: sectionData?.title ||  "",
+      description: sectionData?.description || "",
+      tags: sectionData?.tags || ""
+     }))
+  },[sectionData])
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -47,7 +56,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
@@ -86,6 +95,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
               size="lg"
               radius="sm"
               name="slug"
+              value={formData.slug}
               onChange={handleChange}
             />
           </div>
@@ -110,6 +120,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
               size="lg"
               radius="sm"
               name="title"
+              value={formData.title}
               onChange={handleChange}
             />
           </div>
@@ -135,6 +146,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
               size="lg"
               radius="sm"
               name="description"
+              value={formData.description}
               onChange={handleChange}
             />
           </div>
@@ -159,6 +171,7 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
               size="lg"
               radius="sm"
               name="tags"
+              value={formData.tags}
               onChange={handleChange}
             />
           </div>
@@ -177,9 +190,11 @@ const SeoAttributes = ({ onSubmit, handler, handleModal }) => {
         </Button>
         <Button
           color="primary"
-          className="font-semibold text-white"
-          startContent={<FiSave size={20} />}
+          className="font-semibold disabled:opacity-40 disabled:cursor-wait text-white"
+          isDisabled={isLoading}
+          startContent={isLoading ?null:<FiSave size={20} />}
           type="submit"
+          isLoading={isLoading}
           onClick={handleModal}
         >
           Save

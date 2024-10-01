@@ -20,33 +20,34 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { CgMenuRightAlt } from "react-icons/cg";
 
 const MenuItems = ({ handleAside }) => {
-  const [openMenu, setOpenMenu] = useState({
-    sitePages: false,
-    assets: false,
-    content: false,
-    menu: false,
-  });
+const [openMenu, setOpenMenu] = useState({
+                                    sitePages: false,
+                                    assets: false,
+                                    content: false,
+                                    menu: false,
+                                  });
 
-  const toggleSubMenu = (menu) => {
+const toggleSubMenu = (menu) => {
     setOpenMenu((prevState) => ({
       ...prevState,
       [menu]: !prevState[menu],
     }));
   };
 
-  const pathname = usePathname();
-  const HandleFunction = (path) => {
+const pathname = usePathname();
+  
+const HandleFunction = (path) => {
     let isCurrentpath = path === pathname;
     return isCurrentpath;
   };
 
-  const HandleParentFunction = (statwith) => {
+const HandleParentFunction = (statwith) => {
     let isContentPath = pathname.startsWith(statwith);
     if (isContentPath) {
       return true;
     }
     return false;
-  };
+};
 
   return (
     <>

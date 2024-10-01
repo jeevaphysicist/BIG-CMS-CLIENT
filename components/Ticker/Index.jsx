@@ -167,6 +167,7 @@ const Index = () => {
         modaltitle="Add New Ticker"
         subtitle="Seamlessly Add New Ticker"
         buttonname="Save New Ticker"
+        // loading={}
       >
         <form onSubmit={handleSubmit} className="w-[100%] px-6 py-4 space-y-4">
           <div className="flex flex-col gap-3">

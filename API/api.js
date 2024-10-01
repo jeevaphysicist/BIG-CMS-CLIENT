@@ -152,3 +152,26 @@ export const handleGetHomepageSection = async (moduleSlug,sectionSlug) => {
     return error;
   }
 };
+
+// S.No 05
+// Get module List
+export const handleGetModuleList = async (moduleSlug) => {
+  try {
+    const response = await publicApi.get(`/api/homepage/module/${moduleSlug}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 05
+// Get module List
+export const handleChangeModuleStatus = async (id) => {
+  // console.log("id",id);
+  try {
+    const response = await publicApi.put(`/api/homepage/update/${id}/status`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};

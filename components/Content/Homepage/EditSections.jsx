@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import Herosection from "./Herosection";
 import ContentBox from "./ContentBox";
@@ -21,7 +20,9 @@ import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
 import SeoAttributes from "../SeoAttributes";
 import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
-import { handleGetHomepageSection } from "@/API/api";
+import { handleGetHomepageSection, handleHomepageCreateEditSection } from "@/API/api";
+import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
 const EditSections = ({ handleHomepage }) => {
   const { template } = GetCurrentUserDetails();
@@ -29,6 +30,7 @@ const EditSections = ({ handleHomepage }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [sectionData, setSectionData] = useState({});
   const [getSection, setGetSection] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     handleSelectDropDown("homepage");
@@ -46,18 +48,51 @@ const EditSections = ({ handleHomepage }) => {
       } else {
         setSectionData({});
       }
-      console.log("response", response);
+      // console.log("response", response);
     } catch (error) {
       setSectionData({});
     }
   };
 
+  useEffect(()=>{
+    if(activeTab === 'seoAttributes')
+    setSelectedSection('seo');
+  },[activeTab])
+
   const handleChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
+  const handleSeoSubmit = async (formData) => {
     console.log("Submitting data for Homepage", formData);
+    handleSectionSlug();
+    let bodyData = {
+      contents: formData,
+      moduleSlug: 'homepage',
+      moduleName: 'Homepage',
+      sectionSlug: 'seo',
+      sectionName: 'SEO',
+      pageName: "homepage",
+      pageSlug: 'homepage',
+    };
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchSectionData();
+      } else {
+        toast.error(response.data.message);
+      }
+      // console.log("response", response);
+    } catch (error) {
+      toast.error("Internal server error");
+      //  console.log("error",error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSelectDropDown = (slug) => {
@@ -171,7 +206,7 @@ const EditSections = ({ handleHomepage }) => {
                 currentSection={handleSectionSlug(selectedSection)}
               />
             )}
-            {selectedSection === "explore-gemstones" && (
+            {selectedSection === "gemstones" && (
               <ExploreGemstones
                 sectionData={sectionData}
                 fetchData={fetchSectionData}
@@ -179,7 +214,7 @@ const EditSections = ({ handleHomepage }) => {
                 currentSection={handleSectionSlug(selectedSection)}
               />
             )}
-            {selectedSection === "explore-jewelry" && (
+            {selectedSection === "jewelry" && (
               <ExploreJewelry
                 sectionData={sectionData}
                 fetchData={fetchSectionData}
@@ -275,7 +310,7 @@ const EditSections = ({ handleHomepage }) => {
                 currentSection={handleSectionSlug(selectedSection)}
               />
             )}
-            {selectedSection === "social-media" && (
+            {selectedSection === "social-follow" && (
               <SocialFollow
                 sectionData={sectionData}
                 fetchData={fetchSectionData}
@@ -287,7 +322,7 @@ const EditSections = ({ handleHomepage }) => {
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleHomepage} />
+        <SeoAttributes sectionData={sectionData} onSubmit={handleSeoSubmit} isLoading={loading} handler={handleHomepage} />
       )}
     </Fragment>
   );
