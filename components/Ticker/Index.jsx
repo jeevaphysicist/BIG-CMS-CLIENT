@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 import ResponsiveTable from "./ResponsiveTable";
@@ -8,6 +8,13 @@ import { Input } from "@nextui-org/react";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import EditModal from "../EditModal";
 import { toast } from "react-toastify";
+import {
+  handleGetAllTickers,
+  handleTickerCreation,
+  handleTickerStatusChange,
+  handleTickerUpdate,
+} from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
 const initialData = [
   {
@@ -69,28 +76,28 @@ const initialData = [
 ];
 
 const Index = () => {
-  const [isTable, setIsTable] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const itemsClasses = {
-    table: " bg-white  ",
-    thead: "bg-white border ",
-    tbody: "border",
-    tfoot: "",
-    tr: "",
-    th: "bg-white font-medium w-[100px]  rounded-t-[10px]",
-    td: "bg-[#F9FAFB] font-regular text-[#0A1215]",
-  };
-
-  const handleTicker = () => {
-    setIsModalOpen(true);
-  };
+  const [tableData, setTableData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const [formData, setFormData] = useState({
     tickerTitle: "",
   });
+
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleTicker = () => {
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateTicker = () => {
+    setIsEditMode(false);
+    setFormData({ tickerTitle: "" });
+    setIsModalOpen(true);
+  };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -112,21 +119,74 @@ const Index = () => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      let bodyData = {
+        name: formData.tickerTitle,
+        status: "Inactive",
+      };
+      const response = isEditMode
+        ? await handleTickerUpdate(selectedRow._id, bodyData)
+        : await handleTickerCreation(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchTickerData();
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error("Internal server error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddSitePage = () => {};
+  const handleUpdateStatus = async (id, status) => {
+    try {
+      setLoading(true);
+      const response = await handleTickerStatusChange(id, { status });
+      if (response.status >= 200 && response.status <= 209) {
+        fetchTickerData();
+      }
+    } catch (error) {
+      toast.error("Internal server error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTickerData = async () => {
+    try {
+      const response = await handleGetAllTickers();
+      if (response.status >= 200 && response.status <= 209) {
+        setTableData(response.data.ticker);
+      } else {
+        setTableData([]);
+      }
+    } catch (error) {
+      setTableData([]);
+    }
+  };
+
+  const handleSelectedTicker = (row) => {
+    setSelectedRow(row);
+    setFormData({ tickerTitle: row.name });
+    setIsEditMode(true);
+    handleTicker();
+  };
+
+  console.log("selected row", selectedRow);
+
+  useEffect(() => {
+    fetchTickerData();
+  }, []);
 
   return (
     <div className="w-[100%]">
@@ -140,7 +200,7 @@ const Index = () => {
           </div>
           <button
             className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-            onClick={handleTicker}
+            onClick={handleCreateTicker}
           >
             <CiCirclePlus />
             Add New Ticker
@@ -156,18 +216,24 @@ const Index = () => {
         </div>
         <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
           <ResponsiveTable
-            initialData={initialData}
+            initialData={tableData}
             handleTicker={handleTicker}
+            updateStatus={handleUpdateStatus}
+            handleSelectedTicker={handleSelectedTicker}
+            isLoading={loading}
           />
         </div>
       </div>
       <EditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        modaltitle="Add New Ticker"
-        subtitle="Seamlessly Add New Ticker"
-        buttonname="Save New Ticker"
-        // loading={}
+        modaltitle={isEditMode ? "Edit Ticker" : "Add New Ticker"}
+        subtitle={
+          isEditMode ? "Seamlessly Edit Ticker" : "Seamlessly Add New Ticker"
+        }
+        buttonname={isEditMode ? "Update Ticker" : "Save New Ticker"}
+        onSubmit={handleSubmit}
+        fetchData={fetchTickerData}
       >
         <form onSubmit={handleSubmit} className="w-[100%] px-6 py-4 space-y-4">
           <div className="flex flex-col gap-3">
@@ -191,7 +257,8 @@ const Index = () => {
               placeholder="Nunc vel rutrum lectus. Mauris vulputate lacinia lacus ac ultricies"
               size="md"
               radius="sm"
-              name="title"
+              name="tickerTitle"
+              value={formData.tickerTitle}
               onChange={handleFormChange}
             />
           </div>

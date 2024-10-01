@@ -130,11 +130,14 @@ export const handleGetTemplate = async () => {
 // Get Create Edit Homepage section Handler
 export const handleHomepageCreateEditSection = async (data) => {
   try {
-    const response = await publicApi.post("/api/homepage/create-edit-section",data,{
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    const response = await publicApi.post(
+      "/api/homepage/create-edit-section",
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response;
   } catch (error) {
@@ -144,9 +147,58 @@ export const handleHomepageCreateEditSection = async (data) => {
 
 // S.No 04
 // Get Homepage Sections
-export const handleGetHomepageSection = async (moduleSlug,sectionSlug) => {
+export const handleGetHomepageSection = async (moduleSlug, sectionSlug) => {
   try {
-    const response = await publicApi.get(`/api/homepage/section/${moduleSlug}/${sectionSlug}`);
+    const response = await publicApi.get(
+      `/api/homepage/section/${moduleSlug}/${sectionSlug}`
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 05
+//Create Ticker
+export const handleTickerCreation = async (data) => {
+  try {
+    const response = await publicApi.post("/api/ticker/create", data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 06
+//Get All Tickers
+export const handleGetAllTickers = async () => {
+  try {
+    const response = await publicApi.get("/api/ticker/tickers");
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 07
+//Change ticker status
+export const handleTickerStatusChange = async (id, data) => {
+  try {
+    const response = await publicApi.put(
+      `/api/ticker/changeTickerStatus/${id}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 08
+//Update Ticker
+export const handleTickerUpdate = async (id, data) => {
+  try {
+    const response = await publicApi.put(`/api/ticker/update/${id}`, data);
     return response;
   } catch (error) {
     return error;
