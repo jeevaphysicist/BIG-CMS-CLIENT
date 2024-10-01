@@ -10,18 +10,44 @@ import { handleHomepageCreateEditSection } from "@/API/api";
 import AlertModel from "@/components/AlertModal";
 
 const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
-  const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
+  const [questionsByCategory, setQuestionsByCategory] = useState({
+    general: [{ question: "", answer: "" }],
+    delivery: [{ question: "", answer: "" }],
+    quality: [{ question: "", answer: "" }],
+    payment: [{ question: "", answer: "" }],
+  });
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    selectedCategory: "",
-    faqs: [{ question: "", answer: "" }],
+    selectedCategory: "general",
+    faqs: [],
     moduleId: null,
   });
+
+  console.log("all data", sectionData);
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [openAlertModal, setOpenAlertModal] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
+
+  const [questions, setQuestions] = useState(
+    questionsByCategory[formData.selectedCategory]
+  );
+
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        sectionTitle: sectionData.sectionTitle,
+        selectedCategory: sectionData.selectedCategory,
+        faqs: sectionData.faqs || [],
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    setQuestions(questionsByCategory[formData.selectedCategory]);
+  }, [formData.selectedCategory]);
 
   const addNewQuestion = () => {
     if (questions.length >= 5) {
@@ -31,11 +57,49 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
     setQuestions([...questions, { question: "", answer: "" }]);
   };
 
-  const handleDeleteQuestion = () => {
-    const updatedQuestions = questions.filter((_, i) => i !== questionToDelete);
+  // const handleDeleteQuestion = async (e) => {
+  //   e.preventDefault();
+  //   const updatedQuestions = questions.filter((_, i) => i !== questionToDelete);
+  //   setQuestions(updatedQuestions);
+  //   console.log(updatedQuestions);
+  //   setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+
+  //   let bodyData = {
+  //     contents: {
+  //       ...formData,
+  //       faqs: updatedQuestions,
+  //     },
+  //     moduleSlug: currentSection.moduleSlug,
+  //     moduleName: currentSection.moduleName,
+  //     sectionSlug: currentSection.sectionSlug,
+  //     sectionName: currentSection.sectionName,
+  //     pageName: currentSection.moduleName,
+  //     pageSlug: currentSection.moduleSlug,
+  //   };
+
+  //   try {
+  //     setLoading(true);
+  //     bodyData = convertObjectToFormData(bodyData);
+  //     const response = await handleHomepageCreateEditSection(bodyData);
+  //     if (response.status >= 200 && response.status <= 209) {
+  //       toast.success(response.data.message);
+  //       fetchData();
+  //     }
+  //   } catch (error) {
+  //     toast.error(response.data.message);
+  //   } finally {
+  //     setOpenAlertModal(false);
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleDeleteQuestion = (index) => {
+    const updatedQuestions = questions.filter((_, i) => i !== index);
     setQuestions(updatedQuestions);
-    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
-    setOpenAlertModal(false);
+    setQuestionsByCategory((prev) => ({
+      ...prev,
+      [formData.selectedCategory]: updatedQuestions,
+    }));
   };
 
   const handleQuestionChange = (index, field, value) => {
@@ -43,12 +107,20 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
       i === index ? { ...q, [field]: value } : q
     );
     setQuestions(updatedQuestions);
-    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+    setQuestionsByCategory((prev) => ({
+      ...prev,
+      [formData.selectedCategory]: updatedQuestions,
+    }));
   };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => {
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
   };
 
   const handleVadilation = () => {
@@ -66,7 +138,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
       newerrors.selectedCategory = "Category is required";
       has = true;
     }
-    formData.faqs.forEach((questionObj, index) => {
+    (formData.faqs || []).forEach((questionObj, index) => {
       if (!questionObj.question) {
         newerrors[`question_${index}`] = "Question is required";
         has = true;
@@ -81,30 +153,19 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
     return has;
   };
 
-  useEffect(() => {
-    if (sectionData) {
-      setFormData({
-        ...formData,
-        sectionTitle: sectionData.sectionTitle || "",
-        selectedCategory: sectionData.selectedCategory || "",
-        faqs: sectionData.faqs || [{ question: "", answer: "" }],
-        moduleId: sectionData.moduleId || null,
-      });
-      setQuestions(sectionData.faqs || [{ question: "", answer: "" }]);
-    }
-  }, [sectionData]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
     let bodyData = {
-      contents: formData,
+      contents: {
+        sectionTitle: formData.sectionTitle,
+        faqs: questionsByCategory,
+      },
       moduleSlug: currentSection.moduleSlug,
       moduleName: currentSection.moduleName,
       sectionSlug: currentSection.sectionSlug,
@@ -118,7 +179,6 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
       bodyData = convertObjectToFormData(bodyData);
       const response = await handleHomepageCreateEditSection(bodyData);
       if (response.status >= 200 && response.status <= 209) {
-        let data = response.data;
         toast.success(response.data.message);
         fetchData();
       }
@@ -189,7 +249,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_month"
+                    htmlFor="selectedCategory"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Select the Category
@@ -202,8 +262,8 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                   </label>
                   <select
                     type="text"
-                    id="banner_month"
-                    placeholder="Select selectedCategory"
+                    id="selectedCategory"
+                    placeholder="Select Category"
                     className="w-full h-[46px] rounded-[8px] border-1.5 border-[#D0D5DD] px-[10px] cursor-pointer"
                     name="selectedCategory"
                     value={formData.selectedCategory}
