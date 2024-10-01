@@ -10,29 +10,17 @@ import { handleHomepageCreateEditSection } from "@/API/api";
 import AlertModel from "@/components/AlertModal";
 
 const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
-  const [questionsByCategory, setQuestionsByCategory] = useState({
-    general: [{ question: "", answer: "" }],
-    delivery: [{ question: "", answer: "" }],
-    quality: [{ question: "", answer: "" }],
-    payment: [{ question: "", answer: "" }],
-  });
-  const [formData, setFormData] = useState({
-    sectionTitle: "",
-    selectedCategory: "general",
-    faqs: [],
-    moduleId: null,
-  });
-
-  console.log("all data", sectionData);
-
-  const [errors, setError] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [openAlertModal, setOpenAlertModal] = useState(false);
-  const [questionToDelete, setQuestionToDelete] = useState(null);
-
-  const [questions, setQuestions] = useState(
-    questionsByCategory[formData.selectedCategory]
-  );
+const [formData, setFormData] = useState({
+                                          sectionTitle: "",
+                                          selectedCategory: "general",
+                                          faqs: [],
+                                          moduleId: null,
+                                         });
+const [errors, setError] = useState({});
+const [loading, setLoading] = useState(false);
+const [openAlertModal, setOpenAlertModal] = useState(false);
+const [questionToDelete, setQuestionToDelete] = useState(null);
+const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
     if (sectionData) {
@@ -46,11 +34,11 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   }, []);
 
   useEffect(() => {
-    setQuestions(questionsByCategory[formData.selectedCategory]);
+    // setQuestions(questionsByCategory[formData.selectedCategory]);
   }, [formData.selectedCategory]);
 
   const addNewQuestion = () => {
-    if (questions.length >= 5) {
+    if (questions?.length >= 5) {
       toast.error("You can only add up to 5 questions.");
       return;
     }
@@ -293,7 +281,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                   </div>
                 </div>
 
-                {questions.map((que, index) => (
+                {questions?.map((que, index) => (
                   <div className="flex flex-col space-y-6 mb-8" key={index}>
                     <div className="flex flex-col gap-3">
                       <div className="flex justify-between items-center">
