@@ -44,6 +44,7 @@ const Index = () => {
   const [selectEditData,setSelectEditData] = useState({});
   const [sitepageList,setSitepageList] = useState([]);
   const [type, setType] = useState('create');
+  
   const itemsClasses = {
     table: " bg-white  ",
     thead: "bg-white border ",

@@ -5,6 +5,8 @@ import { FormateImageURL } from "@/lib/FormateImageURL";
 import { Button } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { handleCreateSitepage, handleUpdateSitepage } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
 const Media = ({
   handleSitepage,
@@ -43,6 +45,7 @@ const Media = ({
     setError(newerrors);
     return has;
   };
+  // console.log("Section Data",sectionData);
 
   useEffect(() => {
     if (sectionData) {
@@ -68,22 +71,34 @@ const Media = ({
       media: formData,
     };
 
+  let response ; 
+  
+  try {
+    setLoading(true);
+    bodyData = convertObjectToFormData(bodyData);
 
-
-    try {
-      setLoading(true);
-      bodyData = convertObjectToFormData(bodyData);
-      // const response = await handleHomepageCreateEditSection(bodyData);
-      if (response.status >= 200 && response.status <= 209) {
-        let data = response.data;
-        toast.success(response.data.message);
-        fetchData();
-      }
-    } catch (error) {
-      toast.error(response.data.message);
-    } finally {
-      setLoading(false);
+    if(type === 'create'){
+    response = await handleCreateSitepage(bodyData,true);      
     }
+    else if(type === 'edit'){
+    response = await handleUpdateSitepage(bodyData,sectionData._id,true); 
+    }
+  // console.log("response",response);
+  if (response.status >= 200 && response.status <= 209) {
+    let data = response.data;
+    toast.success(response.data.message);
+    fetchData();
+    handleSitepage();
+    handler();
+  }
+  else{
+    toast.error(response.response.data.message);
+  }
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }
   };
 
   // console.log("form data",formData);
@@ -105,13 +120,7 @@ const Media = ({
               height={410}
               onImageSelect={handleImageSelect}
             />
-            {formData.banner && (
-              <img
-                className=" mx-auto w-[150px]"
-                src={FormateImageURL(formData.banner)}
-                alt="Image Preview"
-              />
-            )}
+           
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="file"
@@ -120,6 +129,13 @@ const Media = ({
                 Uploaded File
               </label>
             </div>
+            {formData.banner && (
+              <img
+                className=" mx-auto w-[150px]"
+                src={FormateImageURL(formData.banner)}
+                alt="Image Preview"
+              />
+            )}
           </div>
         </div>
 
@@ -133,10 +149,12 @@ const Media = ({
             Back to list
           </Button>
           <Button
+            type="submit"
             color="primary"
             className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
-            onClick={handler}
+            isLoading={loading}
+            startContent={loading ?null:<FiSave size={20} />}
+            // onClick={handler}
           >
             Save
           </Button>

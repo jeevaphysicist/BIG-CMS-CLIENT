@@ -7,8 +7,9 @@ import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
 import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
 import Media from "./Media";
-import { handleGetHomepageSection } from "@/API/api";
+import { handleCreateSitepage, handleGetHomepageSection, handleUpdateSitepage } from "@/API/api";
 import RequiredSymbol from "../RequiredSymbol";
+import { toast } from "react-toastify";
 
 const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
   const { template } = GetCurrentUserDetails();
@@ -19,6 +20,7 @@ const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
   const [sectionData, setSectionData] = useState({});
   const [getSection, setGetSection] = useState({});
   const [title,setTitle] = useState("");
+  const [loading,setLoading] = useState("");
 
   useEffect(() => {
     handleSelectDropDown("sitepages");
@@ -38,8 +40,38 @@ const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
     setModalActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
+  const handleSeoSubmit = async(formData) => {
     console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+        seo:formData
+    }
+    let response ; 
+    
+    try {
+      setLoading(true);
+      if(type === 'create'){
+      response = await handleCreateSitepage(bodyData,false);      
+      }
+      else if(type === 'edit'){
+      response = await handleUpdateSitepage(bodyData,editData._id,false); 
+      }
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+      handleSitePage();
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   const handleSelectDropDown = (slug) => {
@@ -182,11 +214,12 @@ const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes sectionData={sectionData?.seo}  onSubmit={handleSeoSubmit} handler={handleSitePage} />
+        <SeoAttributes isLoading={loading} sectionData={sectionData?.seo}  onSubmit={handleSeoSubmit} handler={handleSitePage} />
       )}
       {activeTab === "media" && (
         <Media
           type={type}
+          fetchData={fetchData}
           title={title}
           handleSitepage={handleSitePage}
           sectionData={sectionData}
