@@ -46,7 +46,7 @@ const EditSections = ({ handleHomepage }) => {
       } else {
         setSectionData({});
       }
-      console.log("response", response);
+      // console.log("response", response);
     } catch (error) {
       setSectionData({});
     }
