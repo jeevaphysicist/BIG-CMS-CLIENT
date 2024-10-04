@@ -68,7 +68,7 @@ const ResponsiveTable = ({ initialData, handleShippingModal }) => {
                   >
                     <RiDragMove2Fill size={16} className="text-[#676767]" />
                   </motion.div>
-                  <Checkbox />
+                  {/* <Checkbox /> */}
                   {row.method}
                 </td>
                 <td className="text-nowrap">

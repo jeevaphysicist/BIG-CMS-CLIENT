@@ -4,6 +4,7 @@ import DragAndDropImage from "../DragDropImage";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { Button } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const Media = ({
   handleSitepage,
@@ -11,18 +12,19 @@ const Media = ({
   fetchData,
   currentSection,
   handler,
+  type
 }) => {
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    media: "",
+    banner: "",
   });
 
-  const handleImageSelect = async (file, width, height, media) => {
+  const handleImageSelect = async (file, width, height, banner) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
+        setFormData((prevData) => ({ ...prevData, [banner]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -33,8 +35,8 @@ const Media = ({
     let newerrors = {};
     let has = false;
 
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
+    if (formData.banner === "" || formData.banner === null) {
+      newerrors.banner = "Image is required";
       has = true;
     }
 
@@ -46,11 +48,12 @@ const Media = ({
     if (sectionData) {
       setFormData({
         ...formData,
-        media: sectionData.media || "",
-        moduleId: sectionData.moduleId || null,
+        banner: sectionData?.media?.banner || ""
       });
     }
   }, [sectionData]);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,19 +65,15 @@ const Media = ({
     }
 
     let bodyData = {
-      contents: formData,
-      moduleSlug: currentSection.moduleSlug,
-      moduleName: currentSection.moduleName,
-      sectionSlug: currentSection.sectionSlug,
-      sectionName: currentSection.sectionName,
-      pageName: currentSection.moduleName,
-      pageSlug: currentSection.moduleSlug,
+      media: formData,
     };
+
+
 
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      // const response = await handleHomepageCreateEditSection(bodyData);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         toast.success(response.data.message);
@@ -87,6 +86,9 @@ const Media = ({
     }
   };
 
+  // console.log("form data",formData);
+  // console.log("section data",sectionData);
+
   return (
     <div>
       <form
@@ -96,17 +98,17 @@ const Media = ({
         <div className="w-full min-h-[60vh] flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <DragAndDropImage
-              id="media"
-              label="media"
+              id="banner"
+              label="banner"
               accept={`images/*`}
               width={487}
               height={410}
               onImageSelect={handleImageSelect}
             />
-            {formData.media && (
+            {formData.banner && (
               <img
                 className=" mx-auto w-[150px]"
-                src={FormateImageURL(formData.media)}
+                src={FormateImageURL(formData.banner)}
                 alt="Image Preview"
               />
             )}
@@ -115,7 +117,7 @@ const Media = ({
                 htmlFor="file"
                 className="md:text-[18px] text-[14px] gilroy-medium flex gap-1"
               >
-                Uploaded Files
+                Uploaded File
               </label>
             </div>
           </div>

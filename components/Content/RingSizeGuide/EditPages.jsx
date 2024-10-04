@@ -14,7 +14,7 @@ const EditPages = ({ handleSizeGuide }) => {
     moduleId: null,
   });
 
-  const [loading, setLoading] = useState({});
+  const [loading, setLoading] = useState(false);
   const [errors, setError] = useState(false);
 
   const handleImageSelect = async (file, width, height, headerBanner) => {

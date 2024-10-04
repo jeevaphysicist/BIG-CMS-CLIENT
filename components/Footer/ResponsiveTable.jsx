@@ -114,7 +114,7 @@ const ResponsiveTable = ({
                     >
                       <RiDragMove2Fill size={16} className="text-[#676767]" />
                     </motion.div>
-                    <Checkbox />
+                    {/* <Checkbox /> */}
                     {row.contents.title}
                   </td>
                   <td className="px-4 py-4 font-regular text-[14px] ">

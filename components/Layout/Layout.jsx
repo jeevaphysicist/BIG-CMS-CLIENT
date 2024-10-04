@@ -291,7 +291,7 @@ const HandleParentFunction = (statwith) => {
                     className="flex font-medium w-[100%]"
                   >
                     {" "}
-                    Category Pages
+                    Category
                   </Link>
                   {HandleFunction("/content/category-page") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>

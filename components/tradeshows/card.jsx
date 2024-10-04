@@ -10,7 +10,8 @@ const Card = ({handleAddEdit,handleType}) => {
       {/* Header with Switch and Icons */}
       <div className="flex justify-between items-center p-3">
         {/* Left Side - Checkbox */}
-        <Checkbox />
+        {/* <Checkbox /> */}
+        <div/>
 
         {/* Right Side - Switch and Icons */}
         <div className="flex items-center space-x-3">

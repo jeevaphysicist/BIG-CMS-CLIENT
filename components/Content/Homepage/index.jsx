@@ -88,7 +88,7 @@ const Index = () => {
             <TableColumn><span className="flex items-center justify-start gap-3">Name<IoArrowDown /></span></TableColumn>
             <TableColumn>Description</TableColumn>
             <TableColumn>Status</TableColumn>
-            <TableColumn></TableColumn>
+            <TableColumn>Actions</TableColumn>
           </TableHeader>
           <TableBody>
             {

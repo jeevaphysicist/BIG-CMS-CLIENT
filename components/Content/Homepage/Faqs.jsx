@@ -10,17 +10,29 @@ import { handleHomepageCreateEditSection } from "@/API/api";
 import AlertModel from "@/components/AlertModal";
 
 const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
-const [formData, setFormData] = useState({
-                                          sectionTitle: "",
-                                          selectedCategory: "general",
-                                          faqs: [],
-                                          moduleId: null,
-                                         });
-const [errors, setError] = useState({});
-const [loading, setLoading] = useState(false);
-const [openAlertModal, setOpenAlertModal] = useState(false);
-const [questionToDelete, setQuestionToDelete] = useState(null);
-const [questions, setQuestions] = useState([]);
+  const [questionsByCategory, setQuestionsByCategory] = useState({
+    general: [{ question: "", answer: "" }],
+    delivery: [{ question: "", answer: "" }],
+    quality: [{ question: "", answer: "" }],
+    payment: [{ question: "", answer: "" }],
+  });
+  const [formData, setFormData] = useState({
+    sectionTitle: "",
+    selectedCategory: "general",
+    faqs: [],
+    moduleId: null,
+  });
+
+  console.log("all data", sectionData);
+
+  const [errors, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
+
+  const [questions, setQuestions] = useState(
+    questionsByCategory[formData.selectedCategory]
+  );
 
   useEffect(() => {
     if (sectionData) {
@@ -34,7 +46,7 @@ const [questions, setQuestions] = useState([]);
   }, []);
 
   useEffect(() => {
-    // setQuestions(questionsByCategory[formData.selectedCategory]);
+    setQuestions(questionsByCategory[formData.selectedCategory]);
   }, [formData.selectedCategory]);
 
   const addNewQuestion = () => {
@@ -42,7 +54,7 @@ const [questions, setQuestions] = useState([]);
       toast.error("You can only add up to 5 questions.");
       return;
     }
-    setQuestions([...questions, { question: "", answer: "",category:selectedCategory,error:{} }]);
+    setQuestions([...questions, { question: "", answer: "" }]);
   };
 
   // const handleDeleteQuestion = async (e) => {

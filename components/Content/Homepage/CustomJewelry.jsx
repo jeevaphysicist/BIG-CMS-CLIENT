@@ -187,7 +187,7 @@ const CustomJewelry = ({
               <Input
                 type="text"
                 id="section_title"
-                placeholder="Create Your Custom Jwellery"
+                placeholder="Create Your Custom Jewelry"
                 variant="bordered"
                 size="lg"
                 radius="sm"

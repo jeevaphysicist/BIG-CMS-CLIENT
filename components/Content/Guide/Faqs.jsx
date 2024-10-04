@@ -26,7 +26,7 @@ const Faqs = ({ handleGuide, sectionData, fetchData, currentSection }) => {
       toast.error("You can only add up to 5 questions.");
       return;
     }
-    setQuestions([...questions, { question: "", answer: "" }]);
+    setQuestions([...questions, { question: "", answer: "",category:"" }]);
   };
 
   const handleDeleteQuestion = () => {
@@ -177,7 +177,7 @@ const Faqs = ({ handleGuide, sectionData, fetchData, currentSection }) => {
                   </p>
                 </div>
               </div>
-              <img src={"/images/image 17.png"} alt="faqs" />
+              <img src={"/images/guidefaqs.png"} alt="faqs" />
             </div>
           </div>
           {/* Form */}
@@ -185,7 +185,7 @@ const Faqs = ({ handleGuide, sectionData, fetchData, currentSection }) => {
             {/* Banner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                   <label
                     htmlFor="banner_month"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
@@ -212,7 +212,7 @@ const Faqs = ({ handleGuide, sectionData, fetchData, currentSection }) => {
                     <option value="quality">Quality</option>
                     <option value="payment">Payment</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions

@@ -6,6 +6,9 @@ import { performLogout } from "@/utils/LogoutHandle";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
+const formHeader = {"Content-Type": "multipart/form-data"};
+const rawHeader = { "Content-Type": "application/json"};
+
 // Public axios instance (no authorization)
 const publicApi = axios.create({
   baseURL: BASE_URL,
@@ -296,6 +299,65 @@ export const handleGetFooterList = async () => {
 export const handleGetFooterCategoryList = async (category) => {
   try {
     const response = await publicApi.get(`/api/footer/category/${category}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get sitepage List 
+export const handleGetSitepageList = async () => {
+  try {
+    const response = await publicApi.get(`/api/sitepage/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 17
+// Create sitepage List 
+export const handleCreateSitepage = async (data,isformData) => {
+  try {
+    const response = await publicApi.post(`/api/sitepage/create`,data,{
+      headers: isformData ? formHeader : rawHeader
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update sitepage List 
+export const handleUpdateSitepage = async (data,id,isformData) => {
+  try {
+    const response = await publicApi.put(`/api/sitepage/update/${id}`,data,{
+      headers: isformData ? formHeader : rawHeader
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update sitepage Status
+export const handleUpdateSitepageStatus = async (data,id) => {
+  try {
+    const response = await publicApi.patch(`/api/sitepage/update/${id}/status`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 20
+// Delete sitepage 
+export const handleDeleteSitepage = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/sitepage/delete/${id}`);
     return response;
   } catch (error) {
     return error;

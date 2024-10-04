@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, SelectSection, Textarea } from "@nextui-org/react";
 import updates from "../../../assets/updates.svg";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
@@ -8,19 +8,20 @@ import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { validateImageDimensions } from "@/lib/imageValidator";
-import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { convertObjectToFormData, convertToFormData } from "@/utils/convertObjectToFormData";
 import {
+  handleCreateSitepage,
   handleGetHomepageSection,
   handleHomepageCreateEditSection,
+  handleUpdateSitepage,
 } from "@/API/api";
 
-const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
+const Offers = ({ handleSitepage,type, title, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
-    sectionDescription: "",
-    bannerImage: "",
-    buttonTitle: "",
-    moduleId: null,
+    title: "",
+    description: "",
+    banner: "",
+    callToAction: ""
   });
 
   const [errors, setError] = useState({});
@@ -73,14 +74,16 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
     if (sectionData) {
       setFormData({
         ...formData,
-        sectionTitle: sectionData.sectionTitle || "",
-        sectionDescription: sectionData.sectionDescription || "",
-        bannerImage: sectionData.bannerImage || "",
-        buttonTitle: sectionData.buttonTitle || "",
-        moduleId: sectionData.moduleId || null,
+        title: sectionData?.offers?.title || "",
+        description: sectionData?.offers?.description || "",
+        banner: sectionData?.offers?.banner || "",
+        callToAction: sectionData?.offers?.callToAction || ""
       });
     }
   }, [sectionData]);
+
+  // console.log("sectiondata",sectionData);
+  // console.log("formData",formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,23 +95,26 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
     }
 
     let bodyData = {
-      contents: formData,
-      moduleSlug: currentSection.moduleSlug,
-      moduleName: currentSection.moduleName,
-      sectionSlug: currentSection.sectionSlug,
-      sectionName: currentSection.sectionName,
-      pageName: currentSection.moduleName,
-      pageSlug: currentSection.moduleSlug,
+      title:title,
+      offers: formData,     
     };
-
+    let response ;
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      if(type === 'create'){
+      response = await handleCreateSitepage(bodyData,true);      
+      }
+      else if(type === 'edit'){
+      response = await handleUpdateSitepage(bodyData,sectionData._id,true); 
+      }
       if (response.status >= 200 && response.status <= 209) {
-        let data = response.data;
         toast.success(response.data.message);
         fetchData();
+        handleSitepage();
+      }
+      else{
+        toast.error(response.response.data.message);
       }
     } catch (error) {
       toast.error("Internal server error");
@@ -132,9 +138,9 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
               >
                 Section Title
                 <RequiredSymbol />
-                {errors.sectionTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -145,8 +151,8 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionTitle"
-                value={formData.sectionTitle}
+                name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
@@ -157,9 +163,9 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
               >
                 Description
                 <RequiredSymbol />
-                {errors.sectionDescription && (
+                {errors.description && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionDescription}
+                    {errors.description}
                   </span>
                 )}
               </label>
@@ -171,8 +177,8 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionDescription"
-                value={formData.sectionDescription}
+                name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
@@ -207,24 +213,24 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
                   >
                     Banner
                     <RequiredSymbol />
-                    {errors.bannerImage && (
+                    {errors.banner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.bannerImage}
+                        {errors.banner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="bannerImage"
-                    label="bannerImage"
+                    id="banner"
+                    label="banner"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.bannerImage && (
+                  {formData.banner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.bannerImage)}
+                      src={FormateImageURL(formData.banner)}
                       alt="Image Preview"
                     />
                   )}
@@ -236,9 +242,9 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
                   >
                     Call to action title
                     <RequiredSymbol />
-                    {errors.buttonTitle && (
+                    {errors.callToAction && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.buttonTitle}
+                        {errors.callToAction}
                       </span>
                     )}
                   </label>
@@ -250,8 +256,8 @@ const Offers = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="buttonTitle"
-                    value={formData.buttonTitle}
+                    name="callToAction"
+                    value={formData.callToAction}
                     onChange={handleFormChange}
                   />
                 </div>

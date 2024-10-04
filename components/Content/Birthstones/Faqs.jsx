@@ -139,7 +139,7 @@ const Faqs = ({
         className="w-full md:h-full md:px-8 px-2 space-y-6"
       >
         <div className="w-full flex flex-col gap-8">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col mt-5 gap-4">
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="section_Title"
@@ -182,7 +182,7 @@ const Faqs = ({
                   </p>
                 </div>
               </div>
-              <img src={"/images/image 17.png"} alt="faqs" />
+              <img src={"/images/guidefaqs.png"} alt="faqs" />
             </div>
           </div>
           {/* Form */}
@@ -190,7 +190,7 @@ const Faqs = ({
             {/* Banner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                   <label
                     htmlFor="banner_month"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
@@ -217,7 +217,7 @@ const Faqs = ({
                     <option value="quality">Quality</option>
                     <option value="payment">Payment</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions

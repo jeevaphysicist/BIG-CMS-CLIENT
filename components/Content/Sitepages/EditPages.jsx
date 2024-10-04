@@ -10,7 +10,7 @@ import Media from "./Media";
 import { handleGetHomepageSection } from "@/API/api";
 import RequiredSymbol from "../RequiredSymbol";
 
-const EditPages = ({ handleSitepage }) => {
+const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
   const { template } = GetCurrentUserDetails();
   const [selectedSection, setSelectedSection] = useState("about");
   const [activeTab, setActiveTab] = useState("generalInfo");
@@ -18,28 +18,13 @@ const EditPages = ({ handleSitepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sectionData, setSectionData] = useState({});
   const [getSection, setGetSection] = useState({});
+  const [title,setTitle] = useState("");
 
   useEffect(() => {
     handleSelectDropDown("sitepages");
-    fetchSectionData();
+    setSectionData(editData);
+    setTitle(editData.title);
   }, [selectedSection]);
-
-  const fetchSectionData = async () => {
-    try {
-      const response = await handleGetHomepageSection(
-        "sitepages",
-        selectedSection
-      );
-      if (response.status >= 200 && response.status <= 209) {
-        setSectionData(response.data.data.contents);
-      } else {
-        setSectionData({});
-      }
-      console.log("response", response);
-    } catch (error) {
-      setSectionData({});
-    }
-  };
 
   const handleModal = () => {
     setIsModalOpen(true);
@@ -82,7 +67,7 @@ const EditPages = ({ handleSitepage }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Add New Site Page
+              {type === "create" ? "Add New":"Edit"} Site Page
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Enter Page Contents.
@@ -150,6 +135,8 @@ const EditPages = ({ handleSitepage }) => {
                 size="md"
                 radius="sm"
                 name="pageTitle"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <h3 className="text-[16px] font-semibold">
@@ -173,29 +160,36 @@ const EditPages = ({ handleSitepage }) => {
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "about" && (
               <About
-                handleSitepage={handleSitepage}
+                type={type}
+                title={title}
+                handleSitepage={handleSitePage}
                 currentSection={handleSectionSlug(selectedSection)}
                 sectionData={sectionData}
-                fetchData={fetchSectionData}
+                fetchData={fetchData}
               />
             )}
             {selectedSection === "offers" && (
               <Offers
-                handleSitepage={handleSitepage}
+                type={type}
+                title={title}
+                handleSitepage={handleSitePage}
                 currentSection={handleSectionSlug(selectedSection)}
                 sectionData={sectionData}
-                fetchData={fetchSectionData}
+                fetchData={fetchData}
               />
             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
+        <SeoAttributes sectionData={sectionData?.seo}  onSubmit={handleSeoSubmit} handler={handleSitePage} />
       )}
       {activeTab === "media" && (
         <Media
-          handleSitepage={handleSitepage}
+          type={type}
+          title={title}
+          handleSitepage={handleSitePage}
+          sectionData={sectionData}
           handler={() => setIsModalOpen(true)}
         />
       )}

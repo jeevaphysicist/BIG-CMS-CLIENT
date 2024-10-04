@@ -64,7 +64,7 @@ const ResponsiveTable = ({ initialData, handleGuide }) => {
                   >
                     <RiDragMove2Fill size={16} className="text-[#676767]" />
                   </motion.div>
-                  <Checkbox />
+                  {/* <Checkbox /> */}
                   {row.name}
                 </td>
                

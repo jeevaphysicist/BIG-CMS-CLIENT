@@ -57,6 +57,9 @@ const EditSections = ({ handleHomepage }) => {
   useEffect(()=>{
     if(activeTab === 'seoAttributes')
     setSelectedSection('seo');
+
+    if(activeTab === 'generalInfo')
+      setSelectedSection('hero-section');
   },[activeTab])
 
   const handleChange = (tab) => {

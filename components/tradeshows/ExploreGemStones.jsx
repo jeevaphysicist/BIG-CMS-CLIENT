@@ -9,10 +9,12 @@ const ExploreGemStones = ({ handleClose }) => {
     sectionTitle: "",
     mainContent: "",
   });
+  const [loading,setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const handleProcedureContentChange = (content) => {
     setFormData((prev) => ({ ...prev, mainContent: content }));
   };
+
   return (
     <div>
       <div className="w-[100%] md:px-8 px-4">

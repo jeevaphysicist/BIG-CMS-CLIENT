@@ -188,9 +188,9 @@ const Faqs = ({
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
             {/* Banner */}
-            <div className="w-full flex flex-col gap-8">
+            <div className="w-full flex flex-col gap-8">  
               <div className=" flex flex-col gap-4">
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                   <label
                     htmlFor="banner_month"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
@@ -217,7 +217,7 @@ const Faqs = ({
                     <option value="quality">Quality</option>
                     <option value="payment">Payment</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions

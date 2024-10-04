@@ -115,7 +115,7 @@ const ResponsiveTable = ({
                             className="text-[#676767]"
                           />
                         </motion.div>
-                        <Checkbox />
+                        {/* <Checkbox /> */}
                         {row.name}
                       </td>
                       <td className="px-4 py-2 text-[14px]">

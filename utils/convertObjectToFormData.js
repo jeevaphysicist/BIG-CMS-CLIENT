@@ -21,3 +21,28 @@ export function convertObjectToFormData(
   }
   return formData;
 }
+
+export function convertToFormData(data) {
+  let formData = new FormData();
+
+  // Function to recursively append data
+  function appendFormData(formData, key, value) {
+      if (value instanceof File) {
+          formData.append(key, value);  // For file input
+      } else if (typeof value === 'object' && value !== null) {
+          // If the value is an object, recursively append each field
+          Object.keys(value).forEach(subKey => {
+              appendFormData(formData, `${key}.${subKey}`, value[subKey]);
+          });
+      } else {
+          formData.append(key, value);  // For regular fields
+      }
+  }
+
+  // Loop through the main object and append each field
+  Object.keys(data).forEach(key => {
+      appendFormData(formData, key, data[key]);
+  });
+
+  return formData;
+}

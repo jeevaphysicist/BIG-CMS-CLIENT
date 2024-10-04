@@ -6,20 +6,18 @@ import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
-import { handleHomepageCreateEditSection } from "@/API/api";
+import { handleCreateSitepage, handleHomepageCreateEditSection, handleUpdateSitepage } from "@/API/api";
 
-const About = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
+const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentSection }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    pageTitle: "",
     header: "",
     introduction: "",
     content: "",
-    moduleId: null,
-  });
-
+  });  
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +32,7 @@ const About = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.pageTitle === "" || formData.pageTitle === null) {
-      newerrors.pageTitle = "Page title is required";
-      has = true;
-    }
+   
     if (formData.header === "" || formData.header === null) {
       newerrors.header = "Header is required";
       has = true;
@@ -58,11 +53,9 @@ const About = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
     if (sectionData) {
       setFormData({
         ...formData,
-        pageTitle: sectionData.pageTitle || "",
-        header: sectionData.header || "",
-        introduction: sectionData.introduction || "",
-        content: sectionData.content || "",
-        moduleId: sectionData.moduleId || null,
+        header: sectionData?.about?.header || "",
+        introduction: sectionData?.about?.introduction || "",
+        content: sectionData?.about?.content || ""
       });
     }
   }, [sectionData]);
@@ -77,26 +70,35 @@ const About = ({ handleSitepage, sectionData, fetchData, currentSection }) => {
     }
 
     let bodyData = {
-      contents: formData,
-      moduleSlug: currentSection.moduleSlug,
-      moduleName: currentSection.moduleName,
-      sectionSlug: currentSection.sectionSlug,
-      sectionName: currentSection.sectionName,
-      pageName: currentSection.moduleName,
-      pageSlug: currentSection.moduleSlug,
+          title:title,
+          about:{
+            header: formData.header,
+            introduction: formData.introduction,
+            content: formData.content,
+          }
     };
 
-    console.log("body data", bodyData);
-
+    // console.log("body data", bodyData);
+    let response ; 
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
-      if (response.status >= 200 && response.status <= 209) {
-        let data = response.data;
-        toast.success(response.data.message);
-        fetchData();
+      if(type === 'create'){
+      response = await handleCreateSitepage(bodyData);      
       }
+      else if(type === 'edit'){
+      response = await handleUpdateSitepage(bodyData,sectionData._id); 
+      }
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+      handleSitepage();
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
     } catch (error) {
       toast.error(response.data.message);
     } finally {
