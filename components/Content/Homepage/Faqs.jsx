@@ -1,150 +1,129 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
-import RequiredSymbol from "../RequiredSymbol";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
-import { handleHomepageCreateEditSection } from "@/API/api";
+import RequiredSymbol from "../RequiredSymbol";
 import AlertModel from "@/components/AlertModal";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
 const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
-  const [questionsByCategory, setQuestionsByCategory] = useState({
-    general: [{ question: "", answer: "" }],
-    delivery: [{ question: "", answer: "" }],
-    quality: [{ question: "", answer: "" }],
-    payment: [{ question: "", answer: "" }],
-  });
+  const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({
     sectionTitle: "",
     selectedCategory: "general",
-    faqs: [],
+    faqs: [{ question: "", answer: "", category: "" }],
     moduleId: null,
   });
-
-  console.log("all data", sectionData);
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [openAlertModal, setOpenAlertModal] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
-
-  const [questions, setQuestions] = useState(
-    questionsByCategory[formData.selectedCategory]
-  );
-
-  useEffect(() => {
-    if (sectionData) {
-      setFormData({
-        sectionTitle: sectionData.sectionTitle,
-        selectedCategory: sectionData.selectedCategory,
-        faqs: sectionData.faqs || [],
-        moduleId: sectionData.moduleId || null,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    setQuestions(questionsByCategory[formData.selectedCategory]);
-  }, [formData.selectedCategory]);
+  const [questionRemoved, setQuestionRemoved] = useState(false);
 
   const addNewQuestion = () => {
-    if (questions?.length >= 5) {
+    if (filteredQuestions().length >= 5) {
       toast.error("You can only add up to 5 questions.");
       return;
     }
-    setQuestions([...questions, { question: "", answer: "" }]);
-  };
+    const newQuestion = {
+      id: Date.now(),
+      type: "create",
+      question: "",
+      answer: "",
+      category: formData.selectedCategory,
+    };
 
-  // const handleDeleteQuestion = async (e) => {
-  //   e.preventDefault();
-  //   const updatedQuestions = questions.filter((_, i) => i !== questionToDelete);
-  //   setQuestions(updatedQuestions);
-  //   console.log(updatedQuestions);
-  //   setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
-
-  //   let bodyData = {
-  //     contents: {
-  //       ...formData,
-  //       faqs: updatedQuestions,
-  //     },
-  //     moduleSlug: currentSection.moduleSlug,
-  //     moduleName: currentSection.moduleName,
-  //     sectionSlug: currentSection.sectionSlug,
-  //     sectionName: currentSection.sectionName,
-  //     pageName: currentSection.moduleName,
-  //     pageSlug: currentSection.moduleSlug,
-  //   };
-
-  //   try {
-  //     setLoading(true);
-  //     bodyData = convertObjectToFormData(bodyData);
-  //     const response = await handleHomepageCreateEditSection(bodyData);
-  //     if (response.status >= 200 && response.status <= 209) {
-  //       toast.success(response.data.message);
-  //       fetchData();
-  //     }
-  //   } catch (error) {
-  //     toast.error(response.data.message);
-  //   } finally {
-  //     setOpenAlertModal(false);
-  //     setLoading(false);
-  //   }
-  // };
-
-  const handleDeleteQuestion = (index) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(updatedQuestions);
-    setQuestionsByCategory((prev) => ({
-      ...prev,
-      [formData.selectedCategory]: updatedQuestions,
-    }));
-  };
-
-  const handleQuestionChange = (index, field, value) => {
-    const updatedQuestions = questions.map((q, i) =>
-      i === index ? { ...q, [field]: value } : q
-    );
-    setQuestions(updatedQuestions);
-    setQuestionsByCategory((prev) => ({
-      ...prev,
-      [formData.selectedCategory]: updatedQuestions,
-    }));
-  };
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      return {
-        ...prevData,
-        [name]: value,
-      };
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions, newQuestion];
+      handleVadilation(updatedQuestions);
+      return updatedQuestions;
     });
   };
+
+  const handleDeleteQuestion = async (id) => {
+    const updatedQuestions = questions.filter((q) => q.id !== id);
+    setQuestions(updatedQuestions);
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+    setQuestionRemoved(true);
+  };
+
+  useEffect(() => {
+    if (questionRemoved) {
+      handleSubmit();
+      setQuestionRemoved(false);
+      setOpenAlertModal(false);
+    }
+  }, [questionRemoved]);
+
+  const openDeleteModal = (id) => {
+    setOpenAlertModal(true);
+    setQuestionToDelete(id);
+  };
+
+  const handleRemoveQuestion = (id) => {
+    const updatedQuestions = questions.filter((q) => q.id !== id);
+    setQuestions(updatedQuestions);
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+  };
+
+  const handleQuestionChange = (id, field, value) => {
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.map((q) =>
+        q.id === id ? { ...q, [field]: value } : q
+      );
+      handleVadilation(updatedQuestions);
+      return updatedQuestions;
+    });
+  };
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // console.log("all datas", sectionData);
+
+  useEffect(() => {
+    if (sectionData) {
+      setFormData((prev) => ({
+        ...prev,
+        sectionTitle: sectionData.sectionTitle || "",
+        faqs: sectionData.faqs || [],
+        moduleId: sectionData.moduleId || null,
+      }));
+      setQuestions(sectionData.faqs || []);
+    }
+  }, [sectionData]);
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
 
-    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+    if (!formData.sectionTitle) {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (
-      formData.selectedCategory === "" ||
-      formData.selectedCategory === null
-    ) {
+
+    if (!formData.selectedCategory) {
       newerrors.selectedCategory = "Category is required";
       has = true;
     }
-    (formData.faqs || []).forEach((questionObj, index) => {
+
+    questions.forEach((questionObj, index) => {
       if (!questionObj.question) {
         newerrors[`question_${index}`] = "Question is required";
         has = true;
       }
       if (!questionObj.answer) {
         newerrors[`answer_${index}`] = "Answer is required";
+        has = true;
+      }
+      if (!questionObj.category) {
+        newerrors[`category_${index}`] = "Category is required";
         has = true;
       }
     });
@@ -154,18 +133,21 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
+    setFormData((prevData) => ({ ...prevData, faqs: questions }));
     let validateResponse = handleVadilation();
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
+    let updateType = questions.map((question) => ({
+      ...question,
+      type: "edit",
+    }));
+
     let bodyData = {
-      contents: {
-        sectionTitle: formData.sectionTitle,
-        faqs: questionsByCategory,
-      },
+      contents: { ...formData, faqs: updateType },
       moduleSlug: currentSection.moduleSlug,
       moduleName: currentSection.moduleName,
       sectionSlug: currentSection.sectionSlug,
@@ -176,17 +158,23 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
 
     try {
       setLoading(true);
-      bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData, false);
       if (response.status >= 200 && response.status <= 209) {
         toast.success(response.data.message);
         fetchData();
       }
     } catch (error) {
-      toast.error(response.data.message);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const filteredQuestions = () => {
+    let filteredData = questions.filter(
+      (q) => q.category === formData.selectedCategory
+    );
+    return filteredData;
   };
 
   return (
@@ -249,7 +237,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="selectedCategory"
+                    htmlFor="banner_month"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Select the Category
@@ -262,12 +250,15 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                   </label>
                   <select
                     type="text"
-                    id="selectedCategory"
+                    id="banner_month"
                     placeholder="Select Category"
                     className="w-full h-[46px] rounded-[8px] border-1.5 border-[#D0D5DD] px-[10px] cursor-pointer"
                     name="selectedCategory"
                     value={formData.selectedCategory}
-                    onChange={handleFormChange}
+                    onChange={(e) => {
+                      handleFormChange(e);
+                      fetchData();
+                    }}
                   >
                     <option value="general">General</option>
                     <option value="delivery">Delivery</option>
@@ -293,7 +284,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                   </div>
                 </div>
 
-                {questions?.map((que, index) => (
+                {filteredQuestions()?.map((que, index) => (
                   <div className="flex flex-col space-y-6 mb-8" key={index}>
                     <div className="flex flex-col gap-3">
                       <div className="flex justify-between items-center">
@@ -309,15 +300,25 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                             </span>
                           )}
                         </label>
-                        <Link
-                          className="font-bold flex gap-1 items-center cursor-pointer text-red-500"
-                          onClick={() => {
-                            setQuestionToDelete(index);
-                            setOpenAlertModal(true);
-                          }}
-                        >
-                          <FaMinus size={12} className="pt-1" /> Delete Question
-                        </Link>
+                        {que.type === "edit" ? (
+                          <button
+                            className="font-bold flex gap-1 items-center cursor-pointer text-red-500"
+                            type="button"
+                            onClick={() => openDeleteModal(que.id)}
+                          >
+                            <FaMinus size={12} className="pt-1" /> Delete
+                            Question
+                          </button>
+                        ) : (
+                          <button
+                            className="font-bold flex gap-1 items-center cursor-pointer text-gray-500"
+                            type="button"
+                            onClick={() => handleRemoveQuestion(que.id)}
+                          >
+                            <FaMinus size={12} className="pt-1" /> Remove
+                            Question
+                          </button>
+                        )}
                       </div>
 
                       <Input
@@ -330,7 +331,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                         radius="sm"
                         onChange={(e) =>
                           handleQuestionChange(
-                            index,
+                            que.id,
                             "question",
                             e.target.value
                           )
@@ -359,7 +360,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
                         size="lg"
                         radius="sm"
                         onChange={(e) =>
-                          handleQuestionChange(index, "answer", e.target.value)
+                          handleQuestionChange(que.id, "answer", e.target.value)
                         }
                       />
                     </div>
@@ -396,7 +397,7 @@ const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
         isVisible={openAlertModal}
         modeltitle="Delete Question"
         message="Are you sure you want to delete this question?"
-        onConfirm={handleDeleteQuestion}
+        onConfirm={() => handleDeleteQuestion(questionToDelete)}
         onCancel={() => setOpenAlertModal(false)}
       />
     </Fragment>

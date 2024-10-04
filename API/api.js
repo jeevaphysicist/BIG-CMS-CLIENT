@@ -6,8 +6,13 @@ import { performLogout } from "@/utils/LogoutHandle";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-const formHeader = {"Content-Type": "multipart/form-data"};
-const rawHeader = { "Content-Type": "application/json"};
+let formHeader = {
+  "Content-Type": "multipart/form-data",
+};
+
+let rawHeader = {
+  "Content-Type": "application/json",
+};
 
 // Public axios instance (no authorization)
 const publicApi = axios.create({
@@ -131,15 +136,13 @@ export const handleGetTemplate = async () => {
 
 // S.No 03
 // Get Create Edit Homepage section Handler
-export const handleHomepageCreateEditSection = async (data) => {
+export const handleHomepageCreateEditSection = async (data, isForm) => {
   try {
     const response = await publicApi.post(
       "/api/homepage/create-edit-section",
       data,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: isForm ? formHeader : rawHeader,
       }
     );
     return response;

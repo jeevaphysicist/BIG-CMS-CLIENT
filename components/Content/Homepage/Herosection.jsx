@@ -299,6 +299,7 @@ const Herosection = ({
                     size="lg"
                     radius="sm"
                     hideTimeZone
+                    aria-label="start date"
                     showMonthAndYearPickers
                     defaultValue={now(getLocalTimeZone())}
                   />
@@ -315,6 +316,7 @@ const Herosection = ({
                     size="lg"
                     radius="sm"
                     hideTimeZone
+                    aria-label="end date"
                     showMonthAndYearPickers
                     defaultValue={now(getLocalTimeZone())}
                   />
