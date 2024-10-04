@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";

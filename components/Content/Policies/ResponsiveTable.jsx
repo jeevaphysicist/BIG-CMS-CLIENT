@@ -1,31 +1,114 @@
-import React, { useState } from "react";
-import { motion, Reorder } from "framer-motion";
-import { GripVertical } from "lucide-react";
-import { Button, Switch } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
+import { motion, Reorder, useDragControls } from "framer-motion";
+import { Switch } from "@nextui-org/react";
 import { FiEdit2 } from "react-icons/fi";
 import { RiDragMove2Fill } from "react-icons/ri";
-import { Checkbox } from "@nextui-org/react";
 import { PiTrashBold } from "react-icons/pi";
 import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { PiArrowDownBold } from "react-icons/pi";
+import { handlePolicyStatus } from "@/API/api";
+import { toast } from "react-toastify";
 
-const ResponsiveTable = ({ initialData, handlePolicies }) => {
+const DraggableRow = ({
+  UpdateStatus,
+  row,
+  handleType,
+  handleSetEditData,
+  handleSelectedPolicy,
+}) => {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item
+      key={row.id}
+      value={row}
+      as="tr"
+      className="border-b bg-[#F9FAFB] hover:bg-white"
+      dragListener={false}
+      dragControls={controls}
+    >
+      <td className="px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
+        <motion.div
+          className="cursor-move mr-2 "
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onPointerDown={(e) => controls.start(e)}
+        >
+          <RiDragMove2Fill size={16} className="text-[#676767]" />
+        </motion.div>
+        {/* <Checkbox /> */}
+        {row.title}
+      </td>
+
+      <td className="px-4 py-2 text-[14px]">
+        {row.status === "Active" ? (
+          <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
+            <span className="w-2 h-2 rounded-full bg-[#17B26A]" />
+            Active
+          </span>
+        ) : (
+          <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
+            <span className="w-2 h-2 rounded-full bg-[red]" />
+            InActive
+          </span>
+        )}
+      </td>
+      <td className="px-4 py-4 text-[14px]">
+        <div className="flex items-center gap-5">
+          <Switch
+            size="sm"
+            onChange={() => {
+              const newStatus = row.status === "Active" ? "InActive" : "Active";
+              UpdateStatus(row._id, newStatus);
+            }}
+            isSelected={row.status === "Active"}
+            aria-label="status update"
+          />
+          <button className="text-[20px] text-[#475467]">
+            <PiTrashBold />
+          </button>
+          <button
+            className="text-[20px] text-[#475467]"
+            onClick={() => {
+              handleSelectedPolicy();
+              handleType("edit");
+              handleSetEditData(row);
+            }}
+          >
+            <FiEdit2 />
+          </button>
+        </div>
+      </td>
+    </Reorder.Item>
+  );
+};
+
+const ResponsiveTable = ({
+  initialData,
+  handleSelectedPolicy,
+  handleSetEditData,
+  handleType,
+}) => {
   const [data, setData] = useState(initialData);
-  const [selectedRows, setSelectedRows] = useState([]);
 
-  const toggleSelectAll = () => {
-    if (selectedRows.length === data.length) {
-      setSelectedRows([]);
-    } else {
-      setSelectedRows(data.map((item) => item.id));
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
+  const UpdateStatus = async (id, status) => {
+    try {
+      const response = await handlePolicyStatus(id, status);
+      console.log(response);
+      if (response.status >= 200 && response.status <= 209) {
+        fetchData();
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Internal Server Error!");
     }
-  };
-
-  const toggleSelectRow = (id) => {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
   };
 
   return (
@@ -39,7 +122,7 @@ const ResponsiveTable = ({ initialData, handlePolicies }) => {
                   Name <PiArrowDownBold />
                 </span>
               </th>
-             
+
               <th className="px-4 text-[12px] py-3 text-start border-b-1 text-[#475467]  text-nowrap">
                 Status
               </th>
@@ -50,52 +133,14 @@ const ResponsiveTable = ({ initialData, handlePolicies }) => {
           </thead>
           <Reorder.Group as="tbody" axis="y" values={data} onReorder={setData}>
             {data?.map((row) => (
-              <Reorder.Item
-                key={row.id}
-                value={row}
-                as="tr"
-                className="border-b bg-[#F9FAFB] hover:bg-white"
-              >
-                <td className="px-4 py-4 font-regular text-[14px] gap-2 flex mt-1 text-nowrap items-center">
-                  <motion.div
-                    className="cursor-move mr-2 "
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <RiDragMove2Fill size={16} className="text-[#676767]" />
-                  </motion.div>
-                  {/* <Checkbox /> */}
-                  {row.name}
-                </td>
-               
-                <td className="px-4 py-2 text-[14px]">
-                  {row.status === "Active" ? (
-                    <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
-                      <span className="w-2 h-2 rounded-full bg-[#17B26A]" />
-                      Active
-                    </span>
-                  ) : (
-                    <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4  rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
-                      <span className="w-2 h-2 rounded-full bg-[red]" />
-                      InActive
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-4 text-[14px]">
-                  <div className="flex items-center gap-5">
-                    <Switch size="sm" aria-label="Automatic updates" />
-                    <button className="text-[20px] text-[#475467]">
-                      <PiTrashBold />
-                    </button>
-                    <button
-                      className="text-[20px] text-[#475467]"
-                      onClick={handlePolicies}
-                    >
-                      <FiEdit2 />
-                    </button>
-                  </div>
-                </td>
-              </Reorder.Item>
+              <DraggableRow
+                UpdateStatus={UpdateStatus}
+                handleSetEditData={handleSetEditData}
+                handleType={handleType}
+                handleSelectedPolicy={handleSelectedPolicy}
+                key={row._id}
+                row={row}
+              />
             ))}
           </Reorder.Group>
         </table>

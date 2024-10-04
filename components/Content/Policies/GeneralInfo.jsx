@@ -1,15 +1,16 @@
 import React from "react";
 import { Fragment, useState } from "react";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
+import { handleCreatePolicy } from "@/API/api";
 
-const GeneralInfo = ({ handlePolicies }) => {
+const GeneralInfo = ({ handlePolicies, fetchData }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    pageTitle: "",
+    title: "",
     header: "",
     mainContent: "",
   });
@@ -31,8 +32,8 @@ const GeneralInfo = ({ handlePolicies }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.pageTitle === "" || formData.pageTitle === null) {
-      newerrors.pageTitle = "Page title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Page title is required";
       has = true;
     }
     if (formData.header === "" || formData.header === null) {
@@ -48,19 +49,29 @@ const GeneralInfo = ({ handlePolicies }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      const response = await handleCreatePolicy(formData);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <Fragment>
       <form onSubmit={handleSubmit} className="w-full md:px-8 px-2 space-y-6">
@@ -73,9 +84,9 @@ const GeneralInfo = ({ handlePolicies }) => {
               >
                 Page Title
                 <RequiredSymbol />
-                {errors.pageTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.pageTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -86,7 +97,7 @@ const GeneralInfo = ({ handlePolicies }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="pageTitle"
+                name="title"
                 onChange={handleFormChange}
               />
             </div>

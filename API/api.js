@@ -238,7 +238,7 @@ export const handleChangeModuleStatus = async (id) => {
 // Create Footer Content
 export const handleCreateFooter = async (data) => {
   try {
-    const response = await publicApi.post('/api/footer', data,{
+    const response = await publicApi.post("/api/footer", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -253,7 +253,7 @@ export const handleCreateFooter = async (data) => {
 // Update Footer Content
 export const handleFooterUpdate = async (id, data) => {
   try {
-    const response = await publicApi.put(`/api/footer/${id}`, data,{
+    const response = await publicApi.put(`/api/footer/${id}`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -290,7 +290,7 @@ export const handleFooterDelete = async (id) => {
 // Get Footer Content List (optional, if needed)
 export const handleGetFooterList = async () => {
   try {
-    const response = await publicApi.get('/api/footer');
+    const response = await publicApi.get("/api/footer");
     return response;
   } catch (error) {
     return error;
@@ -309,7 +309,7 @@ export const handleGetFooterCategoryList = async (category) => {
 };
 
 // S.No 16
-// Get sitepage List 
+// Get sitepage List
 export const handleGetSitepageList = async () => {
   try {
     const response = await publicApi.get(`/api/sitepage/list`);
@@ -320,11 +320,11 @@ export const handleGetSitepageList = async () => {
 };
 
 // S.No 17
-// Create sitepage List 
-export const handleCreateSitepage = async (data,isformData) => {
+// Create sitepage List
+export const handleCreateSitepage = async (data, isformData) => {
   try {
-    const response = await publicApi.post(`/api/sitepage/create`,data,{
-      headers: isformData ? formHeader : rawHeader
+    const response = await publicApi.post(`/api/sitepage/create`, data, {
+      headers: isformData ? formHeader : rawHeader,
     });
     return response;
   } catch (error) {
@@ -333,11 +333,11 @@ export const handleCreateSitepage = async (data,isformData) => {
 };
 
 // S.No 18
-// Update sitepage List 
-export const handleUpdateSitepage = async (data,id,isformData) => {
+// Update sitepage List
+export const handleUpdateSitepage = async (data, id, isformData) => {
   try {
-    const response = await publicApi.put(`/api/sitepage/update/${id}`,data,{
-      headers: isformData ? formHeader : rawHeader
+    const response = await publicApi.put(`/api/sitepage/update/${id}`, data, {
+      headers: isformData ? formHeader : rawHeader,
     });
     return response;
   } catch (error) {
@@ -347,9 +347,12 @@ export const handleUpdateSitepage = async (data,id,isformData) => {
 
 // S.No 19
 // Update sitepage Status
-export const handleUpdateSitepageStatus = async (data,id) => {
+export const handleUpdateSitepageStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/sitepage/update/${id}/status`,data);
+    const response = await publicApi.patch(
+      `/api/sitepage/update/${id}/status`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
@@ -357,10 +360,46 @@ export const handleUpdateSitepageStatus = async (data,id) => {
 };
 
 // S.No 20
-// Delete sitepage 
+// Delete sitepage
 export const handleDeleteSitepage = async (id) => {
   try {
     const response = await publicApi.delete(`/api/sitepage/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 21
+//Create Policies
+export const handleCreatePolicy = async (data) => {
+  try {
+    const response = await publicApi.post(`/api/policies/create`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 21
+//Create Policies
+export const handleGetAllPolicies = async () => {
+  try {
+    const response = await publicApi.get(`/api/policies/`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 22
+//Change Policy Status
+export const handlePolicyStatus = async (id, data) => {
+  try {
+    const response = await publicApi.patch(
+      `/api/policies/update/${id}/status`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
