@@ -37,10 +37,23 @@ const Index = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Filtered data state
   const [searchQuery, setSearchQuery] = useState("");
+  const [policyPageList, setPolicyPageList] = useState([]);
 
   const handlePolicies = () => {
     setIsTable(!isTable);
   };
+
+  const handleType = (value) => {
+    setType(value);
+  };
+
+  useEffect(() => {
+    if (type === "edit") {
+      setSelectEditData(
+        sitepageList.find((item) => item._id === selectEditData._id)
+      );
+    }
+  }, [sitepageList]);
 
   const fetchPoliciesData = async () => {
     try {
@@ -106,6 +119,7 @@ const Index = () => {
             <ResponsiveTable
               initialData={filteredData}
               handlePolicies={handlePolicies}
+              fetchData={fetchPoliciesData}
             />
           </div>
         </div>

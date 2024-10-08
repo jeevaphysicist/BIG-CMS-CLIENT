@@ -59,8 +59,7 @@ const DraggableRow = ({
           <Switch
             size="sm"
             onChange={() => {
-              const newStatus = row.status === "Active" ? "InActive" : "Active";
-              UpdateStatus(row._id, newStatus);
+              UpdateStatus(row._id, row.status);
             }}
             isSelected={row.status === "Active"}
             aria-label="status update"
@@ -89,6 +88,7 @@ const ResponsiveTable = ({
   handleSelectedPolicy,
   handleSetEditData,
   handleType,
+  fetchData,
 }) => {
   const [data, setData] = useState(initialData);
 
@@ -98,8 +98,7 @@ const ResponsiveTable = ({
 
   const UpdateStatus = async (id, status) => {
     try {
-      const response = await handlePolicyStatus(id, status);
-      console.log(response);
+      const response = await handlePolicyStatus(id, { status: status });
       if (response.status >= 200 && response.status <= 209) {
         fetchData();
         toast.success(response.data.message);
@@ -107,7 +106,7 @@ const ResponsiveTable = ({
         toast.error(response.response.data.message);
       }
     } catch (error) {
-      toast.error("Internal Server Error!");
+      toast.error(error.message);
     }
   };
 
