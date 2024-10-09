@@ -1,11 +1,13 @@
 'use client'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState ,useEffect } from 'react'
 import { CiCirclePlus } from 'react-icons/ci'
 import { FiSearch } from 'react-icons/fi'
 import TradeshowList from './TradeshowList'
 import AddEditTradeShow from './AddEditTradeShow'
 import ExploreGemStones from './ExploreGemStones'
 import Faqs from './Faqs'
+import { handleGetTradeshowList } from '@/API/api'
+import { toast } from 'react-toastify'
 
 const index = () => {
   const [isAddEdit,setIsAddEdit] = useState({
@@ -13,6 +15,9 @@ const index = () => {
     type:"create"
   });
   const [selectSection,setSelectSection] = useState('trade-show-list');
+  const [tradeshowList,setTradeshowList] = useState([]);
+  const [tradeShowLoading,setTradeShowLoading] = useState(false);
+  const [editData,setEditData] = useState({});
 
   const handleAddEdit = ()=>{
       let status = !isAddEdit.status;
@@ -20,12 +25,43 @@ const index = () => {
   }
   const handleType = (type)=>{
      setIsAddEdit(prev=>({...prev,type:type}));
+     if(type === "create"){
+       setEditData({});
+     }
   }
   const handleSection = (e)=>{
         setSelectSection(e.target.value);
   }
   const handleClose = ()=>{
     setIsAddEdit(prev=>({...prev,status:false}));
+  }
+
+  useEffect(()=>{
+    fetchTradeShowList();
+  },[])
+
+  const fetchTradeShowList = async()=>{
+        try {
+          setTradeShowLoading(true);
+          const response = await handleGetTradeshowList();
+          if(response.status >= 200 && response.status <= 209){
+            setTradeshowList(response.data);
+          }
+          else{
+            toast.error("Failed to fetch tradeshow list !");
+            setTradeshowList([]);
+          }          
+        } catch (error) {
+            toast.error(error.message);
+            setTradeshowList([]);
+        }
+        finally{
+            setTradeShowLoading(false);
+        }
+  }
+
+  const handleSetEditDATA = (editdata)=>{
+        setEditData(editdata);
   }
 
   return (
@@ -80,7 +116,7 @@ const index = () => {
          <div>
           {
             selectSection === 'trade-show-list' &&
-           <TradeshowList handleType={handleType} handleAddEdit={handleAddEdit} />
+           <TradeshowList fetchData={fetchTradeShowList} handleSetEditDATA={handleSetEditDATA} isLoading={tradeShowLoading} tradeshowList={tradeshowList} handleType={handleType} handleAddEdit={handleAddEdit} />
           }
           {
             selectSection === 'explore-gemstones' &&
@@ -94,7 +130,7 @@ const index = () => {
      </section>
      :
      <div>
-         <AddEditTradeShow handleAddEdit={handleAddEdit} type={isAddEdit.type} />
+         <AddEditTradeShow fetchData={fetchTradeShowList} editData={editData} handleAddEdit={handleAddEdit} type={isAddEdit.type} />
      </div>
       }
      </Fragment>

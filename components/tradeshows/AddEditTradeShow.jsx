@@ -1,24 +1,38 @@
 import { Button, Input, Switch, Tab, Tabs } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { RiSettings5Fill } from "react-icons/ri";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { handleCreateTradeshow, handleUpdateTradeshow } from "@/API/api";
 
-const AddEditTradeShow = ({ type, handleAddEdit }) => {
+const AddEditTradeShow = ({editData, fetchData, type, handleAddEdit }) => {
   const [formData, setFormData] = useState({
-    showCity: "",
-    showPromoter: "",
-    showFromDate: "",
-    showToDate: "",
+    show_city: "",
+    show_promoter: "",
+    show_from_date: "",
+    show_to_date: "",
     address: "",
     type: "",
-    booth: "",
-    showTicket: false,
+    booth_number: "",
+    status: "Inactive",
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+        setFormData((prev)=>({...prev,
+          show_city: editData.show_city ||  "",
+          show_promoter: editData.show_promoter || "",
+          show_from_date: editData.show_from_date || "",
+          show_to_date: editData.show_to_date || "",
+          address: editData.address || "",
+          type: editData.type || "",
+          booth_number: editData.booth_number || "",
+          status: editData.status || "Inactive",
+        }))
+  },[])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -28,30 +42,31 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
     }));
   };
 
-  const handleSwitchChange = (field) => {
+  const handleSwitchChange = (e) => {
+    // console.log("field",e.target.checked);
     setFormData((prevData) => ({
       ...prevData,
-      [field]: !prevData[field],
+      status: e.target.checked ? "Active":"Inactive" ,
     }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.showCity === "" || formData.showCity === null) {
-      newerrors.showCity = "City is required";
+    if (formData.show_city === "" || formData.show_city === null) {
+      newerrors.show_city = "City is required";
       has = true;
     }
-    if (formData.showPromoter === "" || formData.showPromoter === null) {
-      newerrors.showPromoter = "Promoter is required";
+    if (formData.show_promoter === "" || formData.show_promoter === null) {
+      newerrors.show_promoter = "Promoter is required";
       has = true;
     }
-    if (formData.showFromDate === "" || formData.showFromDate === null) {
-      newerrors.showFromDate = "From date is required";
+    if (formData.show_from_date === "" || formData.show_from_date === null) {
+      newerrors.show_from_date = "From date is required";
       has = true;
     }
-    if (formData.showToDate === "" || formData.showToDate === null) {
-      newerrors.showToDate = "To date is required";
+    if (formData.show_to_date === "" || formData.show_to_date === null) {
+      newerrors.show_to_date = "To date is required";
       has = true;
     }
     if (formData.address === "" || formData.address === null) {
@@ -62,19 +77,19 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
       newerrors.type = "Type is required";
       has = true;
     }
-    if (formData.booth === "" || formData.booth === null) {
-      newerrors.booth = "Booth is required";
+    if (formData.booth_number === "" || formData.booth_number === null) {
+      newerrors.booth_number = "booth_number is required";
       has = true;
     }
-    if (formData.showTicket === "" || formData.showTicket === null) {
-      newerrors.showTicket = "Booth is required";
+    if (formData.status === "" || formData.status === null) {
+      newerrors.status = "booth_number is required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -83,9 +98,30 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
       return null;
     }
 
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
+    let response ; 
+    try {
+      setLoading(true);
+      if(type === 'create'){
+      response = await handleCreateTradeshow(formData);      
+      }
+      else if(type === 'edit'){
+      response = await handleUpdateTradeshow(formData,editData._id); 
+      }
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+      handleAddEdit();
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,53 +149,55 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
         <div className="flex flex-col md:flex-row w-[100%] gap-5 items-center justify-between">
           <div className="flex flex-col  mt-3 pt-2 gap-3 w-[100%]">
             <label
-              htmlFor="showCity"
+              htmlFor="show_city"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Show City
               <RequiredSymbol />
-              {errors.showCity && (
+              {errors.show_city && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.showCity}
+                  {errors.show_city}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="showCity"
+              id="show_city"
               variant="bordered"
               placeholder="Chicago, IL"
               size="lg"
               radius="sm"
-              name="showCity"
+              name="show_city"
               className="w-[100%]"
+              value={formData.show_city}
               onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col  md:mt-3 pt-2 gap-3 w-[100%]">
             <label
-              htmlFor="showPromoter"
+              htmlFor="show_promoter"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Show Promoter
               <RequiredSymbol />
-              {errors.showPromoter && (
+              {errors.show_promoter && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.showPromoter}
+                  {errors.show_promoter}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="showPromoter"
+              id="show_promoter"
               variant="bordered"
               placeholder="Intergem"
               size="lg"
               radius="sm"
-              name="showPromoter"
+              name="show_promoter"
               className="w-[100%]"
+              value={formData.show_promoter}
               onChange={handleFormChange}
             />
           </div>
@@ -167,53 +205,55 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
         <div className="flex flex-col md:flex-row w-[100%] gap-5 items-center justify-between">
           <div className="flex flex-col   gap-3 w-[100%]">
             <label
-              htmlFor="showFromDate"
+              htmlFor="show_from_date"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Show From Date
               <RequiredSymbol />
-              {errors.showFromDate && (
+              {errors.show_from_date && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.showFromDate}
+                  {errors.show_from_date}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="showFromDate"
+              id="show_from_date"
               variant="bordered"
               placeholder="Feb 23, 2024"
               size="lg"
               radius="sm"
-              name="showFromDate"
+              name="show_from_date"
               className="w-[100%]"
+              value={formData.show_from_date}
               onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col  gap-3 w-[100%]">
             <label
-              htmlFor="showToDate"
+              htmlFor="show_to_date"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Show To Date
               <RequiredSymbol />
-              {errors.showToDate && (
+              {errors.show_to_date && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.showToDate}
+                  {errors.show_to_date}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="showToDate"
+              id="show_to_date"
               variant="bordered"
               placeholder="Feb 25, 2024"
               size="lg"
               radius="sm"
-              name="showToDate"
+              name="show_to_date"
               className="w-[100%]"
+              value={formData.show_to_date}
               onChange={handleFormChange}
             />
           </div>
@@ -241,6 +281,7 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
             radius="sm"
             name="address"
             className="w-[100%]"
+            value={formData.address}
             onChange={handleFormChange}
           />
         </div>
@@ -268,51 +309,53 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
               radius="sm"
               name="type"
               className="w-[100%]"
+              value={formData.type}
               onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col  gap-3 w-[100%]">
             <label
-              htmlFor="booth"
+              htmlFor="booth_number"
               className="text-[16px]  font-semibold flex gap-1"
             >
-              Booth #
+              booth_number #
               <RequiredSymbol />
-              {errors.booth && (
+              {errors.booth_number && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.booth}
+                  {errors.booth_number}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="booth"
+              id="booth_number"
               variant="bordered"
-              placeholder="Booth #132 & 134"
+              placeholder="booth_number #132 & 134"
               size="lg"
               radius="sm"
-              name="booth"
+              name="booth_number"
               className="w-[100%]"
+              value={formData.booth_number}
               onChange={handleFormChange}
             />
           </div>
         </div>
         <div className="flex flex-row  gap-3 w-[100%]">
           <label
-            htmlFor="showTicket"
+            htmlFor="status"
             className="text-[16px]  font-semibold flex gap-1"
           >
             Show Ticket
-            {errors.showTicket && (
+            {errors.status && (
               <span className="font-regular text-[12px] text-red-600">
-                {errors.showTicket}
+                {errors.status}
               </span>
             )}
           </label>
           <Switch
-            checked={formData.showTicket}
-            onChange={() => handleSwitchChange("showTicket")}
+            isSelected={formData.status === "Active"}
+            onChange={(e) => handleSwitchChange(e)}
             aria-label="Show Ticket"
           />
         </div>
@@ -330,8 +373,10 @@ const AddEditTradeShow = ({ type, handleAddEdit }) => {
         <Button
           color="primary"
           type="submit"
+          isLoading={loading}
+          isDisabled={loading}
           className="font-semibold text-white"
-          startContent={<FiSave size={20} />}
+          startContent={loading ? null : <FiSave size={20} />}
         >
           Save
         </Button>

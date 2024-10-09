@@ -738,7 +738,62 @@ export const handleDeleteBirthStones = async (id) => {
   try {
     const response = await publicApi.delete(`/api/birthstone/delete/${id}`);
     return response;
-  } catch (error) {
+  } catch (error){
     return error;
   }
 };
+
+// S.No 20
+// Get Tradeshow list
+export const handleGetTradeshowList = async () => {  
+    try {
+      const response = await publicApi.get(`/api/tradeshow/list`);
+      return response;
+    } catch (error){
+      return error;
+    }
+}
+
+// S.No 20
+// Create Tradeshow 
+export const handleCreateTradeshow = async (data) => {  
+  try {
+    const response = await publicApi.post(`/api/tradeshow/create`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 20
+// Update Tradeshow 
+export const handleUpdateTradeshow = async (data,id) => {  
+  try {
+    const response = await publicApi.put(`/api/tradeshow/update/${id}`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 20
+// Update Tradeshow  Status
+export const handleUpdateTradeshowStatus = async (id,data) => {  
+  try {
+    const response = await publicApi.patch(`/api/tradeshow/status/${id}`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 20
+// Delete Tradeshow 
+export const handleDeleteTradeshow = async (id) => {  
+  try {
+    const response = await publicApi.delete(`/api/tradeshow/delete/${id}`);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
