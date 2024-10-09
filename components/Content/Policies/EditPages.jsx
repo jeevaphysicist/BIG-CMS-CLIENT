@@ -7,10 +7,19 @@ import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
 import GeneralInfo from "./GeneralInfo";
+import { handleCreatePolicy, handleUpdatePolicy } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { toast } from "react-toastify";
 
 const EditPages = ({ handlePolicies, type, fetchData, editData }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState("");
+
+  useEffect(() => {
+    setTitle(editData.title);
+  }, [editData]);
 
   const handleModal = () => {
     setIsModalOpen(true);
@@ -20,8 +29,37 @@ const EditPages = ({ handlePolicies, type, fetchData, editData }) => {
     setActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Sitepages", formData);
+  const handleSeoSubmit = async (formData) => {
+    // console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+      title: title,
+      seo: formData,
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      if (type === "create") {
+        response = await handleCreatePolicy(bodyData, false);
+      } else if (type === "edit") {
+        response = await handleUpdatePolicy(bodyData, editData._id, false);
+      }
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+        handlePolicies();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,9 +116,10 @@ const EditPages = ({ handlePolicies, type, fetchData, editData }) => {
       )}
       {activeTab === "seoAttributes" && (
         <SeoAttributes
+          isLoading={loading}
           handler={handlePolicies}
-          handleModal={handleModal}
           onSubmit={handleSeoSubmit}
+          sectionData={editData?.seo}
         />
       )}
       <Modal

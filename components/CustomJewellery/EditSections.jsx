@@ -8,6 +8,9 @@ import IconBox from "./IconBox";
 import HowItWorks from "./HowItWorks";
 import Content from "./Content";
 import SeoAttributes from "../Content/SeoAttributes";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleUpdateCustomJewelry } from "@/API/api";
+import { toast } from "react-toastify";
 
 const EditSections = ({ handleCustomJeweleryPage, fetchData, editData }) => {
   const [selectedSection, setSelectedSection] = useState("iconBox");
@@ -21,6 +24,36 @@ const EditSections = ({ handleCustomJeweleryPage, fetchData, editData }) => {
 
   const handleChange = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleSeoSubmit = async (formData) => {
+    // console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+      title: title,
+      seo: formData,
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+
+      response = await handleUpdateCustomJewelry(bodyData, editData._id, false);
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+        handleCustomJeweleryPage();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -143,6 +176,8 @@ const EditSections = ({ handleCustomJeweleryPage, fetchData, editData }) => {
         <SeoAttributes
           onSubmit={handleSeoSubmit}
           handler={handleCustomJeweleryPage}
+          isLoading={loading}
+          sectionData={editData?.seo}
         />
       )}
     </Fragment>

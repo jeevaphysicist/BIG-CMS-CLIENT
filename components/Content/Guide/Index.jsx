@@ -1,10 +1,9 @@
 "use client";
-import { useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 
 import ResponsiveTable from "./ResponsiveTable";
-import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import EditPages from "./EditPages";
 import { handleGetGuides } from "@/API/api";
 
@@ -28,14 +27,11 @@ const initialData = [
 
 const Index = () => {
   const [isTable, setIsTable] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
   const [selectEditData, setSelectEditData] = useState({});
   const [guideList, setGuideList] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [type, setType] = useState('create');
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
-
-
+  const [type, setType] = useState("create");
+  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
 
   const itemsClasses = {
     table: " bg-white  ",
@@ -46,7 +42,6 @@ const Index = () => {
     th: "bg-white font-medium w-[100px]  rounded-t-[10px]",
     td: "bg-[#F9FAFB] font-regular text-[#0A1215]",
   };
-
 
   const handleGuide = () => {
     setIsTable(!isTable);
@@ -66,13 +61,15 @@ const Index = () => {
 
   useEffect(() => {
     // If in edit mode, set the selected data for editing
-    if (type === 'edit') {
-      setSelectEditData(guideList.find(item => item._id === selectEditData._id));
+    if (type === "edit") {
+      setSelectEditData(
+        guideList.find((item) => item._id === selectEditData._id)
+      );
     }
   }, [guideList]);
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (searchQuery.trim() === "") {
       setFilteredData(guideList);
     } else {
       const filtered = guideList.filter((item) =>
@@ -87,7 +84,7 @@ const Index = () => {
       const response = await handleGetGuides();
       if (response.status >= 200 && response.status <= 209) {
         setGuideList(response.data);
-        setFilteredData(response.data); 
+        setFilteredData(response.data);
       } else {
         setGuideList([]);
         setFilteredData([]);
@@ -100,7 +97,6 @@ const Index = () => {
   const handleSetEditData = (editdata) => {
     setSelectEditData(editdata);
   };
-
 
   return (
     <div className="w-[100%]">
@@ -115,11 +111,10 @@ const Index = () => {
             </div>
             <button
               className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-              onClick={()=>{
+              onClick={() => {
                 handleGuide();
-                handleType('create');
-              }
-              }
+                handleType("create");
+              }}
             >
               <CiCirclePlus />
               Add new Guide
@@ -137,21 +132,21 @@ const Index = () => {
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
-                fetchData={fetchGuideList}
-                handleSetEditData={handleSetEditData}
-                handleType={handleType}
-                initialData={filteredData} // Use filtered data
-                handleGuide={handleGuide}
-                searchQuery={searchQuery}
+              fetchData={fetchGuideList}
+              handleSetEditData={handleSetEditData}
+              handleType={handleType}
+              initialData={filteredData} // Use filtered data
+              handleGuide={handleGuide}
+              searchQuery={searchQuery}
             />
           </div>
         </div>
       ) : (
-        <EditPages  
-        fetchData={fetchGuideList}
-        editData={selectEditData}
-        type={type}
-        handleGuide={handleGuide}
+        <EditPages
+          fetchData={fetchGuideList}
+          editData={selectEditData}
+          type={type}
+          handleGuide={handleGuide}
         />
       )}
     </div>
