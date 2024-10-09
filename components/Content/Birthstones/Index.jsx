@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 
 import ResponsiveTable from "./ResponsiveTable";
 import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import EditPages from "./EditPages";
+import { handleGetBirthStones } from "@/API/api";
 
 const initialData = [
   {
@@ -33,7 +34,12 @@ const initialData = [
 
 const Index = () => {
   const [isTable, setIsTable] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
+  const [selectEditData, setSelectEditData] = useState({});
+  const [birthStoneList, setBirthStoneList] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [type, setType] = useState('create');
+  const [searchQuery, setSearchQuery] = useState(''); 
+
   const itemsClasses = {
     table: " bg-white  ",
     thead: "bg-white border ",
@@ -45,9 +51,57 @@ const Index = () => {
   };
   const handleBirthStones = () => {
     setIsTable(!isTable);
+    let status = !isTable;
+    if (status === false) {
+      setSelectEditData({});
+    }
   };
 
-  const handleAddSitePage = () => {};
+
+  const handleType = (value) => {
+    setType(value);
+  };
+
+  useEffect(() => {
+    fetchBirthStoneList();
+  }, []);
+
+  useEffect(() => {
+    // If in edit mode, set the selected data for editing
+    if (type === 'edit') {
+      setSelectEditData(birthStoneList.find(item => item._id === selectEditData._id));
+    }
+  }, [birthStoneList]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredData(birthStoneList);
+    } else {
+      const filtered = birthStoneList.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchQuery, birthStoneList]);
+
+  const fetchBirthStoneList = async () => {
+    try {
+      const response = await handleGetBirthStones();
+      if (response.status >= 200 && response.status <= 209) {
+        setBirthStoneList(response.data);
+        setFilteredData(response.data); 
+      } else {
+        setBirthStoneList([]);
+        setFilteredData([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSetEditData = (editdata) => {
+    setSelectEditData(editdata);
+  };
 
   return (
     <div className="w-[100%]">
@@ -62,7 +116,10 @@ const Index = () => {
             </div>
             <button
               className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-              onClick={handleAddSitePage}
+              onClick={()=>{
+                handleBirthStones();
+                handleType('create');
+              }}
             >
               <CiCirclePlus />
               Add New Birthstone
@@ -72,19 +129,30 @@ const Index = () => {
             <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Search by title"
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
               className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
             />
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
-              initialData={initialData}
-              handleBirthStones={handleBirthStones}
-            />
+            fetchData={fetchBirthStoneList}
+            handleSetEditData={handleSetEditData}
+            handleType={handleType}
+            initialData={filteredData}
+            searchQuery={searchQuery}
+            handleBirthStones={handleBirthStones}
+           />
           </div>
         </div>
       ) : (
-        <EditPages handleBirthStones={handleBirthStones} />
+        <EditPages
+        fetchData={fetchBirthStoneList}
+        editData={selectEditData}
+        type={type}
+        handleBirthStones={handleBirthStones}
+        />
       )}
     </div>
   );

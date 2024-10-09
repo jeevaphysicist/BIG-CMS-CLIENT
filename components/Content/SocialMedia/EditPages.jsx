@@ -1,20 +1,28 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
+import { handleCreateSocialmedia, handleUpdateSocialmedia } from "@/API/api";
 
-const EditPages = ({ handleSocialMedias }) => {
+const EditPages = ({ handleSocialMedias, type ,fetchData ,editData }) => {
   const [formData, setFormData] = useState({
-    socialMediaTitle: "",
-    socialMediaLink: "",
+    name: "",
+    link: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState({});
+
+  useEffect(()=>{
+      setFormData((prev)=>({...prev
+        ,name:editData.name || ""
+        ,link:editData.link || ""
+      }))
+  },[editData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -28,14 +36,14 @@ const EditPages = ({ handleSocialMedias }) => {
     let newerrors = {};
     let has = false;
     if (
-      formData.socialMediaTitle === "" ||
-      formData.socialMediaTitle === null
+      formData.name === "" ||
+      formData.name === null
     ) {
-      newerrors.socialMediaTitle = "Social Media socialMediaTitle is required";
+      newerrors.name = "Social Media Title is required";
       has = true;
     }
-    if (formData.socialMediaLink === "" || formData.socialMediaLink === null) {
-      newerrors.socialMediaLink = "socialMediaLink is required";
+    if (formData.link === "" || formData.link === null) {
+      newerrors.link = "social Media Link is required";
       has = true;
     }
 
@@ -43,7 +51,7 @@ const EditPages = ({ handleSocialMedias }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
@@ -52,9 +60,34 @@ const EditPages = ({ handleSocialMedias }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = formData
 
-    console.log("Form submitted with data:", formData);
+  let response ; 
+  
+  try {
+    setLoading(true);
+
+    if(type === 'create'){
+    response = await handleCreateSocialmedia(bodyData);      
+    }
+    else if(type === 'edit'){
+    response = await handleUpdateSocialmedia(bodyData,editData._id); 
+    }
+  // console.log("response",response);
+  if (response.status >= 200 && response.status <= 209) {
+    let data = response.data;
+    toast.success(response.data.message);
+    fetchData();
+    handleSocialMedias();
+  }
+  else{
+    toast.error(response.response.data.message);
+  }
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }
   };
 
   return (
@@ -64,66 +97,68 @@ const EditPages = ({ handleSocialMedias }) => {
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
               <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-                Add New Social Link
+              {type === "create" ? "Add New":"Edit"} Social Link
               </h2>
               <p className="text-[#4A5367] md:text-[14px] text-[12px]">
                 Enter Page Contents
               </p>
             </div>
             <Tabs aria-label="Options">
-              <Tab key="draft" socialMediaTitle="Draft"></Tab>
-              <Tab key="publish" socialMediaTitle="Publish"></Tab>
+              <Tab key="draft" name="Draft"></Tab>
+              <Tab key="publish" name="Publish"></Tab>
             </Tabs>
           </div>
         </div>
         <div className="pt-2 no-scrollbar md:min-h-[75vh]">
           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
             <label
-              htmlFor="mediasocialMediaTitle"
+              htmlFor="medianame"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Social Media Title
               <RequiredSymbol />
-              {errors.socialMediaTitle && (
+              {errors.name && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.socialMediaTitle}
+                  {errors.name}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="mediasocialMediaTitle"
+              id="medianame"
               variant="bordered"
               placeholder="Facebook"
               size="lg"
               radius="sm"
-              name="socialMediaTitle"
+              name="name"
+              value={formData.name}
               onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col md:px-8 px-4 my-3 pt-2 gap-3">
             <label
-              htmlFor="socialMediaLink"
+              htmlFor="link"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Link
               <RequiredSymbol />
-              {errors.socialMediaLink && (
+              {errors.link && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.socialMediaLink}
+                  {errors.link}
                 </span>
               )}
             </label>
             <Input
               type="text"
               minRows={4}
-              id="socialMediaLink"
+              id="link"
               variant="bordered"
               placeholder="facebook.com"
               size="lg"
               radius="sm"
-              name="socialMediaLink"
+              name="link"
+              value={formData.link}
               onChange={handleFormChange}
             />
           </div>

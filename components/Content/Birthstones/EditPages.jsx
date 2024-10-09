@@ -7,7 +7,7 @@ import {
   Tabs,
   Textarea,
 } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 // import About from "./About";
 // import Offers from "./Offers";
@@ -23,8 +23,10 @@ import MoreAboutGemstones from "./MoreAboutGemstones";
 import ContentSection from "./ContentSection";
 import Faqs from "./Faqs";
 import BirthstoneInfo from "./BirthstoneInfo";
+import { handleCreateBirthStones, handleUpdateBirthStones } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const EditPages = ({ handleBirthStones }) => {
+const EditPages = ({ type,fetchData,editData, handleBirthStones }) => {
   const [selectedSection, setSelectedSection] = useState("herosection");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
@@ -33,8 +35,12 @@ const EditPages = ({ handleBirthStones }) => {
     media: "",
     moduleId: null,
   });
-
+  const [title,setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {   
+    setTitle(editData.title);
+  }, [editData]);
 
   const handleImageSelect = async (file, width, height, media) => {
     try {
@@ -85,8 +91,39 @@ const EditPages = ({ handleBirthStones }) => {
     setModalActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
+  const handleSeoSubmit = async (formData) => {
     console.log("Submitting data for Sitepages", formData);
+    let bodyData = {
+      title:title,
+      seo:formData
+};
+
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateBirthStones(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateBirthStones(bodyData,editData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  // handleBirthStones();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -154,7 +191,8 @@ const EditPages = ({ handleBirthStones }) => {
                 size="md"
                 radius="sm"
                 name="pageTitle"
-                // onChange={handleFormChange}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
@@ -188,30 +226,68 @@ const EditPages = ({ handleBirthStones }) => {
           </div>
           <div className="  no-scrollbar md:min-h-[65vh]">
             {selectedSection === "herosection" && (
-              <HeroSection handleBirthStones={handleBirthStones} />
+              <HeroSection 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
             {selectedSection === "introduction" && (
-              <Introduction handleBirthStones={handleBirthStones} />
+              <Introduction 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
             {selectedSection === "moreAboutGemstones" && (
-              <MoreAboutGemstones handleBirthStones={handleBirthStones} />
+              <MoreAboutGemstones 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
             {selectedSection === "contentSection" && (
-              <ContentSection handleBirthStones={handleBirthStones} />
+              <ContentSection 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
             {selectedSection === "faqs" && (
-              <Faqs handleBirthStones={handleBirthStones} />
+              <Faqs 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
             {selectedSection === "birthstoneInformation" && (
-              <BirthstoneInfo handleBirthStones={handleBirthStones} />
+              <BirthstoneInfo 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleBirthStones={handleBirthStones}
+               />
             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
         <SeoAttributes
+          isLoading={loading}
           onSubmit={handleSeoSubmit}
-          handleModal={handleModal}
+          sectionData={editData?.seo}
+          // handleModal={handleModal}
           handler={handleBirthStones}
         />
       )}

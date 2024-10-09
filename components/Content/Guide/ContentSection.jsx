@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { Button, Input } from "@nextui-org/react";
 import DragAndDropImage from "../DragDropImage";
@@ -6,15 +6,23 @@ import { FiSave } from "react-icons/fi";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateGuide, handleUpdateGuide } from "@/API/api";
 
-const ContentSection = ({ handleGuide }) => {
+const ContentSection = ({ sectionData,type,fetchData,title, handleGuide }) => {
   const [formData, setFormData] = useState({
-    bannerImage: "",
-    bannerTitle: "",
-    moduleId: null,
+    banner: "",
+    bannerTitle: ""
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    setFormData((prev)=>({...prev,
+      banner:sectionData.content?.banner || "",
+      bannerTitle:sectionData.content?.bannerTitle || ""
+    }))
+},[sectionData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -24,11 +32,11 @@ const ContentSection = ({ handleGuide }) => {
     }));
   };
 
-  const handleImageSelect = async (file, width, height, bannerImage) => {
+  const handleImageSelect = async (file, width, height, banner) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
+        setFormData((prevData) => ({ ...prevData, [banner]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -38,12 +46,8 @@ const ContentSection = ({ handleGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.bannerImage === "" || formData.bannerImage === null) {
-      newerrors.bannerImage = "Banner is required";
-      has = true;
-    }
-    if (formData.headerTitle === "" || formData.headerTitle === null) {
-      newerrors.headerTitle = "Header Title is required";
+    if (formData.banner === "" || formData.banner === null) {
+      newerrors.banner = "Banner is required";
       has = true;
     }
     if (formData.bannerTitle === "" || formData.bannerTitle === null) {
@@ -55,7 +59,7 @@ const ContentSection = ({ handleGuide }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -64,9 +68,41 @@ const ContentSection = ({ handleGuide }) => {
       return null;
     }
 
-    // API Call Here
+    // console.log("Form submitted with data:", formData);
+    let bodyData = {
+      title:title,
+      content:{
+        banner: formData.banner,
+        bannerTitle: formData.bannerTitle
+      }
+};
 
-    console.log("Form submitted with data:", formData);
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateGuide(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateGuide(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleGuide();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -77,24 +113,24 @@ const ContentSection = ({ handleGuide }) => {
             <label htmlFor="" className=" text-[16px] font-medium flex gap-1">
               Banner
               <RequiredSymbol />{" "}
-              {errors.bannerImage && (
+              {errors.banner && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.bannerImage}
+                  {errors.banner}
                 </span>
               )}
             </label>
             <DragAndDropImage
               accept={`images/*`}
               label="banner image"
-              id="bannerImage"
+              id="banner"
               width={487}
               height={410}
               onImageSelect={handleImageSelect}
             />
-            {formData.bannerImage && (
+            {formData.banner && (
               <img
-                className="h-[150px] mx-auto w-[150px]"
-                src={FormateImageURL(formData.bannerImage)}
+                className="h-[150px] mx-auto object-cover w-[100%]"
+                src={FormateImageURL(formData.banner)}
                 alt="Image Preview"
               />
             )}
@@ -121,6 +157,7 @@ const ContentSection = ({ handleGuide }) => {
               size="lg"
               radius="sm"
               name="bannerTitle"
+              value={formData.bannerTitle}
               onChange={handleFormChange}
             />
           </div>
@@ -160,7 +197,9 @@ const ContentSection = ({ handleGuide }) => {
           color="primary"
           type="submit"
           className="font-semibold text-white"
-          startContent={<FiSave size={20} />}
+          isLoading={loading}
+          isDisabled={loading}
+          startContent={loading ?null : <FiSave size={20} />}
         >
           Save
         </Button>

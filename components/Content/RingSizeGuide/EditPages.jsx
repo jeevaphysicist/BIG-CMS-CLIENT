@@ -1,27 +1,32 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
+import { handleUpdateRingSizeGuide } from "@/API/api";
+import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const EditPages = ({ handleSizeGuide }) => {
+const EditPages = ({ handleSizeGuide,fetchData ,editData }) => {
   const [formData, setFormData] = useState({
-    headerBanner: "",
-    moduleId: null,
+    image: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState(false);
 
-  const handleImageSelect = async (file, width, height, headerBanner) => {
+  useEffect(()=>{
+    setFormData(prev=>({...prev, image: editData.image || ""}))
+  },[editData])
+
+  const handleImageSelect = async (file, width, height, image) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [headerBanner]: file }));
+        setFormData((prevData) => ({ ...prevData, [image]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -31,8 +36,8 @@ const EditPages = ({ handleSizeGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.headerBanner === "" || formData.headerBanner === null) {
-      newerrors.headerBanner = "Header Banner is required";
+    if (formData.image === "" || formData.image === null) {
+      newerrors.image = "Header Banner is required";
       has = true;
     }
 
@@ -40,7 +45,7 @@ const EditPages = ({ handleSizeGuide }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
@@ -49,9 +54,30 @@ const EditPages = ({ handleSizeGuide }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = formData;
 
-    console.log("Form submitted with data:", formData);
+  let response ; 
+  
+  try {
+    setLoading(true);
+    bodyData = convertObjectToFormData(bodyData);
+    response = await handleUpdateRingSizeGuide(bodyData,editData._id); 
+    
+  // console.log("response",response);
+  if (response.status >= 200 && response.status <= 209) {
+    let data = response.data;
+    toast.success(response.data.message);
+    fetchData();
+    // handleSizeGuide();
+  }
+  else{
+    toast.error(response.response.data.message);
+  }
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }    
   };
 
   return (
@@ -83,24 +109,24 @@ const EditPages = ({ handleSizeGuide }) => {
                 >
                   Header Banner
                   <RequiredSymbol />{" "}
-                  {errors.headerBanner && (
+                  {errors.image && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.headerBanner}
+                      {errors.image}
                     </span>
                   )}
                 </label>
                 <DragAndDropImage
                   accept={`images/*`}
                   label="banner image"
-                  id="headerBanner"
+                  id="image"
                   width={580}
                   height={465}
                   onImageSelect={handleImageSelect}
                 />
-                {formData.headerBanner && (
+                {formData.image && (
                   <img
-                    className="h-[150px] mx-auto w-[150px]"
-                    src={FormateImageURL(formData.headerBanner)}
+                    className="h-[300px] object-contain mx-auto w-[100%]"
+                    src={FormateImageURL(formData.image)}
                     alt="Image Preview"
                   />
                 )}

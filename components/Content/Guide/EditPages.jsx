@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import {
   Button,
   Input,
@@ -7,10 +6,8 @@ import {
   Tabs,
   Textarea,
 } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
-// import About from "./About";
-// import Offers from "./Offers";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
@@ -23,16 +20,22 @@ import ProductFromGemstones from "./ProductFromGemstones";
 import ContentSection from "./ContentSection";
 import Faqs from "./Faqs";
 import MoreAboutGemstones from "./MoreAboutGemStones";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateGuide, handleUpdateGuide } from "@/API/api";
 
-const EditPages = ({ handleGuide }) => {
+const EditPages = ({type,fetchData,editData, handleGuide }) => {
   const [selectedSection, setSelectedSection] = useState("gemstone-guide");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     media: "",
   });
+  const [title,setTitle] = useState("");
+  const [loading,setLoading] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {   
+    setTitle(editData.title);
+  }, [editData]);
 
   const handleImageSelect = async (file, width, height, media) => {
     try {
@@ -79,8 +82,40 @@ const EditPages = ({ handleGuide }) => {
     setActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Sitepages", formData);
+  const handleSeoSubmit = async (formData) => {
+    // console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+      title:title,
+      seo:formData
+};
+
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateGuide(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateGuide(bodyData,editData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleGuide();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -89,7 +124,7 @@ const EditPages = ({ handleGuide }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Add New Guide
+            {type === "create" ? "Add New":"Edit"} Guide
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Enter Page Contents.
@@ -148,7 +183,8 @@ const EditPages = ({ handleGuide }) => {
                 size="md"
                 radius="sm"
                 name="pageTitle"
-                // onChange={handleFormChange}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
@@ -186,29 +222,63 @@ const EditPages = ({ handleGuide }) => {
           </div>
           <div className="  no-scrollbar md:min-h-[65vh]">
             {selectedSection === "gemstone-guide" && (
-              <GemStoneGuide handleGuide={handleGuide} />
+              <GemStoneGuide 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
             )}
             {selectedSection === "meaningOfGemstones" && (
-              <MeaningOfGemstones handleGuide={handleGuide} />
+              <MeaningOfGemstones
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
             )}
             {selectedSection === "productsFromGemstones" && (
-              <ProductFromGemstones handleGuide={handleGuide} />
+              <ProductFromGemstones 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
             )}
             {selectedSection === "moreAboutGemstones" && (
-              <MoreAboutGemstones handleGuide={handleGuide} />
+              <MoreAboutGemstones 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
             )}
             {selectedSection === "contentSection" && (
-              <ContentSection handleGuide={handleGuide} />
+              <ContentSection 
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
             )}
-            {selectedSection === "faqs" && <Faqs handleGuide={handleGuide} />}
+            {selectedSection === "faqs" &&(
+             <Faqs  
+              sectionData={editData}
+              fetchData={fetchData}
+              type={type}
+              title={title}
+              handleGuide={handleGuide} />
+             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
         <SeoAttributes
+          isLoading={loading}
           onSubmit={handleSeoSubmit}
           handler={handleGuide}
-          handleModal={handleModal}
+          sectionData={editData?.seo}
+          // handleModal={handleModal}
         />
       )}
       <Modal

@@ -121,7 +121,7 @@ const ContentBox = ({
   };
 
   useEffect(() => {
-    console.log("section Data", sectionData);
+    // console.log("section Data", sectionData);
     if (sectionData) {
       setFormData({
         ...formData,
@@ -163,7 +163,7 @@ const ContentBox = ({
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         // console.log("returm data", data);

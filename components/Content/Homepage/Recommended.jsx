@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";

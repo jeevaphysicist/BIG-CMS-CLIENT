@@ -100,7 +100,7 @@ const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentS
       toast.error(response.response.data.message);
     }
     } catch (error) {
-      toast.error(response.data.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

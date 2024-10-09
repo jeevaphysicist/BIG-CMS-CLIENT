@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";

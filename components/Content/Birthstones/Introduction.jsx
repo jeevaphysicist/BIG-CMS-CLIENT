@@ -1,37 +1,46 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { Button } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateBirthStones, handleUpdateBirthStones } from "@/API/api";
 
-const Introduction = ({ handleBirthStones }) => {
+const Introduction = ({ sectionData,type,fetchData,title,handleBirthStones }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    sectionContent: "",
-    moduleId: null,
+    content: ""
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
+
+useEffect(()=>{
+    setFormData((prev)=>({
+     ...prev,
+     content: sectionData.introduction?.content
+    }))
+ },[sectionData])
+
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, sectionContent: content }));
+    setFormData((prevData) => ({ ...prevData, content: content }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.sectionContent === "" || formData.sectionContent === null) {
-      newerrors.sectionContent = "Section Content is required";
+    if (formData.content === "" || formData.content === null) {
+      newerrors.content = "Section Content is required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -40,9 +49,39 @@ const Introduction = ({ handleBirthStones }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      title:title,
+      introduction:{
+        content: formData.content
+      }
+};
 
-    console.log("Form submitted with data:", formData);
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateBirthStones(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateBirthStones(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  // handleBirthStones();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -56,14 +95,14 @@ const Introduction = ({ handleBirthStones }) => {
             >
               Section Content
               <RequiredSymbol />
-              {errors.sectionContent && (
+              {errors.content && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.sectionContent}
+                  {errors.content}
                 </span>
               )}
             </label>
             <TextEditor
-              value={content}
+              value={formData.content}
               handleContentChange={handleProcedureContentChange}
             />
           </div>
@@ -83,7 +122,9 @@ const Introduction = ({ handleBirthStones }) => {
           color="primary"
           type="submit"
           className="font-semibold text-white"
-          startContent={<FiSave size={20} />}
+          startContent={loading ? null : <FiSave size={20} />}
+          isLoading={loading}
+          disabled={loading}
         >
           Save
         </Button>

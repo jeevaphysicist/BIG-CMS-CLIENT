@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 
@@ -7,6 +8,7 @@ const AlertModel = ({
   modeltitle,
   onConfirm,
   onCancel,
+  loading
 }) => {
   if (!isVisible) return null;
 
@@ -47,12 +49,13 @@ const AlertModel = ({
             >
               cancel
             </button>
-            <button
+            <Button
+              isLoading={loading}
               onClick={onConfirm}
               className="w-[40%] bg-red-500 hover:bg-red-600 text-white p-2 rounded"
             >
               Delete
-            </button>
+            </Button>
           </div>
         </div>
       </motion.div>

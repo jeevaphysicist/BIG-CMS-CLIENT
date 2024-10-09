@@ -1,28 +1,51 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState,useEffect } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
+import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateGuide, handleUpdateGuide } from "@/API/api";
 
-const ProductFromGemstones = ({ handleGuide }) => {
+const ProductFromGemstones = ({ sectionData,type,fetchData,title, handleGuide }) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
-    categoryOneImage: "",
-    categoryOneTitle: "",
-    categoryOneButtonLink: "",
-    categoryTwoImage: "",
-    categoryTwoTitle: "",
-    categoryTwoButtonLink: "",
-    categoryThreeImage: "",
-    categoryThreeTitle: "",
-    categoryThreeButtonLink: "",
-    moduleId: null,
+    title: "",
+    catOneBanner: "",
+    catOneTitle: "",
+    catOnecallToActionLink: "",
+    catOnecallToActionTitle:"",
+    catTwoBanner: "",
+    catTwoTitle: "",
+    catTwocallToActionLink: "",
+    catTwocallToActionTitle:"",
+    catThreeBanner: "",
+    catThreeTitle: "",
+    catThreecallToActionLink: "",
+    catThreecallToActionTitle:"",
   });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+      setFormData(prev=>({...prev,
+          title: sectionData.title || "",
+          catOneBanner: sectionData.products?.catOneBanner || "",
+          catOneTitle: sectionData.products?.catOneTitle || "",
+          catOnecallToActionLink: sectionData.products?.catOnecallToActionLink || "",
+          catOnecallToActionTitle:sectionData.products?.catOnecallToActionTitle || "",
+          catTwoBanner: sectionData.products?.catTwoBanner || "",
+          catTwoTitle: sectionData.products?.catTwoTitle || "",
+          catTwocallToActionLink: sectionData.products?.catTwocallToActionLink || "",
+          catTwocallToActionTitle:sectionData.products?.catTwocallToActionTitle || "",
+          catThreeBanner: sectionData.products?.catThreeBanner || "",
+          catThreeTitle: sectionData.products?.catThreeTitle || "",
+          catThreecallToActionLink: sectionData.products?.catThreecallToActionLink || "",
+          catThreecallToActionTitle:sectionData.products?.catThreecallToActionTitle || "",
+      }))
+  },[sectionData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -43,88 +66,138 @@ const ProductFromGemstones = ({ handleGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
-      newerrors.sectionTitle = "Section Title required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Section Title required";
       has = true;
     }
     if (
-      formData.categoryOneImage === "" ||
-      formData.categoryOneImage === null
+      formData.catOneBanner === "" ||
+      formData.catOneBanner === null
     ) {
-      newerrors.categoryOneImage = "Category 1 required";
+      newerrors.catOneBanner = "Category 1 required";
       has = true;
     }
     if (
-      formData.categoryTwoImage === "" ||
-      formData.categoryTwoImage === null
+      formData.catTwoBanner === "" ||
+      formData.catTwoBanner === null
     ) {
-      newerrors.categoryTwoImage = "Category 2 required";
+      newerrors.catTwoBanner = "Category 2 required";
       has = true;
     }
     if (
-      formData.categoryThreeImage === "" ||
-      formData.categoryThreeImage === null
+      formData.catThreeBanner === "" ||
+      formData.catThreeBanner === null
     ) {
-      newerrors.categoryThreeImage = "Category 3 required";
+      newerrors.catThreeBanner = "Category 3 required";
       has = true;
     }
     if (
-      formData.categoryOneTitle === "" ||
-      formData.categoryOneTitle === null
+      formData.catOneTitle === "" ||
+      formData.catOneTitle === null
     ) {
-      newerrors.categoryOneTitle = "Title is required";
+      newerrors.catOneTitle = "Title is required";
       has = true;
     }
     if (
-      formData.categoryTwoTitle === "" ||
-      formData.categoryTwoTitle === null
+      formData.catTwoTitle === "" ||
+      formData.catTwoTitle === null
     ) {
-      newerrors.categoryTwoTitle = "Title is required";
+      newerrors.catTwoTitle = "Title is required";
       has = true;
     }
     if (
-      formData.categoryThreeTitle === "" ||
-      formData.categoryThreeTitle === null
+      formData.catThreeTitle === "" ||
+      formData.catThreeTitle === null
     ) {
-      newerrors.categoryThreeTitle = "Title is required";
+      newerrors.catThreeTitle = "Title is required";
       has = true;
     }
     if (
-      formData.categoryOneButtonLink === "" ||
-      formData.categoryOneButtonLink === null
+      formData.catOnecallToActionTitle === "" ||
+      formData.catOnecallToActionTitle === null
     ) {
-      newerrors.categoryOneButtonLink = "Call to Action is required";
+      newerrors.catOnecallToActionTitle = "Call to Action Title is required";
       has = true;
     }
     if (
-      formData.categoryTwoButtonLink === "" ||
-      formData.categoryTwoButtonLink === null
+      formData.catTwocallToActionTitle === "" ||
+      formData.catTwocallToActionTitle === null
     ) {
-      newerrors.categoryTwoButtonLink = "Call to Action is required";
+      newerrors.catTwocallToActionTitle = "Call to Action Title is required";
       has = true;
     }
     if (
-      formData.categoryThreeButtonLink === "" ||
-      formData.categoryThreeButtonLink === null
+      formData.catThreecallToActionTitle === "" ||
+      formData.catThreecallToActionTitle === null
     ) {
-      newerrors.categoryThreeButtonLink = "Call to Action is required";
+      newerrors.catThreecallToActionTitle = "Call to Action Title is required";
+      has = true;
+    }
+    if (
+      formData.catOnecallToActionLink === "" ||
+      formData.catOnecallToActionLink === null
+    ) {
+      newerrors.catOnecallToActionLink = "Call to Action Link is required";
+      has = true;
+    }
+    if (
+      formData.catTwocallToActionLink === "" ||
+      formData.catTwocallToActionLink === null
+    ) {
+      newerrors.catTwocallToActionLink = "Call to Action Link is required";
+      has = true;
+    }
+    if (
+      formData.catThreecallToActionLink === "" ||
+      formData.catThreecallToActionLink === null
+    ) {
+      newerrors.catThreecallToActionLink = "Call to Action Link is required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      title:title,
+      products:formData
+    };
 
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateGuide(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateGuide(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleGuide();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
     console.log("Form submitted with data:", formData);
   };
 
@@ -157,26 +230,27 @@ const ProductFromGemstones = ({ handleGuide }) => {
             <div className="w-full overflow-y-auto flex flex-col gap-8">
               <div className="flex flex-col  my-3 pt-2 gap-3">
                 <label
-                  htmlFor="sectionTitle"
+                  htmlFor="title"
                   className="text-[16px]  font-semibold flex gap-1"
                 >
                   Section Title
                   <RequiredSymbol />
-                  {errors.sectionTitle && (
+                  {errors.title && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.sectionTitle}
+                      {errors.title}
                     </span>
                   )}
                 </label>
                 <Input
                   type="text"
                   minRows={4}
-                  id="sectionTitle"
+                  id="title"
                   variant="bordered"
                   placeholder="EMERALD GEMSTONE PRODUCTS"
                   size="lg"
                   radius="sm"
-                  name="sectionTitle"
+                  name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -189,24 +263,24 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Category 1
                     <RequiredSymbol />
-                    {errors.categoryOneImage && (
+                    {errors.catOneBanner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryOneImage}
+                        {errors.catOneBanner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="categoryOneImage"
+                    id="catOneBanner"
                     label="category"
                     accept={`images/*`}
                     width={233}
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.categoryOneImage && (
+                  {formData.catOneBanner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.categoryOneImage)}
+                      src={FormateImageURL(formData.catOneBanner)}
                       alt="Image Preview"
                     />
                   )}
@@ -218,9 +292,9 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.categoryOneTitle && (
+                    {errors.catOneTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryOneTitle}
+                        {errors.catOneTitle}
                       </span>
                     )}
                   </label>
@@ -231,7 +305,33 @@ const ProductFromGemstones = ({ handleGuide }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryOneTitle"
+                    name="catOneTitle"
+                    value={formData.catOneTitle}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_action_title"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action title
+                    <RequiredSymbol />
+                    {errors.catOnecallToActionTitle && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.catOnecallToActionTitle}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_action_title"
+                    placeholder="Explore More"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="catOnecallToActionTitle"
+                    value={formData.catOnecallToActionTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -240,11 +340,11 @@ const ProductFromGemstones = ({ handleGuide }) => {
                     htmlFor="category_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Call to action
+                    Call to action link
                     <RequiredSymbol />
-                    {errors.categoryOneButtonLink && (
+                    {errors.catOnecallToActionLink && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryOneButtonLink}
+                        {errors.catOnecallToActionLink}
                       </span>
                     )}
                   </label>
@@ -255,7 +355,8 @@ const ProductFromGemstones = ({ handleGuide }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryOneButtonLink"
+                    name="catOnecallToActionLink"
+                    value={formData.catOnecallToActionLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -271,24 +372,24 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Category 2
                     <RequiredSymbol />
-                    {errors.categoryTwoImage && (
+                    {errors.catTwoBanner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryTwoImage}
+                        {errors.catTwoBanner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="categoryTwoImage"
+                    id="catTwoBanner"
                     label="category"
                     accept={`images/*`}
                     width={233}
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.categoryTwoImage && (
+                  {formData.catTwoBanner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.categoryTwoImage)}
+                      src={FormateImageURL(formData.catTwoBanner)}
                       alt="Image Preview"
                     />
                   )}
@@ -300,9 +401,9 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.categoryTwoTitle && (
+                    {errors.catTwoTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryTwoTitle}
+                        {errors.catTwoTitle}
                       </span>
                     )}
                   </label>
@@ -313,31 +414,58 @@ const ProductFromGemstones = ({ handleGuide }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryTwoTitle"
+                    name="catTwoTitle"
+                    value={formData.catTwoTitle}
                     onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc1"
+                    htmlFor="category_action_title_1"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Call to action
+                    Call to action title
                     <RequiredSymbol />
-                    {errors.categoryTwoButtonLink && (
+                    {errors.catTwocallToActionTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryTwoButtonLink}
+                        {errors.catTwocallToActionTitle}
                       </span>
                     )}
                   </label>
                   <Input
                     type="text"
-                    id="category_desc1"
+                    id="category_action_title_1"
+                    placeholder="Explore More"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="catTwocallToActionTitle"
+                    value={formData.catTwocallToActionTitle}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_action_link_1"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action link
+                    <RequiredSymbol />
+                    {errors.catTwocallToActionLink && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.catTwocallToActionLink}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_action_link_1"
                     placeholder="https://figma.com/design"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryTwoButtonLink"
+                    name="catTwocallToActionLink"
+                    value={formData.catTwocallToActionLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -353,24 +481,24 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Category 3
                     <RequiredSymbol />
-                    {errors.categoryThreeImage && (
+                    {errors.catThreeBanner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryThreeImage}
+                        {errors.catThreeBanner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="categoryThreeImage"
+                    id="catThreeBanner"
                     label="category"
                     accept={`images/*`}
                     width={233}
                     height={256}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.categoryThreeImage && (
+                  {formData.catThreeBanner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.categoryThreeImage)}
+                      src={FormateImageURL(formData.catThreeBanner)}
                       alt="Image Preview"
                     />
                   )}
@@ -382,9 +510,9 @@ const ProductFromGemstones = ({ handleGuide }) => {
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.categoryThreeTitle && (
+                    {errors.catThreeTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryThreeTitle}
+                        {errors.catThreeTitle}
                       </span>
                     )}
                   </label>
@@ -395,31 +523,58 @@ const ProductFromGemstones = ({ handleGuide }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryThreeTitle"
+                    name="catThreeTitle"
+                    value={formData.catThreeTitle}
                     onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="category_desc2"
+                    htmlFor="category_action_title_3"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Call to action
+                    Call to action title
                     <RequiredSymbol />
-                    {errors.categoryThreeButtonLink && (
+                    {errors.catThreecallToActionTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.categoryThreeButtonLink}
+                        {errors.catThreecallToActionTitle}
                       </span>
                     )}
                   </label>
                   <Input
                     type="text"
-                    id="category_desc2"
+                    id="category_action_title_3"
+                    placeholder="Explore More"
+                    variant="bordered"
+                    size="lg"
+                    radius="sm"
+                    name="catThreecallToActionTitle"
+                    value={formData.catThreecallToActionTitle}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="category_action_link_3"
+                    className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                  >
+                    Call to action link
+                    <RequiredSymbol />
+                    {errors.catThreecallToActionLink && (
+                      <span className="font-regular text-[12px] text-red-600">
+                        {errors.catThreecallToActionLink}
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    type="text"
+                    id="category_action_link_3"
                     placeholder="https://figma.com/design"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="categoryThreeButtonLink"
+                    name="catThreecallToActionLink"
+                    value={formData.catThreecallToActionLink}
                     onChange={handleFormChange}
                   />
                 </div>

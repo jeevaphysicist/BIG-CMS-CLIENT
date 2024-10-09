@@ -103,7 +103,7 @@ const ContentSection = ({
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         toast.success(response.data.message);

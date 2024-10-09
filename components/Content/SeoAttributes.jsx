@@ -64,7 +64,7 @@ const SeoAttributes = ({isLoading ,sectionData , onSubmit, handler, handleModal 
 
     // API Call Here
     onSubmit(formData);
-    console.log("Form submitted with data:", formData);
+    // console.log("Form submitted with data:", formData);
   };
 
   return (

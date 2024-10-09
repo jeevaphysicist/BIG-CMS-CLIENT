@@ -396,10 +396,347 @@ export const handleGetAllPolicies = async () => {
 //Change Policy Status
 export const handlePolicyStatus = async (id, data) => {
   try {
-    const response = await publicApi.patch(
+    const response = await publicApi.put(
       `/api/policies/update/${id}/status`,
       data
     );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Guide List
+export const handleGetGuides = async () => {
+  try {
+    const response = await publicApi.get(`/api/guide/all`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 17
+// Create Guide List
+export const handleCreateGuide = async (data, isformData) => {
+  try {
+    const response = await publicApi.post(`/api/guide/create`, data, {
+      headers: isformData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update Guide List
+export const handleUpdateGuide = async (data, id, isformData) => {
+  try {
+    const response = await publicApi.put(`/api/guide/update/${id}`, data, {
+      headers: isformData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update Guide Status
+export const handleUpdateGuideStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(
+      `/api/guide/update/${id}/status`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 20
+// Delete Guide
+export const handleDeleteGuide = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/guide/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Guide List
+export const handleGetSocialMediaList = async () => {
+  try {
+    const response = await publicApi.get(`/api/socialmedia/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 17
+// Create Guide List
+export const handleCreateSocialmedia = async (data) => {
+  try {
+    const response = await publicApi.post(`/api/socialmedia/create`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update socialmedia List
+export const handleUpdateSocialmedia = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/socialmedia/update/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update socialmedia Status
+export const handleUpdateSocialmediaStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/socialmedia/status/${id}`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 20
+// Delete Guide
+export const handleDeleteSocialmedia = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/socialmedia/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Ring Size Guide List
+export const handleGetRingSizeGuideList = async () => {
+  try {
+    const response = await publicApi.get(`/api/ringsize/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update Ring Size Guide 
+export const handleUpdateRingSizeGuide = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/ringsize/update/${id}`, data,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update Ring Size Guide Status
+export const handleUpdateRingSizeGuideStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/ringsize/status/${id}`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Gemstone Certificatione List
+export const handleGetGemstoneCertificationList = async () => {
+  try {
+    const response = await publicApi.get(`/api/gemstonecertification/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update Gemstone Certification Guide 
+export const handleUpdateGemstoneCertification = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/gemstonecertification/update/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update Gemstone Certification Status
+export const handleUpdateGemstoneCertificationStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/gemstonecertification/status/${id}`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Holiday Gift Guide List
+export const handleGetHolidayGiftGuideList = async () => {
+  try {
+    const response = await publicApi.get(`/api/holidaygiftguide/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update Holiday Gift Guide Guide 
+export const handleUpdateHolidayGiftGuide = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/holidaygiftguide/update/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update Holiday Gift Guide Status
+export const handleUpdateHolidayGiftGuideStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/holidaygiftguide/status/${id}`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get Shipping List
+export const handleGetShippingList = async () => {
+  try {
+    const response = await publicApi.get(`/api/shipping/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 17
+// Create Shipping List
+export const handleCreateShipping = async (data) => {
+  try {
+    const response = await publicApi.post(`/api/shipping/create`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update Shipping List
+export const handleUpdateShipping = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/shipping/update/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update Shipping Status
+export const handleUpdateShippingStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(
+      `/api/shipping/status/${id}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 20
+// Delete shipping
+export const handleDeleteShipping = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/shipping/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 16
+// Get BirthStones List
+export const handleGetBirthStones = async () => {
+  try {
+    const response = await publicApi.get(`/api/birthstone/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 17
+// Create BirthStones List
+export const handleCreateBirthStones = async (data, isformData) => {
+  try {
+    const response = await publicApi.post(`/api/birthstone/create`, data, {
+      headers: isformData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 18
+// Update BirthStones List
+export const handleUpdateBirthStones = async (data, id, isformData) => {
+  try {
+    const response = await publicApi.put(`/api/birthstone/update/${id}`, data, {
+      headers: isformData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 19
+// Update BirthStones Status
+export const handleUpdateBirthStonesStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/birthstone/status/${id}`,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 20
+// Delete BirthStones
+export const handleDeleteBirthStones = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/birthstone/delete/${id}`);
     return response;
   } catch (error) {
     return error;

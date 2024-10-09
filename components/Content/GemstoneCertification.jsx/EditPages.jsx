@@ -1,22 +1,29 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { FiSave } from "react-icons/fi";
 import TextEditor from "../TextEditor";
+import { handleUpdateGemstoneCertification } from "@/API/api";
 
-const EditPages = ({ handleGemstoneCertification }) => {
-  const [content, setContent] = useState("");
+const EditPages = ({ handleGemstoneCertification , fetchData ,editData }) => {
   const [formData, setFormData] = useState({
     title: "",
-    mainContent: "",
-    moduleId: null,
+    mainContent: ""
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState({});
+
+  useEffect(()=>{
+      setFormData(prev=>({...prev,
+        title:editData?.title || "",
+        mainContent:editData?.mainContent || ""
+      }))
+  },[editData])
+
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +33,7 @@ const EditPages = ({ handleGemstoneCertification }) => {
     }));
   };
 
-  const handleProcedureContentChange = (content) => {
-    // console.log("content---->", content);
-    setContent(content);
+  const handleProcedureContentChange = (content) => {  
     setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
@@ -47,16 +52,37 @@ const EditPages = ({ handleGemstoneCertification }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
-    // API Call Here
-    console.log("Form submitted with data:", formData);
+    let bodyData = formData;
+
+    let response ; 
+    
+    try {
+      setLoading(true);
+      response = await handleUpdateGemstoneCertification(bodyData,editData._id); 
+      
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+     
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }        
   };
 
   return (
@@ -103,6 +129,7 @@ const EditPages = ({ handleGemstoneCertification }) => {
                   size="lg"
                   radius="sm"
                   name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>

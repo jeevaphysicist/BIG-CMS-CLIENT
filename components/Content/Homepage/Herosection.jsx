@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import { Button, DatePicker, Input, Switch } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -146,7 +145,7 @@ const Herosection = ({
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         toast.success(response.data.message);

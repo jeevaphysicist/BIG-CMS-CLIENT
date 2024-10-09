@@ -7,10 +7,32 @@ import { PiTrashBold, PiArrowDownBold } from "react-icons/pi";
 import { Pagination } from "@nextui-org/react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { toast } from "react-toastify";
-import { handleUpdateSitepageStatus } from "@/API/api";
+import { handleDeleteSitepage, handleUpdateSitepageStatus } from "@/API/api";
+import AlertModel from "@/components/AlertModal";
 
-const DraggableRow = ({ UpdateStatus , row, handleSitePage, handleType ,handleSetEditData }) => {
+const DraggableRow = ({ UpdateStatus, fetchData, row, handleSitePage, handleType, handleSetEditData }) => {
   const controls = useDragControls();
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [collectID, setCollectID] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const response = await handleDeleteSitepage(collectID);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+      setOpenAlertModal(false);
+    }
+  };
 
   return (
     <Reorder.Item
@@ -31,8 +53,8 @@ const DraggableRow = ({ UpdateStatus , row, handleSitePage, handleType ,handleSe
         </motion.div>
         {row.title}
       </td>
-      <td className="px-4 py-4 font-regular text-[14px] ">
-        <p className="text-balance w-[200px]">{row.description ? row.description :"-"}</p>
+      <td className="px-4 py-4 font-regular text-[14px]">
+        <p className="text-balance w-[200px]">{row.description ? row.description : "-"}</p>
       </td>
       <td className="px-4 py-2 text-[14px]">
         {row.status === "Active" ? (
@@ -43,55 +65,82 @@ const DraggableRow = ({ UpdateStatus , row, handleSitePage, handleType ,handleSe
         ) : (
           <span className="flex text-[14px] font-regular items-center w-max -ml-2 justify-center gap-2 px-4 rounded-full py-1 border-2 border-[#D0D5DD] bg-[#fff]">
             <span className="w-2 h-2 rounded-full bg-[red]" />
-            InActive
+            Inactive
           </span>
         )}
       </td>
       <td className="px-4 py-4 text-[14px]">
         <div className="flex items-center gap-5">
-          <Switch onChange={()=>{UpdateStatus(row.status,row._id)}} isSelected={row.status === "Active"} size="sm" aria-label="Automatic updates" />
-          <button className="text-[20px] text-[#475467]">
+          <Switch onChange={() => UpdateStatus(row.status, row._id)} isSelected={row.status === "Active"} size="sm" aria-label="Automatic updates" />
+          <button onClick={() => { setCollectID(row._id); setOpenAlertModal(true); }} className="text-[20px] text-[#475467]">
             <PiTrashBold />
           </button>
-          <button
-            className="text-[20px] text-[#475467]"
-            onClick={()=>{handleSitePage();handleType('edit');handleSetEditData(row)}}
-          >
+          <button className="text-[20px] text-[#475467]" onClick={() => { handleSitePage(); handleType('edit'); handleSetEditData(row); }}>
             <FiEdit2 />
           </button>
         </div>
       </td>
+      <AlertModel
+        loading={loading}
+        isVisible={openAlertModal}
+        modeltitle="Delete SitePage"
+        message="Are you sure you want to delete this sitepage?"
+        onConfirm={handleDelete}
+        onCancel={() => setOpenAlertModal(false)}
+      />
     </Reorder.Item>
   );
 };
 
-const ResponsiveTable = ({ initialData, handleSetEditData , fetchData ,handleType, handleSitePage }) => {
+const ResponsiveTable = ({ searchQuery, initialData, handleSetEditData, fetchData, handleType, handleSitePage }) => {
   const [data, setData] = useState(initialData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  useEffect(()=>{
-      setData(initialData);
-  },[initialData])
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
 
-  const UpdateStatus = async (status,id)=>{
-        try {
-            const response = await handleUpdateSitepageStatus({status:status},id) ;
-            if(response.status >= 200 && response.status <= 209){
-                fetchData();
-                toast.success(response.data.message);
-            }
-            else{
-              toast.error(response.response.data.message);
-            }
-        } catch (error) {
-          toast.error('Internal Server Error!');
-           
-        }
-  }
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
-  const handleDelete=()=>{
+  const UpdateStatus = async (status, id) => {
+    try {
+      const response = await handleUpdateSitepageStatus({ status }, id);
+      if (response.status >= 200 && response.status <= 209) {
+        fetchData();
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Internal Server Error!");
+    }
+  };
 
-  }
+  // Get paginated data but don't affect the reordering logic
+  const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  // Handle Previous Page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle Next Page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Handle reorder on the full dataset
+  const handleReorder = (newOrder) => {
+    setData(newOrder); // Update the full data set
+  };
 
   return (
     <section className="w-[100%]">
@@ -115,27 +164,46 @@ const ResponsiveTable = ({ initialData, handleSetEditData , fetchData ,handleTyp
               </th>
             </tr>
           </thead>
-          <Reorder.Group as="tbody" axis="y" values={data} onReorder={setData}>
-            {data?.map((row) => (
-              <DraggableRow UpdateStatus={UpdateStatus} handleSetEditData={handleSetEditData} handleType={handleType} key={row._id} row={row} handleSitePage={handleSitePage} />
+          {/* Use Reorder.Group on the entire data but only display the paginated data */}
+          <Reorder.Group as="tbody" axis="y" values={data} onReorder={handleReorder}>
+            {paginatedData.map((row) => (
+              <DraggableRow
+                fetchData={fetchData}
+                UpdateStatus={UpdateStatus}
+                handleSetEditData={handleSetEditData}
+                handleType={handleType}
+                key={row._id}
+                row={row}
+                handleSitePage={handleSitePage}
+              />
             ))}
           </Reorder.Group>
         </table>
       </div>
       <div className="flex rounded-b-[10px] border-l-1 border-r-1 border-b-1 justify-between py-2 px-2 w-[100%] items-center gap-5">
-        <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2">
+        <button
+          className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2"
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
           <LuArrowLeft />
           Previous
         </button>
-        <Pagination
-          initialPage={1}
-          total={5}
-          classNames={{
-            item: "bg-transparent text-[#475467] font-medium",
-            cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium",
-          }}
-        />
-        <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2">
+        <Pagination 
+        total={totalPages}
+        initialPage={1} 
+        page={currentPage} 
+        classNames={{
+          item: "bg-transparent text-[#475467] font-medium",
+          cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium  ",
+        }}
+        onChange={(page) => setCurrentPage(page)}
+         />
+        <button
+          className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
           Next
           <LuArrowRight />
         </button>

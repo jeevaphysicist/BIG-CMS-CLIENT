@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Switch } from "@nextui-org/react";
@@ -185,7 +184,7 @@ const Offers = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         toast.success(response.data.message);

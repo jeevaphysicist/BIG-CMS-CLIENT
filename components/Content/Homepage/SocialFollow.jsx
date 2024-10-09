@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
@@ -9,6 +8,7 @@ import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 import { handleHomepageCreateEditSection } from "@/API/api";
+import DragAndDropImageMultiple from "../DragDropImageMultiple";
 
 const SocialFollow = ({
   handleHomepage,
@@ -33,7 +33,7 @@ const SocialFollow = ({
 
   const handleImageSelect = async (file, width, height, banner) => {
     try {
-      await validateImageDimensions(file, width, height);
+      // await validateImageDimensions(file, width, height);
       if (file) {
         setFormData((prevData) => ({ ...prevData, [banner]: file }));
       }
@@ -100,7 +100,7 @@ const SocialFollow = ({
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      const response = await handleHomepageCreateEditSection(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
       if (response.status >= 200 && response.status <= 209) {
         let data = response.data;
         toast.success(response.data.message);
@@ -185,7 +185,7 @@ const SocialFollow = ({
                   </span>
                 )}
               </label>
-              <DragAndDropImage
+              <DragAndDropImageMultiple
                 id="thumbnailImage"
                 label="thumbnailImage"
                 accept={`images/*`}
@@ -194,13 +194,18 @@ const SocialFollow = ({
                 height={500}
                 onImageSelect={handleImageSelect}
               />
-              {formData.thumbnailImage && (
-                <img
-                  className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.thumbnailImage)}
-                  alt="Image Preview"
-                />
-              )}
+              <div className="flex items-start justify-center flex-wrap">
+             {formData.thumbnailImage.length > 0 && 
+                    formData.thumbnailImage.map((image, index) => (
+                      <img
+                        key={index}
+                        src={FormateImageURL(image)} 
+                        alt={`Image Preview ${index + 1}`}
+                        className="w-20 h-20 object-cover m-1 rounded"
+                      />
+                    ))
+                  }
+              </div>
             </div>
           </div>
         </div>

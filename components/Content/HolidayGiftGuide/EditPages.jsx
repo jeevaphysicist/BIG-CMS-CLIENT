@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
@@ -8,9 +8,9 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
 import TextEditor from "../TextEditor";
+import { handleUpdateHolidayGiftGuide } from "@/API/api";
 
-const EditPages = ({ handleGiftGuide }) => {
-  const [content, setContent] = useState("");
+const EditPages = ({ handleGiftGuide , fetchData,editData }) => {
   const [formData, setFormData] = useState({
     title: "",
     mainContent: "",
@@ -18,6 +18,13 @@ const EditPages = ({ handleGiftGuide }) => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState({});
+
+  useEffect(()=>{
+     setFormData(prev=>({...prev,
+      title:editData.title || "",
+      mainContent:editData.mainContent || "",
+    }))
+  },[editData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -28,8 +35,6 @@ const EditPages = ({ handleGiftGuide }) => {
   };
 
   const handleProcedureContentChange = (content) => {
-    // console.log("content---->", content);
-    setContent(content);
     setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
@@ -48,7 +53,7 @@ const EditPages = ({ handleGiftGuide }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
@@ -57,9 +62,29 @@ const EditPages = ({ handleGiftGuide }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = formData;
 
-    console.log("Form submitted with data:", formData);
+    let response ; 
+    
+    try {
+      setLoading(true);
+      response = await handleUpdateHolidayGiftGuide(bodyData,editData._id); 
+      
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+     
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }    
   };
 
   return (
@@ -106,6 +131,7 @@ const EditPages = ({ handleGiftGuide }) => {
                   size="lg"
                   radius="sm"
                   name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -147,6 +173,7 @@ const EditPages = ({ handleGiftGuide }) => {
             startContent={loading ? null : <FiSave size={20} />}
             isLoading={loading}
             disabled={loading}
+            onClick={handleSubmit}
           >
             Save
           </Button>
