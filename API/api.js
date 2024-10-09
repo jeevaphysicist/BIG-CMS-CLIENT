@@ -381,8 +381,8 @@ export const handleCreatePolicy = async (data) => {
   }
 };
 
-//S.NO 21
-//Create Policies
+//S.NO 22
+//get all Policies
 export const handleGetAllPolicies = async () => {
   try {
     const response = await publicApi.get(`/api/policies/`);
@@ -392,7 +392,18 @@ export const handleGetAllPolicies = async () => {
   }
 };
 
-//S.NO 22
+//S.NO 23
+//Update Policies
+export const handleUpdatePolicy = async (data, id) => {
+  try {
+    const response = await publicApi.put(`/api/policies/update/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+//S.NO 24
 //Change Policy Status
 export const handlePolicyStatus = async (id, data) => {
   try {
@@ -406,7 +417,18 @@ export const handlePolicyStatus = async (id, data) => {
   }
 };
 
-// S.No 16
+// S.No 25
+// Delete Guide
+export const handleDeletePolicies = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/policies/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 26
 // Get Guide List
 export const handleGetGuides = async () => {
   try {
@@ -417,7 +439,7 @@ export const handleGetGuides = async () => {
   }
 };
 
-// S.No 17
+// S.No 27
 // Create Guide List
 export const handleCreateGuide = async (data, isformData) => {
   try {
@@ -430,7 +452,7 @@ export const handleCreateGuide = async (data, isformData) => {
   }
 };
 
-// S.No 18
+// S.No 28
 // Update Guide List
 export const handleUpdateGuide = async (data, id, isformData) => {
   try {
@@ -443,7 +465,7 @@ export const handleUpdateGuide = async (data, id, isformData) => {
   }
 };
 
-// S.No 19
+// S.No 29
 // Update Guide Status
 export const handleUpdateGuideStatus = async (data, id) => {
   try {
@@ -457,7 +479,7 @@ export const handleUpdateGuideStatus = async (data, id) => {
   }
 };
 
-// S.No 20
+// S.No 30
 // Delete Guide
 export const handleDeleteGuide = async (id) => {
   try {
@@ -468,7 +490,7 @@ export const handleDeleteGuide = async (id) => {
   }
 };
 
-// S.No 16
+// S.No 31
 // Get Guide List
 export const handleGetSocialMediaList = async () => {
   try {
@@ -479,7 +501,7 @@ export const handleGetSocialMediaList = async () => {
   }
 };
 
-// S.No 17
+// S.No 32
 // Create Guide List
 export const handleCreateSocialmedia = async (data) => {
   try {
@@ -490,7 +512,7 @@ export const handleCreateSocialmedia = async (data) => {
   }
 };
 
-// S.No 18
+// S.No 33
 // Update socialmedia List
 export const handleUpdateSocialmedia = async (data, id) => {
   try {
@@ -501,18 +523,21 @@ export const handleUpdateSocialmedia = async (data, id) => {
   }
 };
 
-// S.No 19
+// S.No 34
 // Update socialmedia Status
 export const handleUpdateSocialmediaStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/socialmedia/status/${id}`,data);
+    const response = await publicApi.patch(
+      `/api/socialmedia/status/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 20
+// S.No 35
 // Delete Guide
 export const handleDeleteSocialmedia = async (id) => {
   try {
@@ -523,7 +548,7 @@ export const handleDeleteSocialmedia = async (id) => {
   }
 };
 
-// S.No 16
+// S.No 36
 // Get Ring Size Guide List
 export const handleGetRingSizeGuideList = async () => {
   try {
@@ -534,11 +559,11 @@ export const handleGetRingSizeGuideList = async () => {
   }
 };
 
-// S.No 18
-// Update Ring Size Guide 
+// S.No 37
+// Update Ring Size Guide
 export const handleUpdateRingSizeGuide = async (data, id) => {
   try {
-    const response = await publicApi.put(`/api/ringsize/update/${id}`, data,{
+    const response = await publicApi.put(`/api/ringsize/update/${id}`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -549,18 +574,18 @@ export const handleUpdateRingSizeGuide = async (data, id) => {
   }
 };
 
-// S.No 19
+// S.No 38
 // Update Ring Size Guide Status
 export const handleUpdateRingSizeGuideStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/ringsize/status/${id}`,data);
+    const response = await publicApi.patch(`/api/ringsize/status/${id}`, data);
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 16
+// S.No 39
 // Get Gemstone Certificatione List
 export const handleGetGemstoneCertificationList = async () => {
   try {
@@ -571,29 +596,35 @@ export const handleGetGemstoneCertificationList = async () => {
   }
 };
 
-// S.No 18
-// Update Gemstone Certification Guide 
+// S.No 40
+// Update Gemstone Certification Guide
 export const handleUpdateGemstoneCertification = async (data, id) => {
   try {
-    const response = await publicApi.put(`/api/gemstonecertification/update/${id}`, data);
+    const response = await publicApi.put(
+      `/api/gemstonecertification/update/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 19
+// S.No 41
 // Update Gemstone Certification Status
 export const handleUpdateGemstoneCertificationStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/gemstonecertification/status/${id}`,data);
+    const response = await publicApi.patch(
+      `/api/gemstonecertification/status/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 16
+// S.No 42
 // Get Holiday Gift Guide List
 export const handleGetHolidayGiftGuideList = async () => {
   try {
@@ -604,29 +635,35 @@ export const handleGetHolidayGiftGuideList = async () => {
   }
 };
 
-// S.No 18
-// Update Holiday Gift Guide Guide 
+// S.No 43
+// Update Holiday Gift Guide Guide
 export const handleUpdateHolidayGiftGuide = async (data, id) => {
   try {
-    const response = await publicApi.put(`/api/holidaygiftguide/update/${id}`, data);
+    const response = await publicApi.put(
+      `/api/holidaygiftguide/update/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 19
+// S.No 44
 // Update Holiday Gift Guide Status
 export const handleUpdateHolidayGiftGuideStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/holidaygiftguide/status/${id}`,data);
+    const response = await publicApi.patch(
+      `/api/holidaygiftguide/status/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 16
+// S.No 45
 // Get Shipping List
 export const handleGetShippingList = async () => {
   try {
@@ -637,7 +674,7 @@ export const handleGetShippingList = async () => {
   }
 };
 
-// S.No 17
+// S.No 46
 // Create Shipping List
 export const handleCreateShipping = async (data) => {
   try {
@@ -648,7 +685,7 @@ export const handleCreateShipping = async (data) => {
   }
 };
 
-// S.No 18
+// S.No 47
 // Update Shipping List
 export const handleUpdateShipping = async (data, id) => {
   try {
@@ -659,21 +696,18 @@ export const handleUpdateShipping = async (data, id) => {
   }
 };
 
-// S.No 19
+// S.No 48
 // Update Shipping Status
 export const handleUpdateShippingStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(
-      `/api/shipping/status/${id}`,
-      data
-    );
+    const response = await publicApi.patch(`/api/shipping/status/${id}`, data);
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 20
+// S.No 49
 // Delete shipping
 export const handleDeleteShipping = async (id) => {
   try {
@@ -684,7 +718,7 @@ export const handleDeleteShipping = async (id) => {
   }
 };
 
-// S.No 16
+// S.No 50
 // Get BirthStones List
 export const handleGetBirthStones = async () => {
   try {
@@ -695,7 +729,7 @@ export const handleGetBirthStones = async () => {
   }
 };
 
-// S.No 17
+// S.No 51
 // Create BirthStones List
 export const handleCreateBirthStones = async (data, isformData) => {
   try {
@@ -708,7 +742,7 @@ export const handleCreateBirthStones = async (data, isformData) => {
   }
 };
 
-// S.No 18
+// S.No 52
 // Update BirthStones List
 export const handleUpdateBirthStones = async (data, id, isformData) => {
   try {
@@ -721,22 +755,67 @@ export const handleUpdateBirthStones = async (data, id, isformData) => {
   }
 };
 
-// S.No 19
+// S.No 53
 // Update BirthStones Status
 export const handleUpdateBirthStonesStatus = async (data, id) => {
   try {
-    const response = await publicApi.patch(`/api/birthstone/status/${id}`,data);
+    const response = await publicApi.patch(
+      `/api/birthstone/status/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;
   }
 };
 
-// S.No 20
+// S.No 54
 // Delete BirthStones
 export const handleDeleteBirthStones = async (id) => {
   try {
     const response = await publicApi.delete(`/api/birthstone/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 55
+// Update Custom Jewelry
+export const handleUpdateCustomJewelry = async (data, id, isformData) => {
+  try {
+    const response = await publicApi.put(
+      `/api/custom-jewelry/update/${id}`,
+      data,
+      {
+        headers: isformData ? formHeader : rawHeader,
+      }
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 56
+// Get Custom Jewelry List
+export const handleGetCustomJewelryList = async () => {
+  try {
+    const response = await publicApi.get(`/api/custom-jewelry/list`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 57
+// Update Custom jewelry Status
+export const handleUpdateCustomJewleryStatus = async (id, data) => {
+  try {
+    const response = await publicApi.put(
+      `/api/custom-jewelry/status/${id}`,
+      data
+    );
     return response;
   } catch (error) {
     return error;

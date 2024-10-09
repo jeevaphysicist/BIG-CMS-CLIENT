@@ -6,18 +6,28 @@ import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
 import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
-import { handleCreateSitepage, handleHomepageCreateEditSection, handleUpdateSitepage } from "@/API/api";
+import {
+  handleCreateSitepage,
+  handleHomepageCreateEditSection,
+  handleUpdateSitepage,
+} from "@/API/api";
 
-const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentSection }) => {
+const About = ({
+  handleSitepage,
+  type,
+  title,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
     header: "",
     introduction: "",
     content: "",
-  });  
+  });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
-
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +42,7 @@ const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentS
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-   
+
     if (formData.header === "" || formData.header === null) {
       newerrors.header = "Header is required";
       has = true;
@@ -55,7 +65,7 @@ const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentS
         ...formData,
         header: sectionData?.about?.header || "",
         introduction: sectionData?.about?.introduction || "",
-        content: sectionData?.about?.content || ""
+        content: sectionData?.about?.content || "",
       });
     }
   }, [sectionData]);
@@ -70,35 +80,33 @@ const About = ({ handleSitepage, type,  title , sectionData, fetchData, currentS
     }
 
     let bodyData = {
-          title:title,
-          about:{
-            header: formData.header,
-            introduction: formData.introduction,
-            content: formData.content,
-          }
+      title: title,
+      about: {
+        header: formData.header,
+        introduction: formData.introduction,
+        content: formData.content,
+      },
     };
 
     // console.log("body data", bodyData);
-    let response ; 
+    let response;
     try {
       setLoading(true);
       bodyData = convertObjectToFormData(bodyData);
-      if(type === 'create'){
-      response = await handleCreateSitepage(bodyData);      
+      if (type === "create") {
+        response = await handleCreateSitepage(bodyData);
+      } else if (type === "edit") {
+        response = await handleUpdateSitepage(bodyData, sectionData._id);
       }
-      else if(type === 'edit'){
-      response = await handleUpdateSitepage(bodyData,sectionData._id); 
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+        handleSitepage();
+      } else {
+        toast.error(response.response.data.message);
       }
-    // console.log("response",response);
-    if (response.status >= 200 && response.status <= 209) {
-      let data = response.data;
-      toast.success(response.data.message);
-      fetchData();
-      handleSitepage();
-    }
-    else{
-      toast.error(response.response.data.message);
-    }
     } catch (error) {
       toast.error(error.message);
     } finally {

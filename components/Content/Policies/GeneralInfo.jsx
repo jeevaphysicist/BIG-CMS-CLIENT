@@ -1,22 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
-import { handleCreatePolicy } from "@/API/api";
+import { handleCreatePolicy, handleUpdatePolicy } from "@/API/api";
 
-const GeneralInfo = ({ handlePolicies, fetchData }) => {
+const GeneralInfo = ({ handlePolicies, fetchData, editData, type }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     header: "",
-    mainContent: "",
+    content: "",
   });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (editData) {
+      setFormData((prev) => ({
+        ...prev,
+        title: editData?.title || "",
+        header: editData.about?.header || "",
+        content: editData.about?.content || "",
+      }));
+    }
+  }, [editData]);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +37,7 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, mainContent: content }));
+    setFormData((prevData) => ({ ...prevData, content: content }));
   };
 
   const handleVadilation = () => {
@@ -40,8 +51,8 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
       newerrors.header = "Header is required";
       has = true;
     }
-    if (formData.mainContent === "" || formData.mainContent === null) {
-      newerrors.mainContent = "Main Content is required";
+    if (formData.content === "" || formData.content === null) {
+      newerrors.content = "Main Content is required";
       has = true;
     }
 
@@ -58,12 +69,28 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
       return null;
     }
 
+    let bodyData = {
+      title: formData.title,
+      about: {
+        header: formData.header,
+        content: formData.content,
+      },
+    };
+
+    let response;
+
     try {
       setLoading(true);
-      const response = await handleCreatePolicy(formData);
+      if (type === "create") {
+        response = await handleCreatePolicy(bodyData);
+      } else if (type === "edit") {
+        response = await handleUpdatePolicy(bodyData, editData._id);
+      }
+
       if (response.status >= 200 && response.status <= 209) {
         toast.success(response.data.message);
         fetchData();
+        handlePolicies();
       }
     } catch (error) {
       toast.error(error);
@@ -98,6 +125,7 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
                 size="lg"
                 radius="sm"
                 name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
@@ -122,6 +150,7 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
                 size="lg"
                 radius="sm"
                 name="header"
+                value={formData.header}
                 onChange={handleFormChange}
               />
             </div>
@@ -132,15 +161,15 @@ const GeneralInfo = ({ handlePolicies, fetchData }) => {
               >
                 Main Content
                 <RequiredSymbol />
-                {errors.mainContent && (
+                {errors.content && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.mainContent}
+                    {errors.content}
                   </span>
                 )}
               </label>
               {/* Text editor */}
               <TextEditor
-                value={content}
+                value={formData.content}
                 handleContentChange={handleProcedureContentChange}
               />
             </div>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../Content/DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -7,14 +7,20 @@ import RequiredSymbol from "../Content/RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleUpdateCustomJewelry } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Updates = ({ handleHomepage }) => {
+const Updates = ({
+  title,
+  fetchData,
+  sectionData,
+  handleCustomJeweleryPage,
+}) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
-    sectionDescription: "",
-    bannerImage: "",
-    buttonTitle: "",
-    moduleId: null,
+    title: "",
+    description: "",
+    banner: "",
+    callToActionTitle: "",
   });
 
   const [errors, setError] = useState({});
@@ -25,11 +31,21 @@ const Updates = ({ handleHomepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, bannerImage) => {
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      title: sectionData.update?.title,
+      description: sectionData.update?.description,
+      banner: sectionData.update?.banner,
+      callToActionTitle: sectionData.update?.callToActionTitle,
+    }));
+  }, [sectionData]);
+
+  const handleImageSelect = async (file, width, height, banner) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
+        setFormData((prevData) => ({ ...prevData, [banner]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -39,23 +55,23 @@ const Updates = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.bannerImage === "" || formData.bannerImage === null) {
-      newerrors.bannerImage = "Banner is required";
+    if (formData.banner === "" || formData.banner === null) {
+      newerrors.banner = "Banner is required";
       has = true;
     }
-    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
-      newerrors.sectionTitle = "Section Title is required";
-      has = true;
-    }
-    if (formData.buttonTitle === "" || formData.buttonTitle === null) {
-      newerrors.buttonTitle = "Call to action title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Section Title is required";
       has = true;
     }
     if (
-      formData.sectionDescription === "" ||
-      formData.sectionDescription === null
+      formData.callToActionTitle === "" ||
+      formData.callToActionTitle === null
     ) {
-      newerrors.sectionDescription = "Description is required";
+      newerrors.callToActionTitle = "Call to action title is required";
+      has = true;
+    }
+    if (formData.description === "" || formData.description === null) {
+      newerrors.description = "Description is required";
       has = true;
     }
 
@@ -63,18 +79,49 @@ const Updates = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
     console.log("Form submitted with data:", formData);
+
+    let bodyData = {
+      title: title,
+      update: {
+        title: formData.title,
+        description: formData.description,
+        banner: formData.banner,
+        callToActionTitle: formData.callToActionTitle,
+      },
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      response = await handleUpdateCustomJewelry(
+        bodyData,
+        sectionData._id,
+        true
+      );
+
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,9 +139,9 @@ const Updates = ({ handleHomepage }) => {
               >
                 Section Title
                 <RequiredSymbol />
-                {errors.sectionTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -105,32 +152,34 @@ const Updates = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionTitle"
+                name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="bannerImage_desc"
+                htmlFor="banner_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
                 <RequiredSymbol />
-                {errors.sectionDescription && (
+                {errors.description && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionDescription}
+                    {errors.description}
                   </span>
                 )}
               </label>
               <Textarea
                 type="text"
                 minRows={3}
-                id="bannerImage_desc"
+                id="banner_desc"
                 placeholder="Subscribe now to 'Unlock Exclusive Savings and Updates.' Be the first to enjoy discounts and stay updated on our latest Gemstone arrivals, ensuring you never miss out on the allure of exclusive offers"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionDescription"
+                name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
@@ -155,7 +204,7 @@ const Updates = ({ handleHomepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* bannerImage */}
+            {/* banner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -165,50 +214,51 @@ const Updates = ({ handleHomepage }) => {
                   >
                     Banner
                     <RequiredSymbol />
-                    {errors.bannerImage && (
+                    {errors.banner && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.bannerImage}
+                        {errors.banner}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="bannerImage"
-                    label="bannerImage"
+                    id="banner"
+                    label="banner"
                     accept={`images/*`}
                     width={264}
                     height={264}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.bannerImage && (
+                  {formData.banner && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.bannerImage)}
+                      src={FormateImageURL(formData.banner)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="bannerImage_desc"
+                    htmlFor="banner_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action title
                     <RequiredSymbol />
-                    {errors.buttonTitle && (
+                    {errors.callToActionTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.buttonTitle}
+                        {errors.callToActionTitle}
                       </span>
                     )}
                   </label>
                   <Input
                     type="text"
                     minRows={4}
-                    id="bannerImage_desc"
+                    id="banner_desc"
                     placeholder="Subscribe"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="buttonTitle"
+                    name="callToActionTitle"
+                    value={formData.callToActionTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -221,7 +271,7 @@ const Updates = ({ handleHomepage }) => {
         <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
-            onClick={handleHomepage}
+            onClick={handleCustomJeweleryPage}
             variant="bordered"
             className="font-semibold"
           >

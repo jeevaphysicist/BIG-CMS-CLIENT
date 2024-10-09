@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { toast } from "react-toastify";
+import { handleUpdateCustomJewelry } from "@/API/api";
 
-const Testimonials = ({ handleCustomJeweleryPage }) => {
+const Testimonials = ({
+  title,
+  fetchData,
+  sectionData,
+  handleCustomJeweleryPage,
+}) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -18,6 +24,14 @@ const Testimonials = ({ handleCustomJeweleryPage }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      title: sectionData.testimonial?.title,
+      description: sectionData.testimonial?.description,
+    }));
+  }, [sectionData]);
 
   const handleVadilation = () => {
     let newerrors = {};
@@ -35,18 +49,44 @@ const Testimonials = ({ handleCustomJeweleryPage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
     console.log("Form submitted with data:", formData);
+
+    let bodyData = {
+      testimonial: {
+        title: formData.title,
+        description: formData.description,
+      },
+    };
+
+    let response;
+    try {
+      setLoading(true);
+      response = await handleUpdateCustomJewelry(
+        bodyData,
+        sectionData._id,
+        true
+      );
+
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,6 +143,7 @@ const Testimonials = ({ handleCustomJeweleryPage }) => {
                   size="lg"
                   radius="sm"
                   name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -127,6 +168,7 @@ const Testimonials = ({ handleCustomJeweleryPage }) => {
                   size="lg"
                   radius="sm"
                   name="description"
+                  value={formData.description}
                   onChange={handleFormChange}
                 />
               </div>

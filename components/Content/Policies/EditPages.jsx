@@ -8,7 +8,7 @@ import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
 import GeneralInfo from "./GeneralInfo";
 
-const EditPages = ({ handlePolicies }) => {
+const EditPages = ({ handlePolicies, type, fetchData, editData }) => {
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -67,7 +67,12 @@ const EditPages = ({ handlePolicies }) => {
       {activeTab === "generalInfo" && (
         <section>
           <div className="px-4 my-2 no-scrollbar md:min-h-[65vh]">
-            <GeneralInfo handlePolicies={handlePolicies} />
+            <GeneralInfo
+              handlePolicies={handlePolicies}
+              editData={editData}
+              type={type}
+              fetchData={fetchData}
+            />
           </div>
         </section>
       )}

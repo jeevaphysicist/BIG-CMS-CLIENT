@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Tab, Tabs } from "@nextui-org/react";
 import Testimonials from "./Testimonials";
 import Faqs from "./Faqs";
@@ -9,16 +9,18 @@ import HowItWorks from "./HowItWorks";
 import Content from "./Content";
 import SeoAttributes from "../Content/SeoAttributes";
 
-const EditSections = ({ handleCustomJeweleryPage }) => {
+const EditSections = ({ handleCustomJeweleryPage, fetchData, editData }) => {
   const [selectedSection, setSelectedSection] = useState("iconBox");
   const [activeTab, setActiveTab] = useState("generalInfo");
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState("");
+
+  useEffect(() => {
+    setTitle(editData.title);
+  }, [editData]);
 
   const handleChange = (tab) => {
     setActiveTab(tab);
-  };
-
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Homepage", formData);
   };
 
   return (
@@ -85,26 +87,54 @@ const EditSections = ({ handleCustomJeweleryPage }) => {
           </div>
           <div className="no-scrollbar md:min-h-[65vh]">
             {selectedSection === "iconBox" && (
-              <IconBox handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <IconBox
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "howitWorks" && (
-              <HowItWorks handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <HowItWorks
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "content" && (
-              <Content handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Content
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "testimonials" && (
               <Testimonials
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
                 handleCustomJeweleryPage={handleCustomJeweleryPage}
               />
             )}
 
             {selectedSection === "faqs" && (
-              <Faqs handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Faqs
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
 
             {selectedSection === "updates" && (
-              <Updates handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Updates
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
           </div>
         </section>
