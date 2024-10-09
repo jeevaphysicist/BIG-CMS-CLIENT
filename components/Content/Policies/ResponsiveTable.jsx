@@ -15,7 +15,7 @@ const DraggableRow = ({
   row,
   handleType,
   handleSetEditData,
-  handleSelectedPolicy,
+  handlePolicies,
 }) => {
   const controls = useDragControls();
 
@@ -70,7 +70,7 @@ const DraggableRow = ({
           <button
             className="text-[20px] text-[#475467]"
             onClick={() => {
-              handleSelectedPolicy();
+              handlePolicies();
               handleType("edit");
               handleSetEditData(row);
             }}
@@ -85,16 +85,23 @@ const DraggableRow = ({
 
 const ResponsiveTable = ({
   initialData,
-  handleSelectedPolicy,
+  handlePolicies,
   handleSetEditData,
   handleType,
   fetchData,
+  searchQuery
 }) => {
   const [data, setData] = useState(initialData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const UpdateStatus = async (id, status) => {
     try {
@@ -107,6 +114,22 @@ const ResponsiveTable = ({
       }
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+  // Get paginated data but don't affect the reordering logic
+  const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Handle Previous Page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle Next Page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -136,7 +159,7 @@ const ResponsiveTable = ({
                 UpdateStatus={UpdateStatus}
                 handleSetEditData={handleSetEditData}
                 handleType={handleType}
-                handleSelectedPolicy={handleSelectedPolicy}
+                handlePolicies={handlePolicies}
                 key={row._id}
                 row={row}
               />

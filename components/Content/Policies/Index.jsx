@@ -37,7 +37,10 @@ const Index = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Filtered data state
   const [searchQuery, setSearchQuery] = useState("");
+  const [type, setType] = useState("create");
   const [policyPageList, setPolicyPageList] = useState([]);
+  const [selectEditData, setSelectEditData] = useState({});
+
 
   const handlePolicies = () => {
     setIsTable(!isTable);
@@ -50,10 +53,10 @@ const Index = () => {
   useEffect(() => {
     if (type === "edit") {
       setSelectEditData(
-        sitepageList.find((item) => item._id === selectEditData._id)
+        tableData.find((item) => item._id === selectEditData._id)
       );
     }
-  }, [sitepageList]);
+  }, [tableData]);
 
   const fetchPoliciesData = async () => {
     try {
@@ -88,6 +91,10 @@ const Index = () => {
     }
   }, [searchQuery, tableData]);
 
+  const handleSetEditData = (editdata) => {
+    setSelectEditData(editdata);
+  };
+
   return (
     <div className="w-[100%]">
       {isTable ? (
@@ -101,7 +108,7 @@ const Index = () => {
             </div>
             <button
               className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
-              onClick={handlePolicies}
+              onClick={()=>{handlePolicies();handleType('create')}}
             >
               <CiCirclePlus />
               Add new Policy
@@ -120,11 +127,18 @@ const Index = () => {
               initialData={filteredData}
               handlePolicies={handlePolicies}
               fetchData={fetchPoliciesData}
+              handleType={handleType}
+              handleSetEditData={handleSetEditData}
+              searchQuery={searchQuery}
             />
           </div>
         </div>
       ) : (
-        <EditPages handlePolicies={handlePolicies} />
+        <EditPages 
+        fetchData={fetchPoliciesData}
+        editData={selectEditData}
+        type={type}
+        handlePolicies={handlePolicies} />
       )}
     </div>
   );
