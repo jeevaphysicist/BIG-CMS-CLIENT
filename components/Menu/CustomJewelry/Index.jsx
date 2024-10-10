@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import ResponsiveCard from "./ResponsiveCard";
+import EditPages from "./EditPages";
 
 const dropsbeads = [
   {
@@ -29,7 +30,7 @@ const dropsbeads = [
 const Index = () => {
   const [isList, setIsList] = useState(true);
   const [isChecked, setIsChecked] = useState(true);
-  const handleFindingsPage = () => {
+  const handleCustomJewelryPage = () => {
     setIsList(!isList);
   };
 
@@ -37,7 +38,7 @@ const Index = () => {
 
   return (
     <div className="w-[100%]">
-
+      {isList ? (
         <div className="w-[100%] p-5">
           <div className="flex items-center justify-between w-[100%]">
             <div className="flex flex-col items-start justify-start">
@@ -60,11 +61,13 @@ const Index = () => {
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveCard
               initialData={dropsbeads}
-              handleFindingsPage={handleFindingsPage}
+              handleCustomJewelryPage={handleCustomJewelryPage}
             />
           </div>
         </div>
-     
+      ) : (
+        <EditPages handleCustomJewelryPage={handleCustomJewelryPage} />
+      )}
     </div>
   );
 };

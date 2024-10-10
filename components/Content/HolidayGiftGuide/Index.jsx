@@ -22,7 +22,7 @@ const Index = () => {
   const [selectEditData, setSelectEditData] = useState({});
   const [holidayGiftGuide, setHolidayGiftGuide] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const itemsClasses = {
     table: " bg-white  ",
@@ -46,13 +46,15 @@ const Index = () => {
     fetchHolidayGiftGuideList();
   }, []);
 
-  useEffect(() => {      
-      setSelectEditData(holidayGiftGuide.find(item => item._id === selectEditData?._id));
+  useEffect(() => {
+    setSelectEditData(
+      holidayGiftGuide.find((item) => item._id === selectEditData?._id)
+    );
   }, [holidayGiftGuide]);
 
   useEffect(() => {
     // Filter the holidayGiftGuide by title based on the search query
-    if (searchQuery.trim() === '') {
+    if (searchQuery.trim() === "") {
       setFilteredData(holidayGiftGuide);
     } else {
       const filtered = holidayGiftGuide.filter((item) =>
@@ -67,7 +69,7 @@ const Index = () => {
       const response = await handleGetHolidayGiftGuideList();
       if (response.status >= 200 && response.status <= 209) {
         setHolidayGiftGuide(response.data);
-        setFilteredData(response.data); 
+        setFilteredData(response.data);
       } else {
         setHolidayGiftGuide([]);
         setFilteredData([]);
@@ -98,15 +100,15 @@ const Index = () => {
             <input
               type="search"
               placeholder="Search by title"
-              value={searchQuery} 
-              onChange={(e) => setSearchQuery(e.target.value)} 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
             />
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
               fetchData={fetchHolidayGiftGuideList}
-              handleSetEditData={handleSetEditData}              
+              handleSetEditData={handleSetEditData}
               initialData={filteredData}
               searchQuery={searchQuery}
               handleGiftGuide={handleGiftGuide}
@@ -115,9 +117,10 @@ const Index = () => {
         </div>
       ) : (
         <EditPages
-        fetchData={fetchHolidayGiftGuideList}
-        editData={selectEditData} 
-        handleGiftGuide={handleGiftGuide} />
+          fetchData={fetchHolidayGiftGuideList}
+          editData={selectEditData}
+          handleGiftGuide={handleGiftGuide}
+        />
       )}
     </div>
   );

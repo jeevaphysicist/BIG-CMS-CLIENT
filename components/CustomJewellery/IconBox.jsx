@@ -146,6 +146,7 @@ const IconBox = ({
       setLoading(false);
     }
   };
+
   return (
     <Fragment>
       <form onSubmit={handleSubmit} className="w-full md:h-full md:px-8 px-2">

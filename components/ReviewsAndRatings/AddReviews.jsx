@@ -13,6 +13,7 @@ const AddReviews = ({ handleReviewPage }) => {
   const [formData, setFormData] = useState({
     customerName: "",
     selectedCategory: "",
+    selectedSubCategory: "",
     selectedProduct: "",
     rating: "",
     reviewTitle: "",
@@ -79,8 +80,8 @@ const AddReviews = ({ handleReviewPage }) => {
             </p>
           </div>
           <Tabs aria-label="Options">
-            <Tab key="draft" reviewTitle="Draft"></Tab>
-            <Tab key="publish" reviewTitle="Publish"></Tab>
+            <Tab key="draft" title="Draft"></Tab>
+            <Tab key="publish" title="Publish"></Tab>
           </Tabs>
         </div>
         <div className="flex gap-[24px] h-10">
@@ -155,29 +156,56 @@ const AddReviews = ({ handleReviewPage }) => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="link"
-                  className=" text-[16px] font-medium flex gap-1"
-                >
-                  Select Product
-                </label>
-                <select
-                  className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
-                  aria-label="Select section to edit"
-                  name="selectedProduct"
-                  onChange={handleFormChange}
-                >
-                  <option value="company">Company</option>
-                  <option value="policies">Policies</option>
-                  <option value="gemstones">Gemstones</option>
-                  <option value="Jewelry">Jewelry</option>
-                  <option value="dropsBeads">Drops & Beads</option>
-                  <option value="gifts">Gifts</option>
-                  <option value="semiMounts">Semi-Mounts</option>
-                  <option value="guide">Guide</option>
-                </select>
+              <div className="grid md:grid-cols-2 gap-y-6 gap-x-10">
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="selectedSubCategory"
+                    className=" text-[16px] font-medium flex gap-1"
+                  >
+                    Select Sub Category
+                  </label>
+                  <select
+                    className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
+                    aria-label="Select section to edit"
+                    name="selectedSubCategory"
+                    onChange={handleFormChange}
+                  >
+                    <option value="company">Company</option>
+                    <option value="policies">Policies</option>
+                    <option value="gemstones">Gemstones</option>
+                    <option value="Jewelry">Jewelry</option>
+                    <option value="dropsBeads">Drops & Beads</option>
+                    <option value="gifts">Gifts</option>
+                    <option value="semiMounts">Semi-Mounts</option>
+                    <option value="guide">Guide</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <label
+                    htmlFor="link"
+                    className=" text-[16px] font-medium flex gap-1"
+                  >
+                    Select Product
+                  </label>
+                  <select
+                    className=" h-[46px] rounded-[8px] border-2 border-[#D0D5DD] px-[10px] cursor-pointer"
+                    aria-label="Select section to edit"
+                    name="selectedProduct"
+                    onChange={handleFormChange}
+                  >
+                    <option value="company">Company</option>
+                    <option value="policies">Policies</option>
+                    <option value="gemstones">Gemstones</option>
+                    <option value="Jewelry">Jewelry</option>
+                    <option value="dropsBeads">Drops & Beads</option>
+                    <option value="gifts">Gifts</option>
+                    <option value="semiMounts">Semi-Mounts</option>
+                    <option value="guide">Guide</option>
+                  </select>
+                </div>
               </div>
+
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="rating"
