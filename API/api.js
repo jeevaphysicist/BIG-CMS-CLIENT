@@ -775,7 +775,7 @@ export const handleDeleteBirthStones = async (id) => {
   try {
     const response = await publicApi.delete(`/api/birthstone/delete/${id}`);
     return response;
-  } catch (error) {
+  } catch (error){
     return error;
   }
 };
@@ -821,3 +821,113 @@ export const handleUpdateCustomJewleryStatus = async (id, data) => {
     return error;
   }
 };
+// S.No 58
+// Get Tradeshow list
+export const handleGetTradeshowList = async () => {  
+    try {
+      const response = await publicApi.get(`/api/tradeshow/list`);
+      return response;
+    } catch (error){
+      return error;
+    }
+}
+
+// S.No 59
+// Create Tradeshow 
+export const handleCreateTradeshow = async (data) => {  
+  try {
+    const response = await publicApi.post(`/api/tradeshow/create`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 60
+// Update Tradeshow 
+export const handleUpdateTradeshow = async (data,id) => {  
+  try {
+    const response = await publicApi.put(`/api/tradeshow/update/${id}`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 61
+// Update Tradeshow  Status
+export const handleUpdateTradeshowStatus = async (id,data) => {  
+  try {
+    const response = await publicApi.patch(`/api/tradeshow/status/${id}`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 62
+// Delete Tradeshow 
+export const handleDeleteTradeshow = async (id) => {  
+  try {
+    const response = await publicApi.delete(`/api/tradeshow/delete/${id}`);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 63
+// Get Tradeshow sections list
+export const handleGetTradeshowSectionsList = async () => {  
+  try {
+    const response = await publicApi.get(`/api/tradeshow-about-faqs/about-faq`);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
+// S.No 64
+// Create Tradeshow about 
+export const handleCreateTradeshowAbout = async (data) => {  
+try {
+  const response = await publicApi.post(`/api/tradeshow-about-faqs/about`,data);
+  return response;
+} catch (error){
+  return error;
+}
+}
+
+// S.No 65
+// Create Tradeshow faqs 
+export const handleCreateTradeshowFaqs = async (data) => {  
+  try {
+    const response = await publicApi.post(`/api/tradeshow-about-faqs/faqs`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+  }
+
+// S.No 66
+// Update Tradeshow  About
+export const handleUpdateTradeshowAbout = async (data,id) => {  
+try {
+  const response = await publicApi.put(`/api/tradeshow-about-faqs/about/${id}`,data);
+  return response;
+} catch (error){
+  return error;
+}
+}
+
+// S.No 67
+// Update Tradeshow  FAQS
+export const handleUpdateTradeshowFaqs= async (data,id) => {  
+  try {
+    const response = await publicApi.put(`/api/tradeshow-about-faqs/faq/${id}`,data);
+    return response;
+  } catch (error){
+    return error;
+  }
+}
+
