@@ -931,3 +931,110 @@ export const handleUpdateTradeshowFaqs= async (data,id) => {
   }
 }
 
+// S.No 68
+// Create Review and Rating
+export const handleCreateReviewAndRating = async (data, isFormData = false) => {
+  try {
+    const response = await publicApi.post('/api/reviewsandratings/create', data, {
+      headers: isFormData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 69
+// Update Review and Rating
+export const handleUpdateReviewAndRating = async (id, data, isFormData = false) => {
+  try {
+    const response = await publicApi.put(`/api/reviewsandratings/update/${id}`, data, {
+      headers: isFormData ? formHeader : rawHeader,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 70
+// Delete Review and Rating
+export const handleDeleteReviewAndRating = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/reviewsandratings/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 71
+// Get All Reviews and Ratings
+export const handleGetAllReviewsAndRatings = async () => {
+  try {
+    const response = await publicApi.get('/api/reviewsandratings/all');
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 72
+// Get Reviews and Ratings by Role
+export const handleGetReviewsAndRatingsByRole = async (role) => {
+  try {
+    const response = await publicApi.get(`/api/reviewsandratings/by-role/${role}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 73
+// Update Review Status
+export const handleUpdateReviewStatus = async (reviewId, data) => {
+  try {
+    const response = await publicApi.patch(`/api/reviewsandratings/update-status/${reviewId}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 74
+// Get All Categories
+export const handleGetAllCategories = async () => {
+  try {
+    const response = await publicApi.get('/api/reviewsandratings/category-list');
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 75
+// Get All Products
+export const handleGetAllProducts = async (data) => {
+  try {
+    const response = await publicApi.post('/api/reviewsandratings/product-list', data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 76
+// Get All Sub-Categories
+export const handleGetAllSubCategories = async (data) => {
+  try {
+    const response = await publicApi.post('/api/reviewsandratings/sub-category-list', data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+
+
+
+

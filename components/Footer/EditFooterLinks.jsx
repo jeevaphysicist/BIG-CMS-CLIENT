@@ -20,7 +20,7 @@ const Editlinks = ({
     moduleId: null,
   });
 
-  console.log("in footer", selectedItem);
+  // console.log("in footer", selectedItem);
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState("");
