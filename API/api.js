@@ -407,7 +407,7 @@ export const handleUpdatePolicy = async (data, id) => {
 //Change Policy Status
 export const handlePolicyStatus = async (id, data) => {
   try {
-    const response = await publicApi.put(
+    const response = await publicApi.patch(
       `/api/policies/update/${id}/status`,
       data
     );

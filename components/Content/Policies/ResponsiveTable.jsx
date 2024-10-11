@@ -135,7 +135,7 @@ const ResponsiveTable = ({
     setCurrentPage(1);
   }, [searchQuery]);
 
-  const UpdateStatus = async (id, status) => {
+  const UpdateStatus = async ( status,id) => {
     try {
       const response = await handlePolicyStatus(id, { status: status });
       if (response.status >= 200 && response.status <= 209) {
