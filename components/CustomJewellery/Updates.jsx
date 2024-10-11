@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../Content/DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -7,10 +7,17 @@ import RequiredSymbol from "../Content/RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleUpdateCustomJewelry } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Updates = ({ handleCustomJeweleryPage }) => {
+const Updates = ({
+  title,
+  fetchData,
+  sectionData,
+  handleCustomJeweleryPage,
+}) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
+    title: "",
     description: "",
     banner: "",
     callToActionTitle: "",
@@ -23,6 +30,16 @@ const Updates = ({ handleCustomJeweleryPage }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      title: sectionData.update?.title,
+      description: sectionData.update?.description,
+      banner: sectionData.update?.banner,
+      callToActionTitle: sectionData.update?.callToActionTitle,
+    }));
+  }, [sectionData]);
 
   const handleImageSelect = async (file, width, height, banner) => {
     try {
@@ -42,8 +59,8 @@ const Updates = ({ handleCustomJeweleryPage }) => {
       newerrors.banner = "Banner is required";
       has = true;
     }
-    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
-      newerrors.sectionTitle = "Section Title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Section Title is required";
       has = true;
     }
     if (
@@ -62,18 +79,49 @@ const Updates = ({ handleCustomJeweleryPage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
     console.log("Form submitted with data:", formData);
+
+    let bodyData = {
+      title: title,
+      update: {
+        title: formData.title,
+        description: formData.description,
+        banner: formData.banner,
+        callToActionTitle: formData.callToActionTitle,
+      },
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      response = await handleUpdateCustomJewelry(
+        bodyData,
+        sectionData._id,
+        true
+      );
+
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,7 +130,7 @@ const Updates = ({ handleCustomJeweleryPage }) => {
         onSubmit={handleSubmit}
         className="w-full md:h-full md:px-8 px-2 space-y-6"
       >
-        <div className="w-full flex flex-col gap-8 mt-4">
+        <div className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <label
@@ -91,9 +139,9 @@ const Updates = ({ handleCustomJeweleryPage }) => {
               >
                 Section Title
                 <RequiredSymbol />
-                {errors.sectionTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -104,7 +152,8 @@ const Updates = ({ handleCustomJeweleryPage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionTitle"
+                name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
@@ -130,6 +179,7 @@ const Updates = ({ handleCustomJeweleryPage }) => {
                 size="lg"
                 radius="sm"
                 name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
@@ -154,7 +204,7 @@ const Updates = ({ handleCustomJeweleryPage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* banner */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -208,6 +258,7 @@ const Updates = ({ handleCustomJeweleryPage }) => {
                     size="lg"
                     radius="sm"
                     name="callToActionTitle"
+                    value={formData.callToActionTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -229,8 +280,10 @@ const Updates = ({ handleCustomJeweleryPage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

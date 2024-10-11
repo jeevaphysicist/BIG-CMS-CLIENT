@@ -11,12 +11,15 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    UpdateTemplatesHandler: (state) => {
-      state.template = state;
+    LogoutHandler:(state)=>{
+
+    },
+    UpdateTemplatesHandler: (state,action) => {
+      state.template = action.payload;
     },
   },
 });
 
-export const { UpdateTemplatesHandler } = userSlice.actions;
+export const { UpdateTemplatesHandler ,LogoutHandler } = userSlice.actions;
 
 export default userSlice.reducer;

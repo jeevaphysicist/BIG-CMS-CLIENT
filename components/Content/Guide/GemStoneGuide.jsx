@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { Button, Input } from "@nextui-org/react";
 import DragAndDropImage from "../DragDropImage";
@@ -6,15 +6,27 @@ import { FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateGuide, handleUpdateGuide } from "@/API/api";
 
-const GemStoneGuide = ({ handleGuide }) => {
+
+const GemStoneGuide = ({sectionData,type,fetchData,title, handleGuide }) => {
   const [formData, setFormData] = useState({
     banner: "",
-    headerTitle: "",
-    bannerTitle: "",
+    header: "",
+    bannerContent: ""
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+     setFormData((prev)=>({
+      ...prev,
+      banner: sectionData.guide?.banner,
+      header: sectionData.guide?.header,
+      bannerContent: sectionData.guide?.bannerContent
+     }))
+  },[sectionData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -45,16 +57,19 @@ const GemStoneGuide = ({ handleGuide }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
+    if (
+      formData.banner === "" ||
+      formData.banner === null
+    ) {
       newerrors.banner = "Banner is required";
       has = true;
     }
-    if (formData.headerTitle === "" || formData.headerTitle === null) {
-      newerrors.headerTitle = "Header Title is required";
+    if (formData.header === "" || formData.header === null) {
+      newerrors.header = "Header Title is required";
       has = true;
     }
-    if (formData.bannerTitle === "" || formData.bannerTitle === null) {
-      newerrors.bannerTitle = "Banner title is required";
+    if (formData.bannerContent === "" || formData.bannerContent === null) {
+      newerrors.bannerContent = "Banner title is required";
       has = true;
     }
 
@@ -62,7 +77,7 @@ const GemStoneGuide = ({ handleGuide }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -71,9 +86,43 @@ const GemStoneGuide = ({ handleGuide }) => {
       return null;
     }
 
-    // API Call Here
-
     console.log("Form submitted with data:", formData);
+
+    let bodyData = {
+      title:title,
+      guide:{
+        header: formData.header,
+        banner: formData.banner,
+        bannerContent: formData.bannerContent,
+      }
+};
+
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateGuide(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateGuide(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleGuide();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -88,9 +137,9 @@ const GemStoneGuide = ({ handleGuide }) => {
               >
                 Header Title
                 <RequiredSymbol />
-                {errors.headerTitle && (
+                {errors.header && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.headerTitle}
+                    {errors.header}
                   </span>
                 )}
               </label>
@@ -102,7 +151,8 @@ const GemStoneGuide = ({ handleGuide }) => {
                 placeholder="Facts About Emerald Gemstones"
                 size="lg"
                 radius="sm"
-                name="headerTitle"
+                name="header"
+                value={formData.header}
                 onChange={handleFormChange}
               />
             </div>
@@ -126,7 +176,7 @@ const GemStoneGuide = ({ handleGuide }) => {
               />
               {formData.banner && (
                 <img
-                  className="h-[150px] mx-auto w-[150px]"
+                  className="h-[150px] mx-auto w-[100%]"
                   src={FormateImageURL(formData.banner)}
                   alt="Image Preview"
                 />
@@ -139,9 +189,9 @@ const GemStoneGuide = ({ handleGuide }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.bannerTitle && (
+                {errors.bannerContent && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.bannerTitle}
+                    {errors.bannerContent}
                   </span>
                 )}
               </label>
@@ -153,7 +203,8 @@ const GemStoneGuide = ({ handleGuide }) => {
                 placeholder="EMERALD GEMSTONES"
                 size="lg"
                 radius="sm"
-                name="bannerTitle"
+                name="bannerContent"
+                value={formData.bannerContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -193,8 +244,10 @@ const GemStoneGuide = ({ handleGuide }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

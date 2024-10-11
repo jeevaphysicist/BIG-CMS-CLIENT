@@ -1,21 +1,29 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { FiSave } from "react-icons/fi";
 import TextEditor from "../TextEditor";
+import { handleUpdateGemstoneCertification } from "@/API/api";
 
-const EditPages = ({ handleGemstoneCertification }) => {
-  const [content, setContent] = useState("");
+const EditPages = ({ handleGemstoneCertification , fetchData ,editData }) => {
   const [formData, setFormData] = useState({
     title: "",
-    content: "",
+    mainContent: ""
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState({});
+
+  useEffect(()=>{
+      setFormData(prev=>({...prev,
+        title:editData?.title || "",
+        mainContent:editData?.mainContent || ""
+      }))
+  },[editData])
+
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -25,10 +33,8 @@ const EditPages = ({ handleGemstoneCertification }) => {
     }));
   };
 
-  const handleProcedureContentChange = (content) => {
-    // console.log("content---->", content);
-    setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+  const handleProcedureContentChange = (content) => {  
+    setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
   const handleVadilation = () => {
@@ -38,24 +44,45 @@ const EditPages = ({ handleGemstoneCertification }) => {
       newerrors.title = "Title is required";
       has = true;
     }
-    if (formData.content === "" || formData.content === null) {
-      newerrors.content = "Content is required";
+    if (formData.mainContent === "" || formData.mainContent === null) {
+      newerrors.mainContent = "Content is required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
-    // API Call Here
-    console.log("Form submitted with data:", formData);
+    let bodyData = formData;
+
+    let response ; 
+    
+    try {
+      setLoading(true);
+      response = await handleUpdateGemstoneCertification(bodyData,editData._id); 
+      
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+     
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }        
   };
 
   return (
@@ -102,6 +129,7 @@ const EditPages = ({ handleGemstoneCertification }) => {
                   size="lg"
                   radius="sm"
                   name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -112,14 +140,14 @@ const EditPages = ({ handleGemstoneCertification }) => {
                 >
                   Main Content
                   <RequiredSymbol />{" "}
-                  {errors.content && (
+                  {errors.mainContent && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.content}
+                      {errors.mainContent}
                     </span>
                   )}
                 </label>
                 <TextEditor
-                  value={formData.content}
+                  value={formData.mainContent}
                   handleContentChange={handleProcedureContentChange}
                 />
               </div>
@@ -139,8 +167,10 @@ const EditPages = ({ handleGemstoneCertification }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

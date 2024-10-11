@@ -1,18 +1,26 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import semiMounts from "../../../assets/image 9.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
-const SemiMounts = ({ handleHomepage }) => {
+const SemiMounts = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    callToAction: "",
-    callToActionLink: "",
+    sectionTitle: "",
+    sectionDescription: "",
+    buttonName: "",
+    buttonLink: "",
+    moduleId: null,
   });
+
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -24,23 +32,23 @@ const SemiMounts = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Title is required";
-      has = true;
-    }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
-      has = true;
-    }
-    if (formData.callToAction === "" || formData.callToAction === null) {
-      newerrors.callToAction = "Call to action is required";
+    if (formData.sectionTitle === "" || formData.sectionTitle === null) {
+      newerrors.sectionTitle = "sectionTitle is required";
       has = true;
     }
     if (
-      formData.callToActionLink === "" ||
-      formData.callToActionLink === null
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
     ) {
-      newerrors.callToActionLink = "Call to action link is required";
+      newerrors.sectionDescription = "sectionDescription is required";
+      has = true;
+    }
+    if (formData.buttonName === "" || formData.buttonName === null) {
+      newerrors.buttonName = "Call to action is required";
+      has = true;
+    }
+    if (formData.buttonLink === "" || formData.buttonLink === null) {
+      newerrors.buttonLink = "Call to action link is required";
       has = true;
     }
 
@@ -48,18 +56,52 @@ const SemiMounts = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        sectionTitle: sectionData.sectionTitle || "",
+        sectionDescription: sectionData.sectionDescription || "",
+        buttonName: sectionData.buttonName || "",
+        buttonLink: sectionData.buttonLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -97,25 +139,26 @@ const SemiMounts = ({ handleHomepage }) => {
             <div className="w-full flex flex-col gap-8">
               <div className="flex flex-col gap-3">
                 <label
-                  htmlFor="sec_title"
+                  htmlFor="sec_sectionTitle"
                   className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                 >
                   Section Title
                   <RequiredSymbol />
-                  {errors.title && (
+                  {errors.sectionTitle && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.title}
+                      {errors.sectionTitle}
                     </span>
                   )}
                 </label>
                 <Input
                   type="text"
-                  id="sec_title"
+                  id="sec_sectionTitle"
                   placeholder="Explore Semi-Mounts Collection"
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="title"
+                  name="sectionTitle"
+                  value={formData.sectionTitle}
                   onChange={handleFormChange}
                 />
               </div>
@@ -126,9 +169,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Description
                   <RequiredSymbol />
-                  {errors.description && (
+                  {errors.sectionDescription && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.description}
+                      {errors.sectionDescription}
                     </span>
                   )}
                 </label>
@@ -139,7 +182,8 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="description"
+                  name="sectionDescription"
+                  value={formData.sectionDescription}
                   onChange={handleFormChange}
                 />
               </div>
@@ -150,9 +194,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Call to Action
                   <RequiredSymbol />
-                  {errors.callToAction && (
+                  {errors.buttonName && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.callToAction}
+                      {errors.buttonName}
                     </span>
                   )}
                 </label>
@@ -163,7 +207,8 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="callToAction"
+                  name="buttonName"
+                  value={formData.buttonName}
                   onChange={handleFormChange}
                 />
               </div>
@@ -174,9 +219,9 @@ const SemiMounts = ({ handleHomepage }) => {
                 >
                   Call to Action Link
                   <RequiredSymbol />
-                  {errors.callToActionLink && (
+                  {errors.buttonLink && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.callToActionLink}
+                      {errors.buttonLink}
                     </span>
                   )}
                 </label>
@@ -187,7 +232,8 @@ const SemiMounts = ({ handleHomepage }) => {
                   variant="bordered"
                   size="lg"
                   radius="sm"
-                  name="callToActionLink"
+                  name="buttonLink"
+                  value={formData.buttonLink}
                   onChange={handleFormChange}
                 />
               </div>
@@ -208,8 +254,10 @@ const SemiMounts = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

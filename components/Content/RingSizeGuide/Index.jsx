@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 
 import ResponsiveTable from "./ResponsiveTable";
 import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import EditPages from "./EditPages";
+import { handleGetRingSizeGuideList } from "@/API/api";
 
 const initialData = [
   {
@@ -19,7 +20,11 @@ const initialData = [
 
 const Index = () => {
   const [isTable, setIsTable] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
+  const [selectEditData, setSelectEditData] = useState({});
+  const [ringSizeList, setRingSizeList] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(''); 
+ 
   const itemsClasses = {
     table: " bg-white  ",
     thead: "bg-white border ",
@@ -29,8 +34,54 @@ const Index = () => {
     th: "bg-white font-medium w-[100px]  rounded-t-[10px]",
     td: "bg-[#F9FAFB] font-regular text-[#0A1215]",
   };
+
   const handleSizeGuide = () => {
     setIsTable(!isTable);
+    let status = !isTable;
+    if (status === false) {
+      setSelectEditData({});
+    }
+  };
+
+  
+
+  useEffect(() => {
+    fetchRingSizeGuideList();
+  }, []);
+
+  useEffect(() => {      
+      setSelectEditData(ringSizeList.find(item => item._id === selectEditData?._id));
+  }, [ringSizeList]);
+
+  useEffect(() => {
+    // Filter the ringSizeList by title based on the search query
+    if (searchQuery.trim() === '') {
+      setFilteredData(ringSizeList);
+    } else {
+      const filtered = ringSizeList.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchQuery, ringSizeList]);
+
+  const fetchRingSizeGuideList = async () => {
+    try {
+      const response = await handleGetRingSizeGuideList();
+      if (response.status >= 200 && response.status <= 209) {
+        setRingSizeList(response.data);
+        setFilteredData(response.data); // Initialize filtered data with the full list
+      } else {
+        setRingSizeList([]);
+        setFilteredData([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSetEditData = (editdata) => {
+    setSelectEditData(editdata);
   };
 
   const handleAddSitePage = () => {};
@@ -51,19 +102,28 @@ const Index = () => {
             <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Search by title"
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
             />
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
-              initialData={initialData}
+              fetchData={fetchRingSizeGuideList}
+              handleSetEditData={handleSetEditData}              
+              initialData={filteredData}
+              searchQuery={searchQuery}
               handleSizeGuide={handleSizeGuide}
             />
           </div>
         </div>
       ) : (
-        <EditPages handleSizeGuide={handleSizeGuide} />
+        <EditPages 
+        fetchData={fetchRingSizeGuideList}
+        editData={selectEditData}        
+        handleSizeGuide={handleSizeGuide}
+        />
       )}
     </div>
   );

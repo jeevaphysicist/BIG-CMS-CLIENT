@@ -4,71 +4,54 @@ import { useState } from "react";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { Pagination } from "@nextui-org/react";
 
-const reviews = [
-  {
-    id: 1,
-    profile: "C",
-    name: "Charlie",
-    verifiedBuyer: true,
-    title: "Extremely happy!",
-    message:
-      "Love this gemstone. Great quality. Very nice shipping. Fast delivery.",
-    image: "/images/image 46.png",
-    date: "11/12/2023",
-  },
-  {
-    id: 2,
-    profile: "S",
-    name: "Srimathi",
-    verifiedBuyer: false,
-    title: "I like the purchase",
-    message:
-      "Love this gemstone. Great quality. Very nice shipping. Fast delivery.",
-    image: "/images/image 46.png",
-    date: "11/12/2023",
-  },
-  {
-    id: 3,
-    profile: "J",
-    name: "John",
-    verifiedBuyer: true,
-    title: "Better than expected",
-    message:
-      "Love this gemstone. Great quality. Very nice shipping. Fast delivery.",
-    image: "/images/image 46.png",
-    date: "11/12/2023",
-  },
-];
+const ClientReviews = ({ fetchData, reviews, activeTab }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+  const totalPages = Math.ceil(reviews.length / itemsPerPage);
 
-const ClientReviews = ({ activeTab }) => {
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const paginatedReviews = reviews.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
-    <div className="w-full px-4">
-      <div className="w-full flex md:justify-end justify-center md:px-8 px-0 sticky z-30 top-28 bg-white ">
-        <div className="flex mt-5 relative items-center justify-start">
-          <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
-          <input
-            type="search"
-            placeholder="Search"
-            className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
-          />
-        </div>
-      </div>
-      <div>
-        <ReviewCard initialData={reviews} activeTab={activeTab} />
+    <div className="w-full px-4">      
+      <div className="w-full min-h-[80vh] overflow-y-auto no-scrollbar">
+        <ReviewCard initialData={paginatedReviews} fetchData={fetchData} activeTab={activeTab} />
       </div>
       <div className="w-full sticky z-30 bottom-0 bg-white">
-        <div className="flex rounded-b-[10px]  justify-between py-2 px-2 w-[100%] items-center gap-5">
-          <div className="flex gap-4">
-            <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2">
-              Previous
-            </button>
-            <button className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px]  text-[#344054] items-center justify-center px-4 py-2 gap-2">
-              Next
-            </button>
-          </div>
-          <p className="font-medium text-[14px]  text-[#344054]">
-            Page 1 of 10
-          </p>
+        <div className="flex rounded-b-[10px] border-l-1 border-r-1 border-b-1 justify-between py-2 px-2 w-[100%] items-center gap-5">
+          <button
+            className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2"
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+          >
+            <LuArrowLeft />
+            Previous
+          </button>
+          <Pagination 
+            total={totalPages}
+            initialPage={1} 
+            page={currentPage} 
+            classNames={{
+              item: "bg-transparent text-[#475467] font-medium",
+              cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium",
+            }}
+            onChange={(page) => setCurrentPage(page)}
+          />
+          <button
+            className="flex active:scale-95 border-1 border-[#D0D5DD] rounded-md font-medium text-[14px] text-[#344054] items-center justify-center px-4 py-2 gap-2"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+            <LuArrowRight />
+          </button>
         </div>
       </div>
     </div>

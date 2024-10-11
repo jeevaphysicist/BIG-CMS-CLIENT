@@ -1,21 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useState } from "react";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
+import { handleCreatePolicy, handleUpdatePolicy } from "@/API/api";
 
-const GeneralInfo = ({ handlePolicies }) => {
+const GeneralInfo = ({ handlePolicies, fetchData, editData, type }) => {
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    pageTitle: "",
+    title: "",
     header: "",
     content: "",
   });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (editData) {
+      setFormData((prev) => ({
+        ...prev,
+        title: editData?.title || "",
+        header: editData.about?.header || "",
+        content: editData.about?.content || "",
+      }));
+    }
+  }, [editData]);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -25,14 +37,14 @@ const GeneralInfo = ({ handlePolicies }) => {
   const handleProcedureContentChange = (content) => {
     // console.log("content---->", content);
     setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+    setFormData((prevData) => ({ ...prevData, content: content }));
   };
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.pageTitle === "" || formData.pageTitle === null) {
-      newerrors.pageTitle = "Page title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Page title is required";
       has = true;
     }
     if (formData.header === "" || formData.header === null) {
@@ -48,19 +60,45 @@ const GeneralInfo = ({ handlePolicies }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      title: formData.title,
+      about: {
+        header: formData.header,
+        content: formData.content,
+      },
+    };
 
-    console.log("Form submitted with data:", formData);
+    let response;
+
+    try {
+      setLoading(true);
+      if (type === "create") {
+        response = await handleCreatePolicy(bodyData);
+      } else if (type === "edit") {
+        response = await handleUpdatePolicy(bodyData, editData._id);
+      }
+
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+        handlePolicies();
+      }
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <Fragment>
       <form onSubmit={handleSubmit} className="w-full md:px-8 px-2 space-y-6">
@@ -73,9 +111,9 @@ const GeneralInfo = ({ handlePolicies }) => {
               >
                 Page Title
                 <RequiredSymbol />
-                {errors.pageTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.pageTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -86,7 +124,8 @@ const GeneralInfo = ({ handlePolicies }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="pageTitle"
+                name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
@@ -111,6 +150,7 @@ const GeneralInfo = ({ handlePolicies }) => {
                 size="lg"
                 radius="sm"
                 name="header"
+                value={formData.header}
                 onChange={handleFormChange}
               />
             </div>
@@ -129,7 +169,7 @@ const GeneralInfo = ({ handlePolicies }) => {
               </label>
               {/* Text editor */}
               <TextEditor
-                value={content}
+                value={formData.content}
                 handleContentChange={handleProcedureContentChange}
               />
             </div>
@@ -149,8 +189,10 @@ const GeneralInfo = ({ handlePolicies }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

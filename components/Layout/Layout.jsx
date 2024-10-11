@@ -18,39 +18,36 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiOutlineLogout } from "react-icons/hi";
 import { CgMenuRightAlt } from "react-icons/cg";
-import { handleGetTemplate } from "@/API/api";
-import { useDispatch } from "react-redux";
-import {  UpdateTemplatesHandler } from "@/app/Redux/Features/userSlice";
 
 const MenuItems = ({ handleAside }) => {
-  const [openMenu, setOpenMenu] = useState({
-    sitePages: false,
-    assets: false,
-    content: false,
-    menu: false,
-  });
+const [openMenu, setOpenMenu] = useState({
+                                    sitePages: false,
+                                    assets: false,
+                                    content: false,
+                                    menu: false,
+                                  });
 
-  const toggleSubMenu = (menu) => {
+const toggleSubMenu = (menu) => {
     setOpenMenu((prevState) => ({
       ...prevState,
       [menu]: !prevState[menu],
     }));
   };
 
-  const pathname = usePathname();
-  const HandleFunction = (path) => {
+const pathname = usePathname();
+  
+const HandleFunction = (path) => {
     let isCurrentpath = path === pathname;
     return isCurrentpath;
   };
 
-
-  const HandleParentFunction = (statwith) => {
+const HandleParentFunction = (statwith) => {
     let isContentPath = pathname.startsWith(statwith);
     if (isContentPath) {
       return true;
     }
     return false;
-  };
+};
 
   return (
     <>
@@ -219,7 +216,7 @@ const MenuItems = ({ handleAside }) => {
                     className="flex font-medium w-[100%]"
                   >
                     {" "}
-                    Ring size guide
+                    Ring size Guide
                   </Link>
                   {HandleFunction("/content/ring-size-guide") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
@@ -238,7 +235,7 @@ const MenuItems = ({ handleAside }) => {
                     className="flex font-medium w-[100%]"
                   >
                     {" "}
-                    Gemstone certification
+                    Gemstone Certification
                   </Link>
                   {HandleFunction("/content/gemstone-certification") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
@@ -257,7 +254,7 @@ const MenuItems = ({ handleAside }) => {
                     className="flex font-medium w-[100%]"
                   >
                     {" "}
-                    Holiday gift guide
+                    Holiday Gift Guide
                   </Link>
                   {HandleFunction("/content/holiday-gift-guide") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
@@ -294,7 +291,7 @@ const MenuItems = ({ handleAside }) => {
                     className="flex font-medium w-[100%]"
                   >
                     {" "}
-                    Category Pages
+                    Category
                   </Link>
                   {HandleFunction("/content/category-page") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
@@ -398,19 +395,19 @@ const MenuItems = ({ handleAside }) => {
                 </li>
                 <li
                   className={`${
-                    HandleFunction("/menu/jewellery")
+                    HandleFunction("/menu/Jewelry")
                       ? "bg-[#F6F6FF] text-[#434CE7]"
                       : "text-[#0A1215]"
                   } cursor-pointer hover:text-[#434CE7] hover:bg-[#F6F6FF] relative px-4 py-2 rounded-[10px]   ml-3`}
                 >
                   <Link
-                    href="/menu/jewellery"
+                    href="/menu/jewelry"
                     onClick={handleAside}
                     className="flex font-medium w-[100%]"
                   >
                     Jewelry
                   </Link>
-                  {HandleFunction("/menu/jewellery") && (
+                  {HandleFunction("/menu/jewelry") && (
                     <div className="w-[2px] absolute top-0.5 -left-[14px] h-[35px] bg-[#434CE7]"></div>
                   )}
                 </li>
@@ -523,16 +520,16 @@ const MenuItems = ({ handleAside }) => {
           </li>
           <li
             className={`flex ${
-              HandleFunction("/custom-jewellery") ? "bg-[#F6F6FF]" : ""
+              HandleFunction("/custom-jewelry") ? "bg-[#F6F6FF]" : ""
             } hover:bg-[#F6F6FF] cursor-pointer px-4 py-3 rounded-[10px] items-center gap-3`}
           >
             <Link
-              href="/custom-jewellery"
+              href="/custom-jewelry"
               onClick={handleAside}
               className="flex gap-3 items-center w-[100%]"
             >
               <FaGem className="text-[#82838A]" />
-              <span className="text-[#0A1215]">Custom Jewellery</span>
+              <span className="text-[#0A1215]">Custom Jewelry</span>
             </Link>
           </li>
           <li
@@ -576,7 +573,7 @@ const MenuItems = ({ handleAside }) => {
 };
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false); 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="relative  w-[100%]  lg:left-0 lg:top-0  lg:h-[100vh] bg-gray-200 lg:shadow-lg ">

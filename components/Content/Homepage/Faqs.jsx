@@ -1,71 +1,119 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
-import {
-  Button,
-  Input,
-  Link,
-  Select,
-  SelectItem,
-  Textarea,
-} from "@nextui-org/react";
-import faqImg from "../../../assets/image 17.png";
+import { Fragment, useEffect, useState } from "react";
+import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
-import RequiredSymbol from "../RequiredSymbol";
-import { FaPlus } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
+import RequiredSymbol from "../RequiredSymbol";
+import AlertModel from "@/components/AlertModal";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
-const Faqs = ({ handleHomepage }) => {
-  const [questions, setQuestions] = useState([{ question: "", answer: "" }]);
+const Faqs = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
+  const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    questions: [{ question: "", answer: "" }],
+    sectionTitle: "",
+    selectedCategory: "general",
+    faqs: [{ question: "", answer: "", category: "" }],
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
+  const [questionRemoved, setQuestionRemoved] = useState(false);
 
   const addNewQuestion = () => {
-    setQuestions([...questions, { question: "", answer: "" }]);
+    if (filteredQuestions().length >= 5) {
+      toast.error("You can only add up to 5 questions.");
+      return;
+    }
+    const newQuestion = {
+      id: Date.now(),
+      type: "create",
+      question: "",
+      answer: "",
+      category: formData.selectedCategory,
+    };
+
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions, newQuestion];
+      handleVadilation(updatedQuestions);
+      return updatedQuestions;
+    });
   };
 
-  const handleQuestionChange = (index, field, value) => {
-    const updatedQuestions = questions.map((q, i) =>
-      i === index ? { ...q, [field]: value } : q
-    );
+  const handleDeleteQuestion = async (id) => {
+    const updatedQuestions = questions.filter((q) => q.id !== id);
     setQuestions(updatedQuestions);
-    setFormData((prevData) => ({ ...prevData, questions: updatedQuestions }));
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+    setQuestionRemoved(true);
   };
 
+  useEffect(() => {
+    if (questionRemoved) {
+      handleSubmit();
+      setQuestionRemoved(false);
+      setOpenAlertModal(false);
+    }
+  }, [questionRemoved]);
+
+  const openDeleteModal = (id) => {
+    setOpenAlertModal(true);
+    setQuestionToDelete(id);
+  };
+
+  const handleRemoveQuestion = (id) => {
+    const updatedQuestions = questions.filter((q) => q.id !== id);
+    setQuestions(updatedQuestions);
+    setFormData((prevData) => ({ ...prevData, faqs: updatedQuestions }));
+  };
+
+  const handleQuestionChange = (id, field, value) => {
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.map((q) =>
+        q.id === id ? { ...q, [field]: value } : q
+      );
+      handleVadilation(updatedQuestions);
+      return updatedQuestions;
+    });
+  };
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
+  // console.log("all datas", sectionData);
+
+  useEffect(() => {
+    if (sectionData) {
+      setFormData((prev) => ({
+        ...prev,
+        sectionTitle: sectionData.sectionTitle || "",
+        faqs: sectionData.faqs || [],
+        moduleId: sectionData.moduleId || null,
+      }));
+      setQuestions(sectionData.faqs || []);
     }
-  };
+  }, [sectionData]);
 
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
 
-    if (formData.title === "" || formData.title === null) {
-      newerrors.title = "Section Title is required";
+    if (!formData.sectionTitle) {
+      newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.category === "" || formData.category === null) {
-      newerrors.category = "Category is required";
+
+    if (!formData.selectedCategory) {
+      newerrors.selectedCategory = "Category is required";
       has = true;
     }
-    formData.questions.forEach((questionObj, index) => {
+
+    questions.forEach((questionObj, index) => {
       if (!questionObj.question) {
         newerrors[`question_${index}`] = "Question is required";
         has = true;
@@ -74,24 +122,59 @@ const Faqs = ({ handleHomepage }) => {
         newerrors[`answer_${index}`] = "Answer is required";
         has = true;
       }
+      if (!questionObj.category) {
+        newerrors[`category_${index}`] = "Category is required";
+        has = true;
+      }
     });
 
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e?.preventDefault();
+    setFormData((prevData) => ({ ...prevData, faqs: questions }));
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let updateType = questions.map((question) => ({
+      ...question,
+      type: "edit",
+    }));
 
-    console.log("Form submitted with data:", formData);
+    let bodyData = {
+      contents: { ...formData, faqs: updateType },
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
+
+    try {
+      setLoading(true);
+      const response = await handleHomepageCreateEditSection(bodyData, false);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredQuestions = () => {
+    let filteredData = questions.filter(
+      (q) => q.category === formData.selectedCategory
+    );
+    return filteredData;
   };
 
   return (
@@ -104,7 +187,7 @@ const Faqs = ({ handleHomepage }) => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="section_title"
+                htmlFor="section_Title"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Section Title
@@ -117,12 +200,13 @@ const Faqs = ({ handleHomepage }) => {
               </label>
               <Input
                 type="text"
-                id="section_title"
+                id="section_Title"
                 placeholder="Frequently Asked Questions"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="title"
+                name="sectionTitle"
+                value={formData.sectionTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -138,8 +222,8 @@ const Faqs = ({ handleHomepage }) => {
                 </h2>
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>
-                    To Edit your FAQs, Select the category and Edit your Section
-                    Contents.
+                    To Edit your FAQs, Select the selectedCategory and Edit your
+                    Section Contents.
                   </p>
                 </div>
               </div>
@@ -158,53 +242,85 @@ const Faqs = ({ handleHomepage }) => {
                   >
                     Select the Category
                     <RequiredSymbol />
-                    {errors.category && (
+                    {errors.selectedCategory && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.category}
+                        {errors.selectedCategory}
                       </span>
                     )}
                   </label>
-                  <Select
+                  <select
                     type="text"
                     id="banner_month"
                     placeholder="Select Category"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                    name="category"
-                    onChange={handleFormChange}
+                    className="w-full h-[46px] rounded-[8px] border-1.5 border-[#D0D5DD] px-[10px] cursor-pointer"
+                    name="selectedCategory"
+                    value={formData.selectedCategory}
+                    onChange={(e) => {
+                      handleFormChange(e);
+                      fetchData();
+                    }}
                   >
-                    <SelectItem>Genaral</SelectItem>
-                  </Select>
+                    <option value="general">General</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="quality">Quality</option>
+                    <option value="payment">Payment</option>
+                  </select>
                 </div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="timer" className="text-[18px] font-bold">
                     Questions
                   </label>
-                  <Link
-                    className="font-bold flex gap-1 items-center cursor-pointer "
-                    onClick={addNewQuestion}
-                  >
-                    <FaPlus size={10} />
-                    Add New Question
-                  </Link>
+                  <div>
+                    <Link
+                      className="font-bold flex gap-1 items-center cursor-pointer "
+                      onClick={addNewQuestion}
+                    >
+                      <FaPlus size={10} />
+                      Add New Question
+                    </Link>
+                    <p className="text-[10px] text-[#667085] text-end">
+                      Max 5 FAQs can be generated
+                    </p>
+                  </div>
                 </div>
 
-                {questions.map((que, index) => (
+                {filteredQuestions()?.map((que, index) => (
                   <div className="flex flex-col space-y-6 mb-8" key={index}>
                     <div className="flex flex-col gap-3">
-                      <label
-                        htmlFor={`question-${index}`}
-                        className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
-                      >
-                        Question {index + 1}
-                        <RequiredSymbol />
-                        {errors[`question_${index}`] && (
-                          <span className="font-regular text-[12px] text-red-600">
-                            {errors[`question_${index}`]}
-                          </span>
+                      <div className="flex justify-between items-center">
+                        <label
+                          htmlFor={`question-${index}`}
+                          className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
+                        >
+                          Question {index + 1}
+                          <RequiredSymbol />
+                          {errors[`question_${index}`] && (
+                            <span className="font-regular text-[12px] text-red-600">
+                              {errors[`question_${index}`]}
+                            </span>
+                          )}
+                        </label>
+                        {que.type === "edit" ? (
+                          <button
+                            className="font-bold flex gap-1 items-center cursor-pointer text-red-500"
+                            type="button"
+                            onClick={() => openDeleteModal(que.id)}
+                          >
+                            <FaMinus size={12} className="pt-1" /> Delete
+                            Question
+                          </button>
+                        ) : (
+                          <button
+                            className="font-bold flex gap-1 items-center cursor-pointer text-gray-500"
+                            type="button"
+                            onClick={() => handleRemoveQuestion(que.id)}
+                          >
+                            <FaMinus size={12} className="pt-1" /> Remove
+                            Question
+                          </button>
                         )}
-                      </label>
+                      </div>
+
                       <Input
                         type="text"
                         id={`question-${index}`}
@@ -215,7 +331,7 @@ const Faqs = ({ handleHomepage }) => {
                         radius="sm"
                         onChange={(e) =>
                           handleQuestionChange(
-                            index,
+                            que.id,
                             "question",
                             e.target.value
                           )
@@ -244,7 +360,7 @@ const Faqs = ({ handleHomepage }) => {
                         size="lg"
                         radius="sm"
                         onChange={(e) =>
-                          handleQuestionChange(index, "answer", e.target.value)
+                          handleQuestionChange(que.id, "answer", e.target.value)
                         }
                       />
                     </div>
@@ -268,13 +384,22 @@ const Faqs = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>
         </div>
       </form>
+      <AlertModel
+        isVisible={openAlertModal}
+        modeltitle="Delete Question"
+        message="Are you sure you want to delete this question?"
+        onConfirm={() => handleDeleteQuestion(questionToDelete)}
+        onCancel={() => setOpenAlertModal(false)}
+      />
     </Fragment>
   );
 };

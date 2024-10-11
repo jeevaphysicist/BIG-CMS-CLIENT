@@ -1,4 +1,4 @@
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox, Switch } from "@nextui-org/react";
 import { Fragment, useState } from "react";
 import { RiDragMove2Fill } from "react-icons/ri";
 import { BsThreeDots } from "react-icons/bs";
@@ -11,12 +11,10 @@ const ResponsiveCard = ({ initialData }) => {
         {data.map((item, index) => (
           <div className="border rounded-[10px] min-w-30" key={index}>
             <div className="flex items-center justify-between border-b p-2">
-              <div>
-                <Checkbox />
-              </div>
+              <div>{/* <Checkbox /> */}</div>
               <div className="flex items-center gap-3">
                 <RiDragMove2Fill className="text-black/60" />
-                <BsThreeDots className="text-black/60" />
+                <Switch size="sm" aria-label="Automatic updates" />
               </div>
             </div>
             <div className="py-2 flex flex-col items-center justify-center">

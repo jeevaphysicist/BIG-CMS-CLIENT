@@ -12,6 +12,7 @@ const ContentBox = ({ handleCategoryPage }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -136,8 +137,10 @@ const ContentBox = ({ handleCategoryPage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Herosection from "./Herosection";
 import ContentBox from "./ContentBox";
 import Categories from "./Categories";
 import { Tab, Tabs } from "@nextui-org/react";
 import Recommended from "./Recommended";
 import ExploreGemstones from "./ExploreGemstones";
-import ExploreJwellery from "./ExploreJwellery";
+import ExploreJewelry from "./ExploreJewelry";
 import DropsBeads from "./DropsBeads";
 import SemiMounts from "./SemiMounts";
 import Gifts from "./Gifts";
@@ -14,24 +13,109 @@ import Offers from "./Offers";
 import BirthStoneInfo from "./BirthStoneInfo";
 import Gemshows from "./Gemshows";
 import Testimonials from "./Testimonials";
-import CustomJewellery from "./CustomJewellery";
+import CustomJewelry from "./CustomJewelry";
 import Faqs from "./Faqs";
 import ContentSection from "./ContentSection";
 import Updates from "./Updates";
 import SocialFollow from "./SocialFollow";
 import SeoAttributes from "../SeoAttributes";
+import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
+import { handleGetHomepageSection, handleHomepageCreateEditSection } from "@/API/api";
+import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
 const EditSections = ({ handleHomepage }) => {
-  const [selectedSection, setSelectedSection] = useState("herosection");
+  const { template } = GetCurrentUserDetails();
+  const [selectedSection, setSelectedSection] = useState("hero-section");
   const [activeTab, setActiveTab] = useState("generalInfo");
+  const [sectionData, setSectionData] = useState({});
+  const [getSection, setGetSection] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    handleSelectDropDown("homepage");
+    fetchSectionData();
+  }, [selectedSection]);
+
+  const fetchSectionData = async () => {
+    try {
+      const response = await handleGetHomepageSection(
+        "homepage",
+        selectedSection
+      );
+      if (response.status >= 200 && response.status <= 209) {
+        setSectionData(response.data.data.contents);
+      } else {
+        setSectionData({});
+      }
+      // console.log("response", response);
+    } catch (error) {
+      setSectionData({});
+    }
+  };
+
+  useEffect(()=>{
+    if(activeTab === 'seoAttributes')
+    setSelectedSection('seo');
+
+    if(activeTab === 'generalInfo')
+      setSelectedSection('hero-section');
+  },[activeTab])
 
   const handleChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
+  const handleSeoSubmit = async (formData) => {
     console.log("Submitting data for Homepage", formData);
+    handleSectionSlug();
+    let bodyData = {
+      contents: formData,
+      moduleSlug: 'homepage',
+      moduleName: 'Homepage',
+      sectionSlug: 'seo',
+      sectionName: 'SEO',
+      pageName: "homepage",
+      pageSlug: 'homepage',
+    };
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchSectionData();
+      } else {
+        toast.error(response.data.message);
+      }
+      // console.log("response", response);
+    } catch (error) {
+      toast.error("Internal server error");
+      //  console.log("error",error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSelectDropDown = (slug) => {
+    const findmodule = template?.find((temp) => temp.moduleSlug === slug);
+    setGetSection(findmodule || {});
+  };
+
+  const handleSectionSlug = (value) => {
+    let currentSection = getSection?.sections?.find(
+      (item) => value === item.sectionSlug
+    );
+    currentSection = {
+      ...currentSection,
+      moduleSlug: getSection?.moduleSlug,
+      moduleName: getSection?.moduleName,
+    };
+    return currentSection || {};
+  };
+
+  // console.log("template", template);
 
   return (
     <Fragment>
@@ -85,98 +169,163 @@ const EditSections = ({ handleHomepage }) => {
               onChange={(e) => setSelectedSection(e.target.value)}
               aria-label="Select section to edit"
             >
-              <option value="herosection">Hero Section (Section 1)</option>
-              <option value="contentbox">Content Box (Section 2)</option>
-              <option value="categories">Categories (Section 3)</option>
-              <option value="recommended">Recommended (Section 4)</option>
-              <option value="exploregemstones">
-                Explore Gemstones (Section 5)
-              </option>
-              <option value="explorejewelry">
-                Explore Jewellery (Section 6)
-              </option>
-              <option value="dropsbeads">Drops & Beads (Section 7)</option>
-              <option value="semimounts">Semi-Mounts (Section 8)</option>
-              <option value="gifts">Gifts (Section 9)</option>
-              <option value="offers">Offers (Section 10)</option>
-              <option value="birthstoneinfo">
-                Birthstone Information (Section 11)
-              </option>
-              <option value="gemshows">Gemshows (Section 12)</option>
-              <option value="testimonials">Testimonials (Section 13)</option>
-              <option value="customjewellery">
-                Custom Jewellery (Section 14)
-              </option>
-              <option value="faqs">
-                Frequently Asked Questions (Section 15)
-              </option>
-              <option value="contentsection">
-                Content Section (Section 16)
-              </option>
-              <option value="updates">Updates Section (Section 17)</option>
-              <option value="socialfollow">Social Follow (Section 18)</option>
+              {getSection?.sections?.map((item, index) => (
+                <option value={`${item.sectionSlug}`}>
+                  {item.sectionName}
+                </option>
+              ))}
             </select>
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
-            {selectedSection === "herosection" && (
-              <Herosection handleHomepage={handleHomepage} />
+            {selectedSection === "hero-section" && (
+              <Herosection
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "contentbox" && (
-              <ContentBox handleHomepage={handleHomepage} />
+            {selectedSection === "content-box" && (
+              <ContentBox
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "categories" && (
-              <Categories handleHomepage={handleHomepage} />
+              <Categories
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "recommended" && (
-              <Recommended handleHomepage={handleHomepage} />
+              <Recommended
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "exploregemstones" && (
-              <ExploreGemstones handleHomepage={handleHomepage} />
+            {selectedSection === "gemstones" && (
+              <ExploreGemstones
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "explorejewelry" && (
-              <ExploreJwellery handleHomepage={handleHomepage} />
+            {selectedSection === "jewelry" && (
+              <ExploreJewelry
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "dropsbeads" && (
-              <DropsBeads handleHomepage={handleHomepage} />
+            {selectedSection === "drops-beads" && (
+              <DropsBeads
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "semimounts" && (
-              <SemiMounts handleHomepage={handleHomepage} />
+            {selectedSection === "semi-mounts" && (
+              <SemiMounts
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "gifts" && (
-              <Gifts handleHomepage={handleHomepage} />
+              <Gifts
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "offers" && (
-              <Offers handleHomepage={handleHomepage} />
+              <Offers
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "birthstoneinfo" && (
-              <BirthStoneInfo handleHomepage={handleHomepage} />
+            {selectedSection === "birthstone-information" && (
+              <BirthStoneInfo
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "gemshows" && (
-              <Gemshows handleHomepage={handleHomepage} />
+              <Gemshows
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "testimonials" && (
-              <Testimonials handleHomepage={handleHomepage} />
+              <Testimonials
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "customjewellery" && (
-              <CustomJewellery handleHomepage={handleHomepage} />
+            {selectedSection === "custom-jewelry" && (
+              <CustomJewelry
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
             {selectedSection === "faqs" && (
-              <Faqs handleHomepage={handleHomepage} />
+              <Faqs
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "contentsection" && (
-              <ContentSection handleHomepage={handleHomepage} />
+            {selectedSection === "content-section" && (
+              <ContentSection
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "updates" && (
-              <Updates handleHomepage={handleHomepage} />
+            {selectedSection === "update-section" && (
+              <Updates
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
-            {selectedSection === "socialfollow" && (
-              <SocialFollow handleHomepage={handleHomepage} />
+            {selectedSection === "social-follow" && (
+              <SocialFollow
+                sectionData={sectionData}
+                fetchData={fetchSectionData}
+                handleHomepage={handleHomepage}
+                currentSection={handleSectionSlug(selectedSection)}
+              />
             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleHomepage} />
+        <SeoAttributes sectionData={sectionData} onSubmit={handleSeoSubmit} isLoading={loading} handler={handleHomepage} />
       )}
     </Fragment>
   );

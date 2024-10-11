@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../Content/RequiredSymbol";
 import { toast } from "react-toastify";
+import { handleUpdateCustomJewelry } from "@/API/api";
 
-const Content = ({ handleCustomJeweleryPage }) => {
+const Content = ({
+  title,
+  fetchData,
+  sectionData,
+  handleCustomJeweleryPage,
+}) => {
   const [formData, setFormData] = useState({
     description: "",
   });
@@ -17,6 +23,13 @@ const Content = ({ handleCustomJeweleryPage }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      description: sectionData.content?.description,
+    }));
+  }, [sectionData]);
 
   const handleVadilation = () => {
     let newerrors = {};
@@ -31,18 +44,44 @@ const Content = ({ handleCustomJeweleryPage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
     console.log("Form submitted with data:", formData);
+
+    let bodyData = {
+      content: {
+        description: formData.description,
+      },
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      response = await handleUpdateCustomJewelry(
+        bodyData,
+        sectionData._id,
+        true
+      );
+
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -110,6 +149,7 @@ with our bespoke jewelry design. "
                 size="lg"
                 radius="sm"
                 name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
@@ -129,8 +169,10 @@ with our bespoke jewelry design. "
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

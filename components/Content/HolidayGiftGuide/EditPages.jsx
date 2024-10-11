@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
@@ -8,16 +8,23 @@ import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
 import TextEditor from "../TextEditor";
+import { handleUpdateHolidayGiftGuide } from "@/API/api";
 
-const EditPages = ({ handleGiftGuide }) => {
-  const [content, setContent] = useState("");
+const EditPages = ({ handleGiftGuide , fetchData,editData }) => {
   const [formData, setFormData] = useState({
     title: "",
-    content: "",
+    mainContent: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setError] = useState({});
+
+  useEffect(()=>{
+     setFormData(prev=>({...prev,
+      title:editData.title || "",
+      mainContent:editData.mainContent || "",
+    }))
+  },[editData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -28,9 +35,7 @@ const EditPages = ({ handleGiftGuide }) => {
   };
 
   const handleProcedureContentChange = (content) => {
-    // console.log("content---->", content);
-    setContent(content);
-    setFormData((prevData) => ({ ...prevData, content }));
+    setFormData((prevData) => ({ ...prevData, mainContent: content }));
   };
 
   const handleVadilation = () => {
@@ -40,15 +45,15 @@ const EditPages = ({ handleGiftGuide }) => {
       newerrors.title = "Title is required";
       has = true;
     }
-    if (formData.content === "" || formData.content === null) {
-      newerrors.content = "Content is required";
+    if (formData.mainContent === "" || formData.mainContent === null) {
+      newerrors.mainContent = "Content is required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
@@ -57,9 +62,29 @@ const EditPages = ({ handleGiftGuide }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = formData;
 
-    console.log("Form submitted with data:", formData);
+    let response ; 
+    
+    try {
+      setLoading(true);
+      response = await handleUpdateHolidayGiftGuide(bodyData,editData._id); 
+      
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+     
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }    
   };
 
   return (
@@ -69,7 +94,7 @@ const EditPages = ({ handleGiftGuide }) => {
           <div className="flex md:flex-row flex-col gap-4 justify-between">
             <div>
               <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-                Edit Holiday gift guide
+                Edit Holiday Gift Guide
               </h2>
               <p className="text-[#4A5367] md:text-[14px] text-[12px]">
                 Enter Page Contents
@@ -106,6 +131,7 @@ const EditPages = ({ handleGiftGuide }) => {
                   size="lg"
                   radius="sm"
                   name="title"
+                  value={formData.title}
                   onChange={handleFormChange}
                 />
               </div>
@@ -116,14 +142,14 @@ const EditPages = ({ handleGiftGuide }) => {
                 >
                   Main Content
                   <RequiredSymbol />{" "}
-                  {errors.content && (
+                  {errors.mainContent && (
                     <span className="font-regular text-[12px] text-red-600">
-                      {errors.content}
+                      {errors.mainContent}
                     </span>
                   )}
                 </label>
                 <TextEditor
-                  value={formData.content}
+                  value={formData.mainContent}
                   handleContentChange={handleProcedureContentChange}
                 />
               </div>
@@ -143,8 +169,11 @@ const EditPages = ({ handleGiftGuide }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
+            onClick={handleSubmit}
           >
             Save
           </Button>

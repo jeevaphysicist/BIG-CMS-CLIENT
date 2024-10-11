@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Tab, Tabs } from "@nextui-org/react";
 import Testimonials from "./Testimonials";
 import Faqs from "./Faqs";
@@ -8,17 +8,52 @@ import IconBox from "./IconBox";
 import HowItWorks from "./HowItWorks";
 import Content from "./Content";
 import SeoAttributes from "../Content/SeoAttributes";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleUpdateCustomJewelry } from "@/API/api";
+import { toast } from "react-toastify";
 
-const EditSections = ({ handleCustomJeweleryPage }) => {
+const EditSections = ({ handleCustomJeweleryPage, fetchData, editData }) => {
   const [selectedSection, setSelectedSection] = useState("iconBox");
   const [activeTab, setActiveTab] = useState("generalInfo");
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState("");
+
+  useEffect(() => {
+    setTitle(editData.title);
+  }, [editData]);
 
   const handleChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
-    console.log("Submitting data for Homepage", formData);
+  const handleSeoSubmit = async (formData) => {
+    // console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+      title: title,
+      seo: formData,
+    };
+
+    // console.log("body data", bodyData);
+    let response;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+
+      response = await handleUpdateCustomJewelry(bodyData, editData._id, false);
+      // console.log("response",response);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+        handleCustomJeweleryPage();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,7 +62,7 @@ const EditSections = ({ handleCustomJeweleryPage }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Edit Custom Jewellery
+              Edit Custom Jewelry
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Select and Edit Sections to Personalize Your Content.
@@ -85,26 +120,54 @@ const EditSections = ({ handleCustomJeweleryPage }) => {
           </div>
           <div className="no-scrollbar md:min-h-[65vh]">
             {selectedSection === "iconBox" && (
-              <IconBox handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <IconBox
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "howitWorks" && (
-              <HowItWorks handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <HowItWorks
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "content" && (
-              <Content handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Content
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
             {selectedSection === "testimonials" && (
               <Testimonials
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
                 handleCustomJeweleryPage={handleCustomJeweleryPage}
               />
             )}
 
             {selectedSection === "faqs" && (
-              <Faqs handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Faqs
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
 
             {selectedSection === "updates" && (
-              <Updates handleCustomJeweleryPage={handleCustomJeweleryPage} />
+              <Updates
+                sectionData={editData}
+                title={title}
+                fetchData={fetchData}
+                handleCustomJeweleryPage={handleCustomJeweleryPage}
+              />
             )}
           </div>
         </section>
@@ -113,6 +176,8 @@ const EditSections = ({ handleCustomJeweleryPage }) => {
         <SeoAttributes
           onSubmit={handleSeoSubmit}
           handler={handleCustomJeweleryPage}
+          isLoading={loading}
+          sectionData={editData?.seo}
         />
       )}
     </Fragment>

@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -7,12 +6,21 @@ import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import DragAndDropImageMultiple from "../DragDropImageMultiple";
 
-const SocialFollow = ({ handleHomepage }) => {
+const SocialFollow = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
-    description: "",
-    thumbnail: "",
+    sectionDescription: "",
+    thumbnailImage: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -25,7 +33,7 @@ const SocialFollow = ({ handleHomepage }) => {
 
   const handleImageSelect = async (file, width, height, banner) => {
     try {
-      await validateImageDimensions(file, width, height);
+      // await validateImageDimensions(file, width, height);
       if (file) {
         setFormData((prevData) => ({ ...prevData, [banner]: file }));
       }
@@ -42,12 +50,15 @@ const SocialFollow = ({ handleHomepage }) => {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (formData.thumbnail === "" || formData.thumbnail === null) {
-      newerrors.thumbnail = "Thumbnail is required";
+    if (formData.thumbnailImage === "" || formData.thumbnailImage === null) {
+      newerrors.thumbnailImage = "Thumbnail is required";
       has = true;
     }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Description is required";
       has = true;
     }
 
@@ -55,18 +66,51 @@ const SocialFollow = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        sectionTitle: sectionData.sectionTitle || "",
+        sectionDescription: sectionData.sectionDescription || "",
+        thumbnailImage: sectionData.thumbnailImage || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -98,6 +142,7 @@ const SocialFollow = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionTitle"
+                value={formData.sectionTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -108,9 +153,9 @@ const SocialFollow = ({ handleHomepage }) => {
               >
                 Description
                 <RequiredSymbol />
-                {errors.description && (
+                {errors.sectionDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.description}
+                    {errors.sectionDescription}
                   </span>
                 )}
               </label>
@@ -122,7 +167,8 @@ const SocialFollow = ({ handleHomepage }) => {
                 placeholder="For daily Gemstone goodness and exclusive deals. Sparkle awaits join us today!"
                 size="lg"
                 radius="sm"
-                name="description"
+                name="sectionDescription"
+                value={formData.sectionDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -131,29 +177,35 @@ const SocialFollow = ({ handleHomepage }) => {
                 htmlFor="icon"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
-                Add Social Media Thumbnail Images
+                Add Social Media thumbnail Images
                 <RequiredSymbol />
-                {errors.thumbnail && (
+                {errors.thumbnailImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.thumbnail}
+                    {errors.thumbnailImage}
                   </span>
                 )}
               </label>
-              <DragAndDropImage
-                id="thumbnail"
-                label="thumbnail"
+              <DragAndDropImageMultiple
+                id="thumbnailImage"
+                label="thumbnailImage"
                 accept={`images/*`}
-                width={264}
-                height={264}
+                multiple={true}
+                width={500}
+                height={500}
                 onImageSelect={handleImageSelect}
               />
-              {formData.thumbnail && (
-                <img
-                  className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.thumbnail)}
-                  alt="Image Preview"
-                />
-              )}
+              <div className="flex items-start justify-center flex-wrap">
+             {formData.thumbnailImage.length > 0 && 
+                    formData.thumbnailImage.map((image, index) => (
+                      <img
+                        key={index}
+                        src={FormateImageURL(image)} 
+                        alt={`Image Preview ${index + 1}`}
+                        className="w-20 h-20 object-cover m-1 rounded"
+                      />
+                    ))
+                  }
+              </div>
             </div>
           </div>
         </div>
@@ -171,8 +223,10 @@ const SocialFollow = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

@@ -1,20 +1,26 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FiSave } from "react-icons/fi";
 import DragAndDropImage from "../DragDropImage";
+import { handleUpdateRingSizeGuide } from "@/API/api";
+import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const EditPages = ({ handleSizeGuide }) => {
+const EditPages = ({ handleSizeGuide,fetchData ,editData }) => {
   const [formData, setFormData] = useState({
     image: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [errors, setError] = useState(false);
 
-  const [loading, setLoading] = useState({});
-  const [errors, setErrors] = useState(false);
+  useEffect(()=>{
+    setFormData(prev=>({...prev, image: editData.image || ""}))
+  },[editData])
 
   const handleImageSelect = async (file, width, height, image) => {
     try {
@@ -31,7 +37,7 @@ const EditPages = ({ handleSizeGuide }) => {
     let newerrors = {};
     let has = false;
     if (formData.image === "" || formData.image === null) {
-      newerrors.image = "Image is required";
+      newerrors.image = "Header Banner is required";
       has = true;
     }
 
@@ -39,7 +45,7 @@ const EditPages = ({ handleSizeGuide }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     console.log("validationresponse", validateResponse);
@@ -48,9 +54,30 @@ const EditPages = ({ handleSizeGuide }) => {
       return null;
     }
 
-    // API Call Here
+    let bodyData = formData;
 
-    console.log("Form submitted with data:", formData);
+  let response ; 
+  
+  try {
+    setLoading(true);
+    bodyData = convertObjectToFormData(bodyData);
+    response = await handleUpdateRingSizeGuide(bodyData,editData._id); 
+    
+  // console.log("response",response);
+  if (response.status >= 200 && response.status <= 209) {
+    let data = response.data;
+    toast.success(response.data.message);
+    fetchData();
+    // handleSizeGuide();
+  }
+  else{
+    toast.error(response.response.data.message);
+  }
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }    
   };
 
   return (
@@ -98,7 +125,7 @@ const EditPages = ({ handleSizeGuide }) => {
                 />
                 {formData.image && (
                   <img
-                    className="h-[150px] mx-auto w-[150px]"
+                    className="h-[300px] object-contain mx-auto w-[100%]"
                     src={FormateImageURL(formData.image)}
                     alt="Image Preview"
                   />
@@ -138,8 +165,10 @@ const EditPages = ({ handleSizeGuide }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

@@ -16,7 +16,7 @@ const initialData = [
   },
   {
     id: "2",
-    name: "Jewellery",
+    name: "Jewelry",
     link: "bit.ly/4353",
     page: "Engagement Rings",
     status: "Active",
@@ -47,13 +47,6 @@ const initialData = [
     name: "Gifts",
     link: "bit.ly/5253",
     page: "Emerald Rings",
-    status: "Active",
-  },
-  {
-    id: "7",
-    name: "Custom Jewellery",
-    link: "bit.ly/5555",
-    page: "Sappire Rings",
     status: "Active",
   },
 

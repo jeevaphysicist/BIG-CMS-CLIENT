@@ -1,38 +1,47 @@
 import { Button, Input } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import TextEditor from "../TextEditor";
 import { toast } from "react-toastify";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateGuide, handleUpdateGuide } from "@/API/api";
 
-const MoreAboutGemstones = ({ handleGuide }) => {
+const MoreAboutGemstones = ({ sectionData,type,fetchData,title, handleGuide }) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
-    mainContent: "",
+    title: "",
+    content: ""
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const handleProcedureContentChange = (content) => {
-    setFormData((prevData) => ({ ...prevData, mainContent: content }));
+    setFormData((prevData) => ({ ...prevData, content: content }));
   };
+
+  useEffect(()=>{
+      setFormData((prev)=>({...prev,
+        content:sectionData.about?.content || "",
+        title:sectionData.about?.title || ""
+      }))
+  },[sectionData])
 
   const handleValidation = () => {
     let newerrors = {};
     let has = false;
-    if (!formData.sectionTitle) {
-      newerrors.sectionTitle = "Section Title Required";
+    if (!formData.title) {
+      newerrors.title = "Section Title Required";
       has = true;
     }
-    if (!formData.mainContent) {
-      newerrors.mainContent = "Main Content Required";
+    if (!formData.content) {
+      newerrors.content = "Main Content Required";
       has = true;
     }
     setErrors(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleValidation();
     // console.log("validationresponse", validateResponse);
@@ -44,21 +53,40 @@ const MoreAboutGemstones = ({ handleGuide }) => {
     // API Call Here
 
     console.log("Form submitted with data:", formData);
-    try {
-      setLoading(true);
-      let response;
-      //  handle response
-      response = { status: 200 };
-      if (response.status >= 200 && response.status <= 209) {
-        //Handle Success
-      } else {
-        toast.error("Failed to Processed");
+    let bodyData = {
+      title:title,
+      about:{
+        title: formData.title,
+        content: formData.content
       }
-    } catch (error) {
-      toast.error("Internal Error Occured");
-    } finally {
-      setLoading(false);
-    }
+};
+
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateGuide(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateGuide(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleGuide();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -67,29 +95,30 @@ const MoreAboutGemstones = ({ handleGuide }) => {
         <div className="w-[100%] md:px-8 px-4">
           <div className="flex flex-col  my-3 pt-2 gap-3">
             <label
-              htmlFor="sectionTitle"
+              htmlFor="title"
               className="text-[16px]  font-semibold flex gap-1"
             >
               Section Title
               <RequiredSymbol />
-              {errors.sectionTitle && (
+              {errors.title && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.sectionTitle}
+                  {errors.title}
                 </span>
               )}
             </label>
             <Input
               type="text"
-              id="sectionTitle"
+              id="title"
               variant="bordered"
               placeholder="Interesting Fact"
               size="lg"
               radius="sm"
-              name="sectionTitle"
+              name="title"
+              value={formData.title}
               onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
-                  sectionTitle: e.target.value,
+                  title: e.target.value,
                 }));
               }}
             />
@@ -101,15 +130,15 @@ const MoreAboutGemstones = ({ handleGuide }) => {
             >
               Main Content
               <RequiredSymbol />
-              {errors.mainContent && (
+              {errors.content && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.mainContent}
+                  {errors.content}
                 </span>
               )}
             </label>
             {/* Text editor */}
             <TextEditor
-              value={formData.mainContent}
+              value={formData.content}
               handleContentChange={handleProcedureContentChange}
             />
           </div>

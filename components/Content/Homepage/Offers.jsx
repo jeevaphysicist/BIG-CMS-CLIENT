@@ -1,35 +1,39 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Switch } from "@nextui-org/react";
-import banner1 from "../../../assets/image 12.png";
-import banner2 from "../../../assets/image 2.png";
+import bannerOneImage from "../../../assets/image 12.png";
+import bannerTwoImage from "../../../assets/image 2.png";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Offers = ({ handleHomepage }) => {
+const Offers = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
-    banner1: "",
-    banner1Title: "",
-    banner1Description: "",
-    banner1Link: "",
-    banner2: "",
-    banner2Title: "",
-    banner2Description: "",
-    banner2Content: "",
-    buttonLink1: "",
-    banner3: "",
-    banner3Title: "",
-    banner3Description: "",
-    banner3Content: "",
-    buttonLink2: "",
-    enableButton: false,
-    enableCoupon: false,
-    code: "",
-    additionalDiscount: "",
+    bannerOneImage: "",
+    bannerOneTitle: "",
+    bannerOneDescription: "",
+    bannerOneLink: "",
+    bannerOneCouponStatus: false,
+    bannerOneCouponCode: "",
+    bannerOneAdditionalDiscount: "",
+    bannerOneAdditionalDiscountButttonStatus: false,
+    bannerTwoImage: "",
+    bannerTwoTitle: "",
+    bannerTwoDescription: "",
+    bannerTwoButtonStatus: false,
+    bannerTwoButtonContent: "",
+    bannerTwoButtonLink: "",
+    bannerThreeImage: "",
+    bannerThreeTitle: "",
+    bannerThreeDescription: "",
+    bannerThreeButtonStatus: false,
+    bannerThreeButtonContent: "",
+    bannerThreeButtonLink: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -46,7 +50,7 @@ const Offers = ({ handleHomepage }) => {
   const handleSwitchChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: !prevData[field],
+      [field]: prevData[field] == "Inactive" ? "Active" : "Inactive",
     }));
   };
 
@@ -65,55 +69,61 @@ const Offers = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner1 === "" || formData.banner1 === null) {
-      newerrors.banner1 = "Banner 1 required";
+    if (formData.bannerOneImage === "" || formData.bannerOneImage === null) {
+      newerrors.bannerOneImage = "Banner 1 required";
       has = true;
     }
-    if (formData.banner2 === "" || formData.banner2 === null) {
-      newerrors.banner2 = "Banner 2 required";
-      has = true;
-    }
-    if (formData.banner3 === "" || formData.banner3 === null) {
-      newerrors.banner3 = "Banner 3 required";
-      has = true;
-    }
-    if (formData.banner1Title === "" || formData.banner1Title === null) {
-      newerrors.banner1Title = "Banner title required";
-      has = true;
-    }
-    if (formData.banner2Title === "" || formData.banner2Title === null) {
-      newerrors.banner2Title = "Banner title required";
-      has = true;
-    }
-    if (formData.banner3Title === "" || formData.banner3Title === null) {
-      newerrors.banner3Title = "Banner title required";
+    if (formData.bannerTwoImage === "" || formData.bannerTwoImage === null) {
+      newerrors.bannerTwoImage = "Banner 2 required";
       has = true;
     }
     if (
-      formData.banner1Description === "" ||
-      formData.banner1Description === null
+      formData.bannerThreeImage === "" ||
+      formData.bannerThreeImage === null
     ) {
-      newerrors.banner1Description = "Banner description required";
+      newerrors.bannerThreeImage = "Banner 3 required";
+      has = true;
+    }
+    if (formData.bannerOneTitle === "" || formData.bannerOneTitle === null) {
+      newerrors.bannerOneTitle = "Banner title required";
+      has = true;
+    }
+    if (formData.bannerTwoTitle === "" || formData.bannerTwoTitle === null) {
+      newerrors.bannerTwoTitle = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.bannerThreeTitle === "" ||
+      formData.bannerThreeTitle === null
+    ) {
+      newerrors.bannerThreeTitle = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.bannerOneDescription === "" ||
+      formData.bannerOneDescription === null
+    ) {
+      newerrors.bannerOneDescription = "Banner description required";
       has = true;
     }
 
     if (
-      formData.banner2Description === "" ||
-      formData.banner2Description === null
+      formData.bannerTwoDescription === "" ||
+      formData.bannerTwoDescription === null
     ) {
-      newerrors.banner2Description = "Banner description required";
+      newerrors.bannerTwoDescription = "Banner description required";
       has = true;
     }
     if (
-      formData.banner3Description === "" ||
-      formData.banner3Description === null
+      formData.bannerThreeDescription === "" ||
+      formData.bannerThreeDescription === null
     ) {
-      newerrors.banner3Description = "Banner description required";
+      newerrors.bannerThreeDescription = "Banner description required";
       has = true;
     }
 
-    if (formData.banner1Link === "" || formData.banner1Link === null) {
-      newerrors.banner1Link = "Banner description required";
+    if (formData.bannerOneLink === "" || formData.bannerOneLink === null) {
+      newerrors.bannerOneLink = "Banner description required";
       has = true;
     }
 
@@ -121,18 +131,70 @@ const Offers = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        bannerOneImage: sectionData.bannerOneImage || "",
+        bannerOneTitle: sectionData.bannerOneTitle || "",
+        bannerOneDescription: sectionData.bannerOneDescription || "",
+        bannerOneLink: sectionData.bannerOneLink || "",
+        bannerOneCouponStatus: sectionData.bannerOneCouponStatus || false,
+        bannerOneCouponCode: sectionData.bannerOneCouponCode || "",
+        bannerOneAdditionalDiscount:
+          sectionData.bannerOneAdditionalDiscount || "",
+        bannerOneAdditionalDiscountButttonStatus:
+          sectionData.bannerOneAdditionalDiscountButttonStatus || false,
+        bannerTwoImage: sectionData.bannerTwoImage || "",
+        bannerTwoTitle: sectionData.bannerTwoTitle || "",
+        bannerTwoDescription: sectionData.bannerTwoDescription || "",
+        bannerTwoButtonStatus: sectionData.bannerTwoButtonStatus || false,
+        bannerTwoButtonContent: sectionData.bannerTwoButtonContent || "",
+        bannerTwoButtonLink: sectionData.bannerTwoButtonLink || "",
+        bannerThreeImage: sectionData.bannerThreeImage || "",
+        bannerThreeTitle: sectionData.bannerThreeTitle || "",
+        bannerThreeDescription: sectionData.bannerThreeDescription || "",
+        bannerThreeButtonStatus: sectionData.bannerThreeButtonStatus || false,
+        bannerThreeButtonContent: sectionData.bannerThreeButtonContent || "",
+        bannerThreeButtonLink: sectionData.bannerThreeButtonLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -158,7 +220,7 @@ const Offers = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 12.png"} alt="banner1" />
+                <img src={"/images/image 12.png"} alt="bannerOneImage" />
               </div>
             </div>
           </div>
@@ -170,24 +232,24 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner 1
                 <RequiredSymbol />
-                {errors.banner1 && (
+                {errors.bannerOneImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1}
+                    {errors.bannerOneImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="banner1"
+                id="bannerOneImage"
                 label="banner image"
                 accept={`images/*`}
                 width={619}
                 height={578}
                 onImageSelect={handleImageSelect}
               />
-              {formData.banner1 && (
+              {formData.bannerOneImage && (
                 <img
                   className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.banner1)}
+                  src={FormateImageURL(formData.bannerOneImage)}
                   alt="Image Preview"
                 />
               )}
@@ -199,9 +261,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner1Title && (
+                {errors.bannerOneTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Title}
+                    {errors.bannerOneTitle}
                   </span>
                 )}
               </label>
@@ -212,7 +274,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner1Title"
+                name="bannerOneTitle"
+                value={formData.bannerOneTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -223,9 +286,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner1Description && (
+                {errors.bannerOneDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Description}
+                    {errors.bannerOneDescription}
                   </span>
                 )}
               </label>
@@ -236,7 +299,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner1Description"
+                name="bannerOneDescription"
+                value={formData.bannerOneDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -247,9 +311,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Link
                 <RequiredSymbol />
-                {errors.banner1Link && (
+                {errors.bannerOneLink && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Link}
+                    {errors.bannerOneLink}
                   </span>
                 )}
               </label>
@@ -260,7 +324,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner1Link"
+                name="bannerOneLink"
+                value={formData.bannerOneLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -273,8 +338,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Coupon
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableCoupon")}
+                  isSelected={formData.bannerOneCouponStatus === "Active"}
+                  value={formData.bannerOneCouponStatus}
+                  onChange={() => handleSwitchChange("bannerOneCouponStatus")}
                   aria-label="Enable Coupon"
                 />
               </div>
@@ -292,7 +358,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="code"
+                    name="bannerOneCouponCode"
+                    value={formData.bannerOneCouponCode}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -302,7 +369,19 @@ const Offers = ({ handleHomepage }) => {
                     className="md:text-[18px] text-[16px] gilroy-medium flex justify-between"
                   >
                     Additional Discount
-                    <Switch defaultSelected aria-label="Automatic updates" />
+                    <Switch
+                      isSelected={
+                        formData.bannerOneAdditionalDiscountButttonStatus ===
+                        "Active"
+                      }
+                      value={formData.bannerOneAdditionalDiscountButttonStatus}
+                      onChange={() =>
+                        handleSwitchChange(
+                          "bannerOneAdditionalDiscountButttonStatus"
+                        )
+                      }
+                      aria-label="Enable Additional Discount"
+                    />
                   </label>
                   <Input
                     type="text"
@@ -310,7 +389,8 @@ const Offers = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="additionalDiscount"
+                    name="bannerOneAdditionalDiscount"
+                    value={formData.bannerOneAdditionalDiscount}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -334,7 +414,7 @@ const Offers = ({ handleHomepage }) => {
               </div>
             </div>
             <div>
-              <img src={"/images/image 2.png"} alt="banner2" />
+              <img src={"/images/image 2.png"} alt="bannerTwoImage" />
             </div>
           </div>
           <div className="md:w-[60%] flex flex-col gap-4">
@@ -345,24 +425,24 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner 2
                 <RequiredSymbol />
-                {errors.banner2 && (
+                {errors.bannerTwoImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
+                    {errors.bannerTwoImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="banner2"
+                id="bannerTwoImage"
                 label="banner image"
                 accept={`images/*`}
                 width={619}
                 height={578}
                 onImageSelect={handleImageSelect}
               />
-              {formData.banner2 && (
+              {formData.bannerTwoImage && (
                 <img
                   className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.banner2)}
+                  src={FormateImageURL(formData.bannerTwoImage)}
                   alt="Image Preview"
                 />
               )}
@@ -374,9 +454,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner2Title && (
+                {errors.bannerTwoTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Title}
+                    {errors.bannerTwoTitle}
                   </span>
                 )}
               </label>
@@ -387,7 +467,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner2Title"
+                name="bannerTwoTitle"
+                value={formData.bannerTwoTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -398,9 +479,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner2Description && (
+                {errors.bannerTwoDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Description}
+                    {errors.bannerTwoDescription}
                   </span>
                 )}
               </label>
@@ -411,7 +492,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner2Description"
+                name="bannerTwoDescription"
+                value={formData.bannerTwoDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -421,8 +503,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  isSelected={formData.bannerTwoButtonStatus === "Active"}
+                  value={formData.bannerTwoButtonStatus}
+                  onChange={() => handleSwitchChange("bannerTwoButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -432,7 +515,7 @@ const Offers = ({ handleHomepage }) => {
                 htmlFor="btn_content"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Banner Content
+                Button Content
               </label>
               <Input
                 type="text"
@@ -440,7 +523,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner2Content"
+                name="bannerTwoButtonContent"
+                value={formData.bannerTwoButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -458,7 +542,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonLink1"
+                name="bannerTwoButtonLink"
+                value={formData.bannerTwoButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -482,36 +567,36 @@ const Offers = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 2.png"} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="bannerTwoImage" />
               </div>
             </div>
           </div>
           <div className="md:w-[60%] flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner3"
+                htmlFor="bannerThreeImage"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Banner 3
                 <RequiredSymbol />
-                {errors.banner3 && (
+                {errors.bannerThreeImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner3}
+                    {errors.bannerThreeImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="banner3"
+                id="bannerThreeImage"
                 label="banner image"
                 accept={`images/*`}
                 width={619}
                 height={578}
                 onImageSelect={handleImageSelect}
               />
-              {formData.banner3 && (
+              {formData.bannerThreeImage && (
                 <img
                   className="h-[150px] mx-auto w-[150px]"
-                  src={FormateImageURL(formData.banner3)}
+                  src={FormateImageURL(formData.bannerThreeImage)}
                   alt="Image Preview"
                 />
               )}
@@ -523,9 +608,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner3Title && (
+                {errors.bannerThreeTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner3Title}
+                    {errors.bannerThreeTitle}
                   </span>
                 )}
               </label>
@@ -536,7 +621,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner3Title"
+                name="bannerThreeTitle"
+                value={formData.bannerThreeTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -547,9 +633,9 @@ const Offers = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner3Description && (
+                {errors.bannerThreeDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner3Description}
+                    {errors.bannerThreeDescription}
                   </span>
                 )}
               </label>
@@ -560,7 +646,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner3Description"
+                name="bannerThreeDescription"
+                value={formData.bannerThreeDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -570,8 +657,9 @@ const Offers = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  isSelected={formData.bannerThreeButtonStatus === "Active"}
+                  value={formData.bannerThreeButtonStatus}
+                  onChange={() => handleSwitchChange("bannerThreeButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -581,7 +669,7 @@ const Offers = ({ handleHomepage }) => {
                 htmlFor="btn_content1"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Banner Content
+                Button Content
               </label>
               <Input
                 type="text"
@@ -589,7 +677,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="banner3Content"
+                name="bannerThreeButtonContent"
+                value={formData.bannerThreeButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -607,7 +696,8 @@ const Offers = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonLink2"
+                name="bannerThreeButtonLink"
+                value={formData.bannerThreeButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -626,8 +716,10 @@ const Offers = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

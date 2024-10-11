@@ -1,31 +1,41 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
-import { Button, Input, Switch } from "@nextui-org/react";
+import { Fragment, useEffect, useState } from "react";
+import { Button, DatePicker, Input, Switch } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { now, getLocalTimeZone } from "@internationalized/date";
 
-const Herosection = ({ handleHomepage }) => {
+const Herosection = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
-    banner1: "",
-    banner1Title: "",
-    banner1Description: "",
-    banner2: "",
-    banner2Title: "",
-    banner2Description: "",
-    bannerContent: "",
-    enableTimer: false,
-    enableButton: false,
-    days: "",
-    hours: "",
-    minutes: "",
-    seconds: "",
+    bannerOneImage: "",
+    bannerOneTitle: "",
+    bannerOneDescription: "",
+    bannerOneEnableTimerStatus: "Active",
+    bannerOneStartDate: "",
+    bannerOneEndDate: "",
+    bannerTwoImage: "",
+    bannerTwoTitle: "",
+    bannerTwoDescription: "",
+    bannerTwoButtonStatus: "Active",
+    bannerTwoButtonContent: "",
+    bannerTwoButtonLink: "",
+    moduleId: null,
   });
+
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // console.log("currentSection", currentSection);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +48,7 @@ const Herosection = ({ handleHomepage }) => {
   const handleSwitchChange = (field) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: !prevData[field],
+      [field]: prevData[field] == "Inactive" ? "Active" : "Inactive",
     }));
   };
 
@@ -57,41 +67,64 @@ const Herosection = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner1 === "" || formData.banner1 === null) {
-      newerrors.banner1 = "Banner 1 required";
+    if (formData.bannerOneImage === "" || formData.bannerOneImage === null) {
+      newerrors.bannerOneImage = "Banner 1 required";
       has = true;
     }
-    if (formData.banner2 === "" || formData.banner2 === null) {
-      newerrors.banner2 = "Banner 2 required";
+    if (formData.bannerTwoImage === "" || formData.bannerTwoImage === null) {
+      newerrors.bannerTwoImage = "Banner 2 required";
       has = true;
     }
-    if (formData.banner1Title === "" || formData.banner1Title === null) {
-      newerrors.banner1Title = "Banner title required";
-      has = true;
-    }
-    if (
-      formData.banner1Description === "" ||
-      formData.banner1Description === null
-    ) {
-      newerrors.banner1Description = "Banner description required";
-      has = true;
-    }
-    if (formData.banner2Title === "" || formData.banner2Title === null) {
-      newerrors.banner2Title = "Banner title required";
+    if (formData.bannerOneTitle === "" || formData.bannerOneTitle === null) {
+      newerrors.bannerOneTitle = "Banner title required";
       has = true;
     }
     if (
-      formData.banner2Description === "" ||
-      formData.banner2Description === null
+      formData.bannerOneDescription === "" ||
+      formData.bannerOneDescription === null
     ) {
-      newerrors.banner2Description = "Banner description required";
+      newerrors.bannerOneDescription = "Banner description required";
+      has = true;
+    }
+    if (formData.bannerTwoTitle === "" || formData.bannerTwoTitle === null) {
+      newerrors.bannerTwoTitle = "Banner title required";
+      has = true;
+    }
+    if (
+      formData.bannerTwoDescription === "" ||
+      formData.bannerTwoDescription === null
+    ) {
+      newerrors.bannerTwoDescription = "Banner description required";
       has = true;
     }
     setError(newerrors);
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    // console.log("section data", sectionData);
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        bannerOneImage: sectionData.bannerOneImage || "",
+        bannerOneTitle: sectionData.bannerOneTitle || "",
+        bannerOneDescription: sectionData.bannerOneDescription || "",
+        bannerOneEnableTimerStatus:
+          sectionData.bannerOneEnableTimerStatus || "Active",
+        bannerOneStartDate: sectionData.bannerOneStartDate || "",
+        bannerOneEndDate: sectionData.bannerOneEndDate || "",
+        bannerTwoImage: sectionData.bannerTwoImage || "",
+        bannerTwoTitle: sectionData.bannerTwoTitle || "",
+        bannerTwoDescription: sectionData.bannerTwoDescription || "",
+        bannerTwoButtonStatus: sectionData.bannerTwoButtonStatus || "Active",
+        bannerTwoButtonContent: sectionData.bannerTwoButtonContent || "",
+        bannerTwoButtonLink: sectionData.bannerTwoButtonLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -99,10 +132,34 @@ const Herosection = ({ handleHomepage }) => {
       toast.error("Please fill required details correctly !");
       return null;
     }
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    // API Call Here
-
-    // console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.data.message);
+      }
+      // console.log("response", response);
+    } catch (error) {
+      toast.error("Internal server error");
+      //  console.log("error",error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -125,7 +182,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 1.png"} alt="banner1" />
+                <img src={"/images/image 1.png"} alt="bannerOneImage" />
               </div>
             </div>
           </div>
@@ -137,24 +194,28 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner 1
                 <RequiredSymbol />
-                {errors.banner1 && (
+                {errors.bannerOneImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1}
+                    {errors.bannerOneImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
-                id="banner1"
+                id="bannerOneImage"
                 label="banner image"
                 accept={`images/*`}
                 width={318}
                 height={548}
                 onImageSelect={handleImageSelect}
               />
-              
-             {formData.banner1 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner1 )} alt="Image Preview" />}
 
-              
+              {formData.bannerOneImage && (
+                <img
+                  className=" mx-auto w-[150px]"
+                  src={FormateImageURL(formData.bannerOneImage)}
+                  alt="Image Preview"
+                />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -163,20 +224,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner1Title && (
+                {errors.bannerOneTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Title}
+                    {errors.bannerOneTitle}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
-                name="banner1Title"
+                name="bannerOneTitle"
                 id="banner_title"
                 placeholder="Engagement Rings"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerOneTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -187,25 +249,26 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner1Description && (
+                {errors.bannerOneDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner1Description}
+                    {errors.bannerOneDescription}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_desc"
-                name="banner1Description"
+                name="bannerOneDescription"
                 placeholder="Start the journey toward finding your perfect ring"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerOneDescription}
                 onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-2">
                 <label
                   htmlFor="timer"
                   className="md:text-[18px] text-[16px] gilroy-medium"
@@ -213,78 +276,48 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Timer
                 </label>
                 <Switch
-                  checked={formData.enableTimer}
-                  onChange={() => handleSwitchChange("enableTimer")}
+                  id="timer"
+                  value={formData.bannerOneEnableTimerStatus}
+                  isSelected={formData.bannerOneEnableTimerStatus === "Active"}
+                  onChange={() =>
+                    handleSwitchChange("bannerOneEnableTimerStatus")
+                  }
                   aria-label="Enable Timer"
                 />
               </div>
               <div className="w-full flex justify-between md:gap-4 gap-2">
-                <div className="grid gap-2">
+                <div className="w-[100%] space-y-2">
                   <label
                     htmlFor="days"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
-                    Days
+                    Start Date
                   </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
+                  <DatePicker
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="days"
-                    onChange={handleFormChange}
+                    hideTimeZone
+                    aria-label="start date"
+                    showMonthAndYearPickers
+                    defaultValue={now(getLocalTimeZone())}
                   />
                 </div>
-                <div className="grid gap-2">
+                <div className="w-[100%] space-y-2">
                   <label
-                    htmlFor="days"
+                    htmlFor="end-date"
                     className="md:text-[18px] text-[16px] gilroy-medium"
                   >
-                    Hours
+                    End Date
                   </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
+                  <DatePicker
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="hours"
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Minutes
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                    name="minutes"
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="days"
-                    className="md:text-[18px] text-[16px] gilroy-medium"
-                  >
-                    Seconds
-                  </label>
-                  <Input
-                    type="text"
-                    id="banner_desc"
-                    variant="bordered"
-                    size="lg"
-                    radius="sm"
-                    name="seconds"
-                    onChange={handleFormChange}
+                    hideTimeZone
+                    aria-label="end date"
+                    showMonthAndYearPickers
+                    defaultValue={now(getLocalTimeZone())}
                   />
                 </div>
               </div>
@@ -308,7 +341,7 @@ const Herosection = ({ handleHomepage }) => {
                 </div>
               </div>
               <div>
-                <img src={"/images/image 2.png"} alt="banner2" />
+                <img src={"/images/image 2.png"} alt="bannerTwoImage" />
               </div>
             </div>
           </div>
@@ -320,22 +353,27 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner 2
                 <RequiredSymbol />{" "}
-                {errors.banner2 && (
+                {errors.bannerTwoImage && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2}
+                    {errors.bannerTwoImage}
                   </span>
                 )}
               </label>
               <DragAndDropImage
                 accept={`images/*`}
                 label="banner image"
-                id="banner2"
+                id="bannerTwoImage"
                 width={1122}
                 height={318}
                 onImageSelect={handleImageSelect}
               />
-             {formData.banner2 && <img className="h-[150px] mx-auto w-[150px]" src={FormateImageURL(formData.banner2 )} alt="Image Preview" />}
-
+              {formData.bannerTwoImage && (
+                <img
+                  className="h-[150px] mx-auto"
+                  src={FormateImageURL(formData.bannerTwoImage)}
+                  alt="Image Preview"
+                />
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <label
@@ -344,20 +382,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Title
                 <RequiredSymbol />
-                {errors.banner2Title && (
+                {errors.bannerTwoTitle && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Title}
+                    {errors.bannerTwoTitle}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_title1"
-                name="banner2Title"
+                name="bannerTwoTitle"
                 placeholder="Valentines Day"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerTwoTitle}
                 onChange={handleFormChange}
               />
             </div>
@@ -368,20 +407,21 @@ const Herosection = ({ handleHomepage }) => {
               >
                 Banner Description
                 <RequiredSymbol />
-                {errors.banner2Description && (
+                {errors.bannerTwoDescription && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.banner2Description}
+                    {errors.bannerTwoDescription}
                   </span>
                 )}
               </label>
               <Input
                 type="text"
                 id="banner_desc1"
-                name="banner2Description"
+                name="bannerTwoDescription"
                 placeholder="Enjoy the added benefit of obtaining free shipping within United"
                 variant="bordered"
                 size="lg"
                 radius="sm"
+                value={formData.bannerTwoDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -391,8 +431,9 @@ const Herosection = ({ handleHomepage }) => {
                   Enable Button
                 </label>
                 <Switch
-                  checked={formData.enableButton}
-                  onChange={() => handleSwitchChange("enableButton")}
+                  isSelected={formData.bannerTwoButtonStatus === "Active"}
+                  value={formData.bannerTwoButtonStatus}
+                  onChange={() => handleSwitchChange("bannerTwoButtonStatus")}
                   aria-label="Enable Button"
                 />
               </div>
@@ -410,7 +451,8 @@ const Herosection = ({ handleHomepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonContent"
+                name="bannerTwoButtonContent"
+                value={formData.bannerTwoButtonContent}
                 onChange={handleFormChange}
               />
             </div>
@@ -419,15 +461,16 @@ const Herosection = ({ handleHomepage }) => {
                 htmlFor="btn_content"
                 className="md:text-[18px] text-[16px] gilroy-medium"
               >
-                Button Link 
-             </label>
+                Button Link
+              </label>
               <Input
                 type="text"
                 id="btn_content"
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="buttonLink"
+                name="bannerTwoButtonLink"
+                value={formData.bannerTwoButtonLink}
                 onChange={handleFormChange}
               />
             </div>
@@ -446,8 +489,10 @@ const Herosection = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

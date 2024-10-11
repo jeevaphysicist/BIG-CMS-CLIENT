@@ -1,63 +1,32 @@
 /* eslint-disable react/prop-types */
 import { Button, Input, Tab, Tabs, Textarea } from "@nextui-org/react";
-import { Fragment, useState } from "react";
-import RequiredSymbol from "../RequiredSymbol";
+import { Fragment, useEffect, useState } from "react";
 import About from "./About";
 import Offers from "./Offers";
-import { FiSave } from "react-icons/fi";
-import DragAndDropImage from "../DragDropImage";
 import Modal from "../../Modal";
 import SeoAttributes from "../SeoAttributes";
+import { GetCurrentUserDetails } from "@/utils/GetCurrentUserDetails";
+import Media from "./Media";
+import { handleCreateSitepage, handleGetHomepageSection, handleUpdateSitepage } from "@/API/api";
+import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
-import { validateImageDimensions } from "@/lib/imageValidator";
 
-const EditPages = ({ handleSitepage }) => {
+const EditPages = ({ handleSitePage , type ,fetchData ,editData }) => {
+  const { template } = GetCurrentUserDetails();
   const [selectedSection, setSelectedSection] = useState("about");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [modalActiveTab, setModalActiveTab] = useState("details");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    media: "",
-  });
+  const [sectionData, setSectionData] = useState({});
+  const [getSection, setGetSection] = useState({});
+  const [title,setTitle] = useState("");
+  const [loading,setLoading] = useState("");
 
-  const [loading, setLoading] = useState(false);
-
-  const handleImageSelect = async (file, width, height, media) => {
-    try {
-      await validateImageDimensions(file, width, height);
-      if (file) {
-        setFormData((prevData) => ({ ...prevData, [media]: file }));
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
-  const handleVadilation = () => {
-    let newerrors = {};
-    let has = false;
-    if (formData.media === "" || formData.media === null) {
-      newerrors.media = "Image is required";
-      has = true;
-    }
-
-    setError(newerrors);
-    return has;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
-    if (validateResponse) {
-      toast.error("Please fill required details correctly !");
-      return null;
-    }
-
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
-  };
+  useEffect(() => {
+    handleSelectDropDown("sitepages");
+    setSectionData(editData);
+    setTitle(editData.title);
+  }, [selectedSection]);
 
   const handleModal = () => {
     setIsModalOpen(true);
@@ -71,9 +40,58 @@ const EditPages = ({ handleSitepage }) => {
     setModalActiveTab(tab);
   };
 
-  const handleSeoSubmit = (formData) => {
+  const handleSeoSubmit = async(formData) => {
     console.log("Submitting data for Sitepages", formData);
+
+    let bodyData = {
+        seo:formData
+    }
+    let response ; 
+    
+    try {
+      setLoading(true);
+      if(type === 'create'){
+      response = await handleCreateSitepage(bodyData,false);      
+      }
+      else if(type === 'edit'){
+      response = await handleUpdateSitepage(bodyData,editData._id,false); 
+      }
+    // console.log("response",response);
+    if (response.status >= 200 && response.status <= 209) {
+      let data = response.data;
+      toast.success(response.data.message);
+      fetchData();
+      handleSitePage();
+    }
+    else{
+      toast.error(response.response.data.message);
+    }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
+
   };
+
+  const handleSelectDropDown = (slug) => {
+    const findmodule = template?.find((temp) => temp.moduleSlug === slug);
+    setGetSection(findmodule || {});
+  };
+
+  const handleSectionSlug = (value) => {
+    let currentSection = getSection?.sections?.find(
+      (item) => value === item.sectionSlug
+    );
+    currentSection = {
+      ...currentSection,
+      moduleSlug: getSection?.moduleSlug,
+      moduleName: getSection?.moduleName,
+    };
+    return currentSection || {};
+  };
+
+  // console.log("template", template);
 
   return (
     <Fragment>
@@ -81,7 +99,7 @@ const EditPages = ({ handleSitepage }) => {
         <div className="flex md:flex-row flex-col gap-4 justify-between">
           <div>
             <h2 className="font-semibold text-black md:text-[20px] text-[16px]">
-              Add New Site Page
+              {type === "create" ? "Add New":"Edit"} Site Page
             </h2>
             <p className="text-[#4A5367] md:text-[14px] text-[12px]">
               Enter Page Contents.
@@ -128,6 +146,31 @@ const EditPages = ({ handleSitepage }) => {
       {activeTab === "generalInfo" && (
         <section>
           <div className="w-full md:px-8 px-4 pt-2 flex flex-col gap-4 pb-3 md:top-28 sticky z-20 bg-white">
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="page_title"
+                className="md:text-[18px] text-[16px] font-medium  flex gap-1"
+              >
+                Page Title
+                <RequiredSymbol />
+                {/* {errors.pageTitle && (
+                  <span className="font-regular text-[12px] text-red-600">
+                    {errors.pageTitle}
+                  </span>
+                )} */}
+              </label>
+              <Input
+                type="text"
+                id="page_title"
+                placeholder="About Us"
+                variant="bordered"
+                size="md"
+                radius="sm"
+                name="pageTitle"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
             <h3 className="text-[16px] font-semibold">
               Select your Section to Edit
             </h3>
@@ -137,68 +180,51 @@ const EditPages = ({ handleSitepage }) => {
               onChange={(e) => setSelectedSection(e.target.value)}
               aria-label="Select section to edit"
             >
-              <option value="about">About (Section 1)</option>
-              <option value="offers">Offers (Section 2)</option>
+              {getSection?.sections?.map((item, index) => (
+                <option value={`${item.sectionSlug}`}>
+                  {item.sectionName}
+                </option>
+              ))}
+              {/* <option value="about">About (Section 1)</option>
+              <option value="offers">Offers (Section 2)</option> */}
             </select>
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[65vh]">
             {selectedSection === "about" && (
-              <About handleSitepage={handleSitepage} />
+              <About
+                type={type}
+                title={title}
+                handleSitepage={handleSitePage}
+                currentSection={handleSectionSlug(selectedSection)}
+                sectionData={sectionData}
+                fetchData={fetchData}
+              />
             )}
             {selectedSection === "offers" && (
-              <Offers handleSitepage={handleSitepage} />
+              <Offers
+                type={type}
+                title={title}
+                handleSitepage={handleSitePage}
+                currentSection={handleSectionSlug(selectedSection)}
+                sectionData={sectionData}
+                fetchData={fetchData}
+              />
             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
-        <SeoAttributes onSubmit={handleSeoSubmit} handler={handleSitepage} />
+        <SeoAttributes isLoading={loading} sectionData={sectionData?.seo}  onSubmit={handleSeoSubmit} handler={handleSitePage} />
       )}
       {activeTab === "media" && (
-        <form
-          onSubmit={handleSubmit}
-          className="w-full md:px-8 px-4 py-8  space-y-6"
-        >
-          <div className="w-full min-h-[60vh] flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <DragAndDropImage
-                id="media"
-                label="media"
-                accept={`images/*`}
-                width={487}
-                height={410}
-                onImageSelect={handleImageSelect}
-              />
-              <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="file"
-                  className="md:text-[18px] text-[14px] gilroy-medium flex gap-1"
-                >
-                  Uploaded Files
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Save and cancel buttons */}
-          <div className="w-full sticky bottom-0 py-3 bg-white z-20 flex justify-end gap-4">
-            <Button
-              onClick={handleSitepage}
-              variant="bordered"
-              className="font-semibold"
-            >
-              Back to list
-            </Button>
-            <Button
-              color="primary"
-              className="font-semibold text-white"
-              startContent={<FiSave size={20} />}
-              onClick={handleModal}
-            >
-              Save New Page
-            </Button>
-          </div>
-        </form>
+        <Media
+          type={type}
+          fetchData={fetchData}
+          title={title}
+          handleSitepage={handleSitePage}
+          sectionData={sectionData}
+          handler={() => setIsModalOpen(true)}
+        />
       )}
       <Modal
         isOpen={isModalOpen}

@@ -11,6 +11,7 @@ const DragAndDropImage = ({
   accept,
   width,
   height,
+  multiple
 }) => {
   const [dragging, setDragging] = useState(false);
   const [image, setImage] = useState(null);
@@ -92,6 +93,7 @@ const handleFileInputChange = (event) => {
           type="file"
           accept={accept}
           id={`${id}`}
+          multiple={multiple}
           onChange={handleFileInputChange}
           className="hidden"
         />

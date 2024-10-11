@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import giftImg from "../../../assets/image 11.png";
@@ -8,15 +7,21 @@ import RequiredSymbol from "../RequiredSymbol";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleHomepageCreateEditSection } from "@/API/api";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
 
-const Gifts = ({ handleHomepage }) => {
+const Gifts = ({ handleHomepage, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
-    gift1: "",
-    title1: "",
-    redirectionLink1: "",
-    gift2: "",
-    title2: "",
-    redirectionLink2: "",
+    giftOneImage: "",
+    giftOneTitle: "",
+    giftOneLink: "",
+    giftTwoImage: "",
+    giftTwoTitle: "",
+    giftTwoLink: "",
+    giftThreeTitle: "",
+    giftThreeImage: "",
+    giftThreeLink: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -41,34 +46,40 @@ const Gifts = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.gift1 === "" || formData.gift1 === null) {
-      newerrors.gift1 = "Gift 1 is required";
+    if (formData.giftOneImage === "" || formData.giftOneImage === null) {
+      newerrors.giftOneImage = "Gift 1 is required";
       has = true;
     }
-    if (formData.gift2 === "" || formData.gift2 === null) {
-      newerrors.gift2 = "Gift 2 is required";
+    if (formData.giftTwoImage === "" || formData.giftTwoImage === null) {
+      newerrors.giftTwoImage = "Gift 2 is required";
       has = true;
     }
-    if (formData.title1 === "" || formData.title1 === null) {
-      newerrors.title1 = "Title is required";
+    if (formData.giftThreeImage === "" || formData.giftThreeImage === null) {
+      newerrors.giftThreeImage = "Gift 3 is required";
       has = true;
     }
-    if (formData.title2 === "" || formData.title2 === null) {
-      newerrors.title2 = "Title is required";
+    if (formData.giftOneTitle === "" || formData.giftOneTitle === null) {
+      newerrors.giftOneTitle = "Title is required";
       has = true;
     }
-    if (
-      formData.redirectionLink1 === "" ||
-      formData.redirectionLink1 === null
-    ) {
-      newerrors.redirectionLink1 = "Redirection Link is required";
+    if (formData.giftTwoTitle === "" || formData.giftTwoTitle === null) {
+      newerrors.giftTwoTitle = "Title is required";
       has = true;
     }
-    if (
-      formData.redirectionLink2 === "" ||
-      formData.redirectionLink2 === null
-    ) {
-      newerrors.redirectionLink2 = "Redirection Link is required";
+    if (formData.giftThreeTitle === "" || formData.giftThreeTitle === null) {
+      newerrors.giftThreeTitle = "Title is required";
+      has = true;
+    }
+    if (formData.giftOneLink === "" || formData.giftOneLink === null) {
+      newerrors.giftOneLink = "Redirection Link is required";
+      has = true;
+    }
+    if (formData.giftTwoLink === "" || formData.giftTwoLink === null) {
+      newerrors.giftTwoLink = "Redirection Link is required";
+      has = true;
+    }
+    if (formData.giftThreeLink === "" || formData.giftThreeLink === null) {
+      newerrors.giftThreeLink = "Redirection Link is required";
       has = true;
     }
 
@@ -76,18 +87,57 @@ const Gifts = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        giftOneImage: sectionData.giftOneImage || "",
+        giftOneTitle: sectionData.giftOneTitle || "",
+        giftOneLink: sectionData.giftOneLink || "",
+        giftTwoImage: sectionData.giftTwoImage || "",
+        giftTwoTitle: sectionData.giftTwoTitle || "",
+        giftTwoLink: sectionData.giftTwoLink || "",
+        giftThreeTitle: sectionData.giftThreeTitle || "",
+        giftThreeImage: sectionData.giftThreeImage || "",
+        giftThreeLink: sectionData.giftThreeLink || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData,true);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -129,24 +179,24 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Gift 1
                     <RequiredSymbol />
-                    {errors.gift1 && (
+                    {errors.giftOneImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.gift1}
+                        {errors.giftOneImage}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="gift1"
+                    id="giftOneImage"
                     label="gift"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.gift1 && (
+                  {formData.giftOneImage && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.gift1)}
+                      src={FormateImageURL(formData.giftOneImage)}
                       alt="Image Preview"
                     />
                   )}
@@ -158,9 +208,9 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.title1 && (
+                    {errors.giftOneTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.title1}
+                        {errors.giftOneTitle}
                       </span>
                     )}
                   </label>
@@ -171,7 +221,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="title1"
+                    name="giftOneTitle"
+                    value={formData.giftOneTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -182,9 +233,9 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Redirection Link
                     <RequiredSymbol />
-                    {errors.redirectionLink1 && (
+                    {errors.giftOneLink && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.redirectionLink1}
+                        {errors.giftOneLink}
                       </span>
                     )}{" "}
                   </label>
@@ -195,7 +246,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="redirectionLink1"
+                    name="giftOneLink"
+                    value={formData.giftOneLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -205,54 +257,55 @@ const Gifts = ({ handleHomepage }) => {
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="gift1"
+                    htmlFor="giftOneImage"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Gift 2
                     <RequiredSymbol />
-                    {errors.gift2 && (
+                    {errors.giftTwoImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.gift2}
+                        {errors.giftTwoImage}
                       </span>
                     )}{" "}
                   </label>
                   <DragAndDropImage
-                    id="gift2"
+                    id="giftTwoImage"
                     label="gift"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.gift2 && (
+                  {formData.giftTwoImage && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.gift2)}
+                      src={FormateImageURL(formData.giftTwoImage)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="gifts_title1"
+                    htmlFor="gifts_giftOneTitle"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.title2 && (
+                    {errors.giftTwoTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.title2}
+                        {errors.giftTwoTitle}
                       </span>
                     )}{" "}
                   </label>
                   <Input
                     type="text"
-                    id="gifts_title1"
+                    id="gifts_giftOneTitle"
                     placeholder="Valentine Gifts"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="title2"
+                    name="giftTwoTitle"
+                    value={formData.giftTwoTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -263,9 +316,9 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Redirection Link
                     <RequiredSymbol />
-                    {errors.redirectionLink2 && (
+                    {errors.giftTwoLink && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.redirectionLink2}
+                        {errors.giftTwoLink}
                       </span>
                     )}{" "}
                   </label>
@@ -276,7 +329,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="redirectionLink2"
+                    name="giftTwoLink"
+                    value={formData.giftTwoLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -290,24 +344,24 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Gift 3
                     <RequiredSymbol />
-                    {errors.gift3 && (
+                    {errors.giftThreeImage && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.gift3}
+                        {errors.giftThreeImage}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="gift3"
+                    id="giftThreeImage"
                     label="gift"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.gift3 && (
+                  {formData.giftThreeImage && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.gift3)}
+                      src={FormateImageURL(formData.giftThreeImage)}
                       alt="Image Preview"
                     />
                   )}
@@ -319,9 +373,9 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Title
                     <RequiredSymbol />
-                    {errors.title1 && (
+                    {errors.giftThreeTitle && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.title1}
+                        {errors.giftThreeTitle}
                       </span>
                     )}
                   </label>
@@ -332,7 +386,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="title3"
+                    name="giftThreeTitle"
+                    value={formData.giftThreeTitle}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -343,9 +398,9 @@ const Gifts = ({ handleHomepage }) => {
                   >
                     Redirection Link
                     <RequiredSymbol />
-                    {errors.redirectionLink1 && (
+                    {errors.giftThreeLink && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.redirectionLink1}
+                        {errors.giftThreeLink}
                       </span>
                     )}{" "}
                   </label>
@@ -356,7 +411,8 @@ const Gifts = ({ handleHomepage }) => {
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="redirectionLink1"
+                    name="giftThreeLink"
+                    value={formData.giftThreeLink}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -378,8 +434,10 @@ const Gifts = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

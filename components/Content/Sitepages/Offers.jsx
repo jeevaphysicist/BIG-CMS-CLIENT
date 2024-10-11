@@ -1,19 +1,27 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Fragment, useEffect, useState } from "react";
+import { Button, Input, SelectSection, Textarea } from "@nextui-org/react";
 import updates from "../../../assets/updates.svg";
 import { FiSave } from "react-icons/fi";
 import RequiredSymbol from "../RequiredSymbol";
 import DragAndDropImage from "../DragDropImage";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { validateImageDimensions } from "@/lib/imageValidator";
+import { convertObjectToFormData, convertToFormData } from "@/utils/convertObjectToFormData";
+import {
+  handleCreateSitepage,
+  handleGetHomepageSection,
+  handleHomepageCreateEditSection,
+  handleUpdateSitepage,
+} from "@/API/api";
 
-const Offers = ({ handleSitepage }) => {
+const Offers = ({ handleSitepage,type, title, sectionData, fetchData, currentSection }) => {
   const [formData, setFormData] = useState({
-    sectionTitle: "",
+    title: "",
     description: "",
     banner: "",
-    callToActionTitle: "",
+    callToAction: ""
   });
 
   const [errors, setError] = useState({});
@@ -24,11 +32,11 @@ const Offers = ({ handleSitepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, bannerImage) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [bannerImage]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -38,23 +46,23 @@ const Offers = ({ handleSitepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.bannerImage === "" || formData.bannerImage === null) {
+      newerrors.bannerImage = "Banner is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
       newerrors.sectionTitle = "Section Title is required";
       has = true;
     }
-    if (
-      formData.callToActionTitle === "" ||
-      formData.callToActionTitle === null
-    ) {
-      newerrors.callToActionTitle = "Call to action title is required";
+    if (formData.buttonTitle === "" || formData.buttonTitle === null) {
+      newerrors.buttonTitle = "Call to action title is required";
       has = true;
     }
-    if (formData.description === "" || formData.description === null) {
-      newerrors.description = "Description is required";
+    if (
+      formData.sectionDescription === "" ||
+      formData.sectionDescription === null
+    ) {
+      newerrors.sectionDescription = "Description is required";
       has = true;
     }
 
@@ -62,18 +70,57 @@ const Offers = ({ handleSitepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        title: sectionData?.offers?.title || "",
+        description: sectionData?.offers?.description || "",
+        banner: sectionData?.offers?.banner || "",
+        callToAction: sectionData?.offers?.callToAction || ""
+      });
+    }
+  }, [sectionData]);
+
+  // console.log("sectiondata",sectionData);
+  // console.log("formData",formData);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
+    let bodyData = {
+      title:title,
+      offers: formData,     
+    };
+    let response ;
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      if(type === 'create'){
+      response = await handleCreateSitepage(bodyData,true);      
+      }
+      else if(type === 'edit'){
+      response = await handleUpdateSitepage(bodyData,sectionData._id,true); 
+      }
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+        handleSitepage();
+      }
+      else{
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Internal server error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,9 +138,9 @@ const Offers = ({ handleSitepage }) => {
               >
                 Section Title
                 <RequiredSymbol />
-                {errors.sectionTitle && (
+                {errors.title && (
                   <span className="font-regular text-[12px] text-red-600">
-                    {errors.sectionTitle}
+                    {errors.title}
                   </span>
                 )}
               </label>
@@ -104,13 +151,14 @@ const Offers = ({ handleSitepage }) => {
                 variant="bordered"
                 size="lg"
                 radius="sm"
-                name="sectionTitle"
+                name="title"
+                value={formData.title}
                 onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="bannerImage_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
@@ -124,12 +172,13 @@ const Offers = ({ handleSitepage }) => {
               <Textarea
                 type="text"
                 minRows={3}
-                id="banner_desc"
+                id="bannerImage_desc"
                 placeholder="Subscribe now to 'Unlock Exclusive Savings and Updates.' Be the first to enjoy discounts and stay updated on our latest Gemstone arrivals, ensuring you never miss out on the allure of exclusive offers"
                 variant="bordered"
                 size="lg"
                 radius="sm"
                 name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
@@ -154,7 +203,7 @@ const Offers = ({ handleSitepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* bannerImage */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -188,26 +237,27 @@ const Offers = ({ handleSitepage }) => {
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="bannerImage_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Call to action title
                     <RequiredSymbol />
-                    {errors.callToActionTitle && (
+                    {errors.callToAction && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.callToActionTitle}
+                        {errors.callToAction}
                       </span>
                     )}
                   </label>
                   <Input
                     type="text"
                     minRows={4}
-                    id="banner_desc"
+                    id="bannerImage_desc"
                     placeholder="Subscribe"
                     variant="bordered"
                     size="lg"
                     radius="sm"
-                    name="callToActionTitle"
+                    name="callToAction"
+                    value={formData.callToAction}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -217,7 +267,7 @@ const Offers = ({ handleSitepage }) => {
         </div>
 
         {/* Save and cancel buttons */}
-        <div className="w-full sticky bottom-0 py-3 bg-white z-50 flex justify-end gap-4">
+        <div className="w-full sticky bottom-0 py-3 bg-white z-30 flex justify-end gap-4">
           <Button
             type="button"
             onClick={handleSitepage}
@@ -229,15 +279,16 @@ const Offers = ({ handleSitepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
-            Save New Page
+            Save
           </Button>
         </div>
       </form>
     </Fragment>
   );
 };
-
 export default Offers;

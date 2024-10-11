@@ -1,4 +1,4 @@
-import Index from "@/components/Menu/Jewellery/Index";
+import Index from "@/components/Menu/Jewelry/Index";
 import { Fragment } from "react";
 
 const page = () => {

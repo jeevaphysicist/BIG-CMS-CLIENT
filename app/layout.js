@@ -6,6 +6,7 @@ import { NextUISProviders } from "./providers/NextUIProviders";
 import { PageLoadProvider } from "./providers/PageLoadProvider";
 import Providers from "./Redux/Providers";
 import Layout from "@/components/Layout/Layout";
+import { DataCollectProvider } from "./providers/dataCollectProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,9 +34,11 @@ export default function RootLayout({ children }) {
           <Providers>  
             <NextUISProviders> 
               <PageLoadProvider> 
+                <DataCollectProvider>
                 <Layout>   
                   {children} 
-                </Layout>   
+                </Layout>  
+                </DataCollectProvider> 
               </PageLoadProvider>       
             </NextUISProviders> 
           </Providers>  

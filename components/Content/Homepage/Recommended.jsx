@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input } from "@nextui-org/react";
 import recommendedImg from "../../../assets/image 5.png";
@@ -8,14 +7,22 @@ import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleHomepageCreateEditSection } from "@/API/api";
 
-const Recommended = ({ handleHomepage }) => {
+const Recommended = ({
+  handleHomepage,
+  sectionData,
+  fetchData,
+  currentSection,
+}) => {
   const [formData, setFormData] = useState({
     sectionTitle: "",
     sectionDescription: "",
-    banner: "",
+    image: "",
     title: "",
     description: "",
+    moduleId: null,
   });
 
   const [errors, setError] = useState({});
@@ -26,11 +33,11 @@ const Recommended = ({ handleHomepage }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageSelect = async (file, width, height, banner) => {
+  const handleImageSelect = async (file, width, height, image) => {
     try {
       await validateImageDimensions(file, width, height);
       if (file) {
-        setFormData((prevData) => ({ ...prevData, [banner]: file }));
+        setFormData((prevData) => ({ ...prevData, [image]: file }));
       }
     } catch (error) {
       toast.error(error);
@@ -40,8 +47,8 @@ const Recommended = ({ handleHomepage }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
-      newerrors.banner = "Banner is required";
+    if (formData.image === "" || formData.image === null) {
+      newerrors.image = "image is required";
       has = true;
     }
     if (formData.sectionTitle === "" || formData.sectionTitle === null) {
@@ -68,18 +75,53 @@ const Recommended = ({ handleHomepage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (sectionData) {
+      setFormData({
+        ...formData,
+        sectionTitle: sectionData.sectionTitle || "",
+        sectionDescription: sectionData.sectionDescription || "",
+        image: sectionData.image || "",
+        title: sectionData.title || "",
+        description: sectionData.description || "",
+        moduleId: sectionData.moduleId || null,
+      });
+    }
+  }, [sectionData]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
+    // console.log("validationresponse", validateResponse);
     if (validateResponse) {
       toast.error("Please fill required details correctly !");
       return null;
     }
 
-    // API Call Here
+    let bodyData = {
+      contents: formData,
+      moduleSlug: currentSection.moduleSlug,
+      moduleName: currentSection.moduleName,
+      sectionSlug: currentSection.sectionSlug,
+      sectionName: currentSection.sectionName,
+      pageName: currentSection.moduleName,
+      pageSlug: currentSection.moduleSlug,
+    };
 
-    console.log("Form submitted with data:", formData);
+    try {
+      setLoading(true);
+      bodyData = convertObjectToFormData(bodyData);
+      const response = await handleHomepageCreateEditSection(bodyData);
+      if (response.status >= 200 && response.status <= 209) {
+        let data = response.data;
+        toast.success(response.data.message);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -111,12 +153,13 @@ const Recommended = ({ handleHomepage }) => {
                 size="lg"
                 radius="sm"
                 name="sectionTitle"
+                value={formData.sectionTitle}
                 onChange={handleFormChange}
               />
             </div>
             <div className="flex flex-col gap-3">
               <label
-                htmlFor="banner_desc"
+                htmlFor="image_desc"
                 className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
               >
                 Description
@@ -129,12 +172,13 @@ const Recommended = ({ handleHomepage }) => {
               </label>
               <Input
                 type="text"
-                id="banner_desc"
+                id="image_desc"
                 placeholder="Gemstone name"
                 variant="bordered"
                 size="lg"
                 radius="sm"
                 name="sectionDescription"
+                value={formData.sectionDescription}
                 onChange={handleFormChange}
               />
             </div>
@@ -151,7 +195,7 @@ const Recommended = ({ handleHomepage }) => {
                 <div className="text-[#4A5367] lg:text-[16px] text-[12px]">
                   <p>The Following Image Dimensions are 487px X 410px</p>
                   <p className="md:mt-5 mt-2">
-                    You can edit the Banner Image and its details and Call to
+                    You can edit the image Image and its details and Call to
                     Action
                   </p>
                 </div>
@@ -163,7 +207,7 @@ const Recommended = ({ handleHomepage }) => {
           </div>
           {/* Form */}
           <div className="md:w-[60%] overflow-y-auto no-scrollbar mt-5 md:mt-0">
-            {/* Banner */}
+            {/* image */}
             <div className="w-full flex flex-col gap-8">
               <div className=" flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -171,33 +215,33 @@ const Recommended = ({ handleHomepage }) => {
                     htmlFor="icon"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
-                    Banner
+                    image
                     <RequiredSymbol />
-                    {errors.banner && (
+                    {errors.image && (
                       <span className="font-regular text-[12px] text-red-600">
-                        {errors.banner}
+                        {errors.image}
                       </span>
                     )}
                   </label>
                   <DragAndDropImage
-                    id="banner"
-                    label="banner"
+                    id="image"
+                    label="image"
                     accept={`images/*`}
                     width={487}
                     height={410}
                     onImageSelect={handleImageSelect}
                   />
-                  {formData.banner && (
+                  {formData.image && (
                     <img
                       className="h-[150px] mx-auto w-[150px]"
-                      src={FormateImageURL(formData.banner)}
+                      src={FormateImageURL(formData.image)}
                       alt="Image Preview"
                     />
                   )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_title"
+                    htmlFor="image_title"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Title
@@ -210,18 +254,19 @@ const Recommended = ({ handleHomepage }) => {
                   </label>
                   <Input
                     type="text"
-                    id="banner_title"
+                    id="image_title"
                     placeholder="Gemstones"
                     variant="bordered"
                     size="lg"
                     radius="sm"
                     name="title"
+                    value={formData.title}
                     onChange={handleFormChange}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <label
-                    htmlFor="banner_desc"
+                    htmlFor="image_desc"
                     className="md:text-[18px] text-[16px] gilroy-medium flex gap-1"
                   >
                     Description
@@ -234,12 +279,13 @@ const Recommended = ({ handleHomepage }) => {
                   </label>
                   <Input
                     type="text"
-                    id="banner_desc"
+                    id="image_desc"
                     placeholder="Get 10% Discount on All the Gemstones"
                     variant="bordered"
                     size="lg"
                     radius="sm"
                     name="description"
+                    value={formData.description}
                     onChange={handleFormChange}
                   />
                 </div>
@@ -261,8 +307,10 @@ const Recommended = ({ handleHomepage }) => {
           <Button
             color="primary"
             type="submit"
-            className="font-semibold text-white"
-            startContent={<FiSave size={20} />}
+            className="font-semibold text-white disabled:opacity-40 disabled:cursor-wait"
+            startContent={loading ? null : <FiSave size={20} />}
+            isLoading={loading}
+            disabled={loading}
           >
             Save
           </Button>

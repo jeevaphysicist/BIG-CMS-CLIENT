@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import RequiredSymbol from "../RequiredSymbol";
 import { Button, Input } from "@nextui-org/react";
 import DragAndDropImage from "../DragDropImage";
@@ -6,15 +6,26 @@ import { FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { convertObjectToFormData } from "@/utils/convertObjectToFormData";
+import { handleCreateBirthStones, handleUpdateBirthStones } from "@/API/api";
 
-const HeroSection = ({ handleBirthStones }) => {
+const HeroSection = ({sectionData,type,fetchData,title, handleBirthStones }) => {
   const [formData, setFormData] = useState({
     banner: "",
-    headerTitle: "",
-    bannerTitle: "",
+    title: "",
+    bannerTitle: ""
   });
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    setFormData((prev)=>({
+     ...prev,
+     banner: sectionData.herosection?.banner,
+     title: sectionData.herosection?.title,
+     bannerTitle: sectionData.herosection?.bannerTitle
+    }))
+ },[sectionData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -45,12 +56,15 @@ const HeroSection = ({ handleBirthStones }) => {
   const handleVadilation = () => {
     let newerrors = {};
     let has = false;
-    if (formData.banner === "" || formData.banner === null) {
+    if (
+      formData.banner === "" ||
+      formData.banner === null
+    ) {
       newerrors.banner = "Banner is required";
       has = true;
     }
-    if (formData.headerTitle === "" || formData.headerTitle === null) {
-      newerrors.headerTitle = "Header Title is required";
+    if (formData.title === "" || formData.title === null) {
+      newerrors.title = "Header Title is required";
       has = true;
     }
     if (formData.bannerTitle === "" || formData.bannerTitle === null) {
@@ -62,7 +76,7 @@ const HeroSection = ({ handleBirthStones }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validateResponse = handleVadilation();
     // console.log("validationresponse", validateResponse);
@@ -71,9 +85,42 @@ const HeroSection = ({ handleBirthStones }) => {
       return null;
     }
 
-    // API Call Here
+    // console.log("Form submitted with data:", formData);
+    let bodyData = {
+      title:title,
+      herosection:{
+        title: formData.title,
+        banner: formData.banner,
+        bannerTitle: formData.bannerTitle,
+      }
+};
 
-    console.log("Form submitted with data:", formData);
+// console.log("body data", bodyData);
+let response ; 
+try {
+  setLoading(true);
+  bodyData = convertObjectToFormData(bodyData);
+  if(type === 'create'){
+  response = await handleCreateBirthStones(bodyData,true);      
+  }
+  else if(type === 'edit'){
+  response = await handleUpdateBirthStones(bodyData,sectionData._id,true); 
+  }
+// console.log("response",response);
+if (response.status >= 200 && response.status <= 209) {
+  let data = response.data;
+  toast.success(response.data.message);
+  fetchData();
+  handleBirthStones();
+}
+else{
+  toast.error(response.response.data.message);
+}
+} catch (error) {
+  toast.error(error.message);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -87,9 +134,9 @@ const HeroSection = ({ handleBirthStones }) => {
             >
               Header Title
               <RequiredSymbol />
-              {errors.bannerTitle && (
+              {errors.title && (
                 <span className="font-regular text-[12px] text-red-600">
-                  {errors.bannerTitle}
+                  {errors.title}
                 </span>
               )}
             </label>
@@ -101,8 +148,9 @@ const HeroSection = ({ handleBirthStones }) => {
               placeholder="May Birthstone: Emerald - Gem Of Spring And Prosperity"
               size="lg"
               radius="sm"
-              name="bannerTitle"
-              // onChange={handleFormChange}
+              name="title"
+              value={formData.title}
+              onChange={handleFormChange}
             />
           </div>
           <div className="flex flex-col gap-3">
@@ -125,7 +173,7 @@ const HeroSection = ({ handleBirthStones }) => {
             />
             {formData.banner && (
               <img
-                className="h-[150px] mx-auto w-[150px]"
+                className="h-[150px] mx-auto w-[100%]"
                 src={FormateImageURL(formData.banner)}
                 alt="Image Preview"
               />
@@ -153,6 +201,7 @@ const HeroSection = ({ handleBirthStones }) => {
               size="lg"
               radius="sm"
               name="bannerTitle"
+              value={formData.bannerTitle}
               onChange={handleFormChange}
             />
           </div>
@@ -193,7 +242,9 @@ const HeroSection = ({ handleBirthStones }) => {
           color="primary"
           type="submit"
           className="font-semibold text-white"
-          startContent={<FiSave size={20} />}
+          startContent={loading ? null : <FiSave size={20} />}
+          isLoading={loading}
+          disabled={loading}
         >
           Save
         </Button>
