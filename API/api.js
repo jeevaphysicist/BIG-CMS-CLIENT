@@ -175,6 +175,17 @@ export const handleTickerCreation = async (data) => {
   }
 };
 
+//S.NO 05
+//Delete Ticker
+export const handleTickerDeletion = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/ticker/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 //S.NO 06
 //Get All Tickers
 export const handleGetAllTickers = async () => {
@@ -190,8 +201,8 @@ export const handleGetAllTickers = async () => {
 //Change ticker status
 export const handleTickerStatusChange = async (id, data) => {
   try {
-    const response = await publicApi.put(
-      `/api/ticker/changeTickerStatus/${id}`,
+    const response = await publicApi.patch(
+      `/api/ticker/status/${id}`,
       data
     );
     return response;

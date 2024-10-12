@@ -83,7 +83,7 @@ const Index = () => {
   useEffect(() => {
     if (searchQuery) {
       const filtered = tableData.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
@@ -93,6 +93,10 @@ const Index = () => {
 
   const handleSetEditData = (editdata) => {
     setSelectEditData(editdata);
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -118,8 +122,10 @@ const Index = () => {
             <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Search by title"
               className="border-2 pl-12 py-2 pr-5  border-[#D0D5DD] rounded-[10px]"
+              value={searchQuery}
+              onChange={handleSearch}
             />
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">

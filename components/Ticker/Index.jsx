@@ -89,12 +89,16 @@ const Index = () => {
   const handleUpdateStatus = async (id, status) => {
     try {
       setLoading(true);
-      const response = await handleTickerStatusChange(id, { status });
+      const response = await handleTickerStatusChange(id, { status: status==="Active" ? "Inactive" : "Active" });
       if (response.status >= 200 && response.status <= 209) {
         fetchTickerData();
+        toast.success(response.data.message);
+      }
+      else{
+        toast.error(response.response.data.message);
       }
     } catch (error) {
-      toast.error("Internal server error");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -169,7 +173,8 @@ const Index = () => {
         </div>
         <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar">
           <ResponsiveTable
-            initialData={filteredData} // Use filtered data
+            fetchData={fetchTickerData}
+            initialData={filteredData} 
             handleTicker={handleTicker}
             updateStatus={handleUpdateStatus}
             handleSelectedTicker={handleSelectedTicker}

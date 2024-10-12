@@ -16,9 +16,11 @@ const index = () => {
   });
   const [selectSection,setSelectSection] = useState('trade-show-list');
   const [tradeshowList,setTradeshowList] = useState([]);
+  const [filteredTradeshowList, setFilteredTradeshowList] = useState([]);
   const [tradeshowSectionData,setTradeshowSectionData] = useState({});
   const [tradeShowLoading,setTradeShowLoading] = useState(false);
   const [editData,setEditData] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleAddEdit = ()=>{
       let status = !isAddEdit.status;
@@ -42,20 +44,30 @@ const index = () => {
     fetchTradeShowSectionData();
   },[])
 
+  useEffect(() => {
+    const filtered = tradeshowList.filter(show => 
+      show.booth_number.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredTradeshowList(filtered);
+  }, [searchQuery, tradeshowList]);
+
   const fetchTradeShowList = async()=>{
         try {
           setTradeShowLoading(true);
           const response = await handleGetTradeshowList();
           if(response.status >= 200 && response.status <= 209){
             setTradeshowList(response.data);
+            setFilteredTradeshowList(response.data);
           }
           else{
             toast.error("Failed to fetch tradeshow list !");
             setTradeshowList([]);
+            setFilteredTradeshowList([]);
           }          
         } catch (error) {
             toast.error(error.message);
             setTradeshowList([]);
+            setFilteredTradeshowList([]);
         }
         finally{
             setTradeShowLoading(false);
@@ -81,6 +93,10 @@ const index = () => {
 
   const handleSetEditDATA = (editdata)=>{
         setEditData(editdata);
+  }
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   }
 
   return (
@@ -124,8 +140,10 @@ const index = () => {
             <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Search by booth number"
               className="border-1 pl-12 py-2 pr-5 w-[100%]  border-[#D0D5DD] rounded-[10px]"
+              value={searchQuery}
+              onChange={handleSearch}
             />
             </div>
           </div>
@@ -135,7 +153,7 @@ const index = () => {
          <div>
           {
             selectSection === 'trade-show-list' &&
-           <TradeshowList fetchData={fetchTradeShowList} handleSetEditDATA={handleSetEditDATA} isLoading={tradeShowLoading} tradeshowList={tradeshowList} handleType={handleType} handleAddEdit={handleAddEdit} />
+           <TradeshowList fetchData={fetchTradeShowList} handleSetEditDATA={handleSetEditDATA} isLoading={tradeShowLoading} tradeshowList={filteredTradeshowList} handleType={handleType} handleAddEdit={handleAddEdit} />
           }
           {
             selectSection === 'explore-gemstones' &&
