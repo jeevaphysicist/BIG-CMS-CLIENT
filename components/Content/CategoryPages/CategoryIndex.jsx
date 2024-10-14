@@ -33,7 +33,7 @@ const initialData = [
     name: "Semi-Mounts",
     link: "bit.ly/1213",
     page: "Opal Rings",
-    status: "Active",
+    status: "Inactive",
   },
   {
     id: "5",
@@ -55,7 +55,11 @@ const initialData = [
 
 const Index = () => {
   const [isList, setIsList] = useState(true);
+  const [type, setType] = useState("create");
+  const [sectionType, setSectionType] = useState("category");
   const [isChecked, setIsChecked] = useState(true);
+  const [editData, setEditData] = useState(null);
+
   const itemsClasses = {
     table: " bg-white  ",
     thead: "bg-white border ",
@@ -71,6 +75,11 @@ const Index = () => {
 
   const handleAddSitePage = () => {};
 
+
+  const handleSetEditData = (data) => {
+    setEditData(data);
+  };
+
   return (
     <div className="w-[100%]">
       {isList ? (
@@ -84,13 +93,13 @@ const Index = () => {
                 Add and view Your Category Pages.
               </p>
             </div>
-            <button
+            {/* <button
               className="bg-[#2761E5] rounded-[10px] text-white px-5 py-2 flex items-center justify-center gap-1"
               onClick={handleCategoryPage}
             >
               <CiCirclePlus />
               Add new Category Page
-            </button>
+            </button> */}
           </div>
           <div className="flex mt-5 relative items-center justify-start">
             <FiSearch className="absolute top-3 left-5 text-[20px] text-[#667085]" />
@@ -102,13 +111,14 @@ const Index = () => {
           </div>
           <div className="w-[100%] mt-8 overflow-x-auto no-scrollbar ">
             <ResponsiveTable
-              initialData={initialData}
+              initialData={initialData}             
               handleCategoryPage={handleCategoryPage}
+              handleSetEditData={handleSetEditData}
             />
           </div>
         </div>
       ) : (
-        <EditPages handleCategoryPage={handleCategoryPage} />
+        <EditPages  sectionType={sectionType} handleCategoryPage={handleCategoryPage} />
       )}
     </div>
   );

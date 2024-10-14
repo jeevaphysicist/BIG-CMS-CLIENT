@@ -10,7 +10,7 @@ import ContentBox from "./ContentBox";
 import Faqs from "./Faqs";
 import UpdatesSection from "./UpdatesSection";
 
-const EditPages = ({ handleCategoryPage }) => {
+const EditPages = ({type, sectionType, handleCategoryPage }) => {
   const [selectedSection, setSelectedSection] = useState("header");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [formData, setFormData] = useState({

@@ -94,7 +94,7 @@ const ReviewCard = ({ handleSelectedReview, type, handleSetType, handleReviewPag
               </div>
             </div>
             <div className="flex md:flex-col gap-3 items-start md:items-end justify-between">
-              <p>{item.date}</p>
+              <p>{new Date(item.createdAt).toLocaleDateString()}</p>
               <div className="flex items-center gap-5">
                 <Switch 
                   size="sm" 
