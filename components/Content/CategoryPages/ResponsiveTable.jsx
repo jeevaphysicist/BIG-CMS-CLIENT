@@ -9,8 +9,15 @@ import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { toast } from "react-toastify";
 // import { handleDeleteCategoryPage, handleUpdateCategoryPageStatus } from "@/API/api";
 import AlertModel from "@/components/AlertModal";
+import { RiShareForwardLine } from "react-icons/ri";
 
-const DraggableRow = ({ UpdateStatus, fetchData, row, handleCategoryPage,  handleSetEditData }) => {
+const DraggableRow = ({
+  UpdateStatus,
+  fetchData,
+  row,
+  handleCategoryPage,
+  handleSetEditData,
+}) => {
   const controls = useDragControls();
   const [openAlertModal, setOpenAlertModal] = useState(false);
   const [collectID, setCollectID] = useState(null);
@@ -74,12 +81,38 @@ const DraggableRow = ({ UpdateStatus, fetchData, row, handleCategoryPage,  handl
       </td>
       <td className="px-4 py-4 text-[14px]">
         <div className="flex items-center gap-5">
-          <Switch onChange={() => UpdateStatus(row.status, row.id)} isSelected={row.status === "Active"} size="sm" aria-label="Automatic updates" />
-          <button onClick={() => { setCollectID(row.id); setOpenAlertModal(true); }} className="text-[20px] text-[#475467]">
+          <Switch
+            onChange={() => UpdateStatus(row.status, row.id)}
+            isSelected={row.status === "Active"}
+            size="sm"
+            aria-label="Automatic updates"
+          />
+          <button
+            onClick={() => {
+              setCollectID(row.id);
+              setOpenAlertModal(true);
+            }}
+            className="text-[20px] text-[#475467]"
+          >
             <PiTrashBold />
           </button>
-          <button className="text-[20px] text-[#475467]" onClick={() => { handleCategoryPage();  handleSetEditData(row); }}>
+          <button
+            className="text-[20px] text-[#475467]"
+            onClick={() => {
+              handleCategoryPage();
+              handleSetEditData(row);
+            }}
+          >
             <FiEdit2 />
+          </button>
+          <button
+            className="text-[20px] text-[#475467]"
+            onClick={() => {
+              handleCategoryPage();
+              handleSetEditData(row);
+            }}
+          >
+            <RiShareForwardLine />
           </button>
         </div>
       </td>
@@ -95,7 +128,13 @@ const DraggableRow = ({ UpdateStatus, fetchData, row, handleCategoryPage,  handl
   );
 };
 
-const ResponsiveTable = ({ searchQuery, initialData, handleSetEditData, fetchData, handleCategoryPage }) => {
+const ResponsiveTable = ({
+  searchQuery,
+  initialData,
+  handleSetEditData,
+  fetchData,
+  handleCategoryPage,
+}) => {
   const [data, setData] = useState(initialData);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -123,7 +162,10 @@ const ResponsiveTable = ({ searchQuery, initialData, handleSetEditData, fetchDat
     }
   };
 
-  const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedData = data.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -168,12 +210,17 @@ const ResponsiveTable = ({ searchQuery, initialData, handleSetEditData, fetchDat
               </th>
             </tr>
           </thead>
-          <Reorder.Group as="tbody" axis="y" values={data} onReorder={handleReorder}>
+          <Reorder.Group
+            as="tbody"
+            axis="y"
+            values={data}
+            onReorder={handleReorder}
+          >
             {paginatedData.map((row) => (
               <DraggableRow
                 fetchData={fetchData}
                 UpdateStatus={UpdateStatus}
-                handleSetEditData={handleSetEditData}                
+                handleSetEditData={handleSetEditData}
                 key={row.id}
                 row={row}
                 handleCategoryPage={handleCategoryPage}
@@ -191,10 +238,10 @@ const ResponsiveTable = ({ searchQuery, initialData, handleSetEditData, fetchDat
           <LuArrowLeft />
           Previous
         </button>
-        <Pagination 
+        <Pagination
           total={totalPages}
-          initialPage={1} 
-          page={currentPage} 
+          initialPage={1}
+          page={currentPage}
           classNames={{
             item: "bg-transparent text-[#475467] font-medium",
             cursor: "bg-[#F9FAFB] text-[#1D2939] font-medium",
