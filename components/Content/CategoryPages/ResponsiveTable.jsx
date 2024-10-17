@@ -10,13 +10,19 @@ import { toast } from "react-toastify";
 // import { handleDeleteCategoryPage, handleUpdateCategoryPageStatus } from "@/API/api";
 import AlertModel from "@/components/AlertModal";
 import { RiShareForwardLine } from "react-icons/ri";
+import { IoIosArrowForward } from "react-icons/io";
+import { handleDeleteCategoryPage, handleUpdateCategoryPageStatus } from "@/API/api";
 
 const DraggableRow = ({
+  sectionType,
   UpdateStatus,
   fetchData,
   row,
   handleCategoryPage,
   handleSetEditData,
+  handleSectionType,
+  handleCategoryID,
+
 }) => {
   const controls = useDragControls();
   const [openAlertModal, setOpenAlertModal] = useState(false);
@@ -26,13 +32,13 @@ const DraggableRow = ({
   const handleDelete = async () => {
     try {
       setLoading(true);
-      // const response = await handleDeleteCategoryPage(collectID);
-      // if (response.status >= 200 && response.status <= 209) {
-      //   toast.success(response.data.message);
-      //   fetchData();
-      // } else {
-      //   toast.error(response.response.data.message);
-      // }
+      const response = await handleDeleteCategoryPage(collectID);
+      if (response.status >= 200 && response.status <= 209) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -58,7 +64,8 @@ const DraggableRow = ({
         >
           <RiDragMove2Fill size={16} className="text-[#676767]" />
         </motion.div>
-        {row.name}
+        {row.title} 
+        {sectionType === "category" && <IoIosArrowForward />}
       </td>
       <td className="px-4 py-4 font-regular text-[14px]">
         <p className="text-balance w-[150px]">{row.link}</p>
@@ -82,14 +89,14 @@ const DraggableRow = ({
       <td className="px-4 py-4 text-[14px]">
         <div className="flex items-center gap-5">
           <Switch
-            onChange={() => UpdateStatus(row.status, row.id)}
+            onChange={() => UpdateStatus(row.status, row._id)}
             isSelected={row.status === "Active"}
             size="sm"
             aria-label="Automatic updates"
           />
           <button
             onClick={() => {
-              setCollectID(row.id);
+              setCollectID(row._id);
               setOpenAlertModal(true);
             }}
             className="text-[20px] text-[#475467]"
@@ -105,15 +112,17 @@ const DraggableRow = ({
           >
             <FiEdit2 />
           </button>
+          {sectionType === "category" && (
           <button
             className="text-[20px] text-[#475467]"
             onClick={() => {
-              handleCategoryPage();
-              handleSetEditData(row);
+              handleSectionType("subcategory");
+              handleCategoryID(row.categoryId);
             }}
           >
             <RiShareForwardLine />
-          </button>
+            </button>
+          )}
         </div>
       </td>
       <AlertModel
@@ -134,6 +143,9 @@ const ResponsiveTable = ({
   handleSetEditData,
   fetchData,
   handleCategoryPage,
+  handleCategoryID,
+  handleSectionType,
+  sectionType
 }) => {
   const [data, setData] = useState(initialData);
   const [currentPage, setCurrentPage] = useState(1);
@@ -150,15 +162,15 @@ const ResponsiveTable = ({
 
   const UpdateStatus = async (status, id) => {
     try {
-      // const response = await handleUpdateCategoryPageStatus({ status }, id);
-      // if (response.status >= 200 && response.status <= 209) {
-      //   fetchData();
-      //   toast.success(response.data.message);
-      // } else {
-      //   toast.error(response.response.data.message);
-      // }
+      const response = await handleUpdateCategoryPageStatus({ status }, id);
+      if (response.status >= 200 && response.status <= 209) {
+        fetchData();
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.response.data.message);
+      }
     } catch (error) {
-      toast.error("Internal Server Error!");
+      toast.error(error.message);
     }
   };
 
@@ -218,12 +230,15 @@ const ResponsiveTable = ({
           >
             {paginatedData.map((row) => (
               <DraggableRow
+                handleCategoryID={handleCategoryID}
                 fetchData={fetchData}
                 UpdateStatus={UpdateStatus}
                 handleSetEditData={handleSetEditData}
                 key={row.id}
                 row={row}
                 handleCategoryPage={handleCategoryPage}
+                handleSectionType={handleSectionType}
+                sectionType={sectionType}
               />
             ))}
           </Reorder.Group>

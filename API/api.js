@@ -1045,6 +1045,70 @@ export const handleGetAllSubCategories = async (data) => {
   }
 };
 
+// S.No 77
+// Get Category List
+export const handleGetCategoryList = async () => {
+  try {
+    const response = await publicApi.get(`/api/category/category-content`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 78
+// Get Sub Category List
+export const handleGetSubCategoryList = async (categoryid) => {
+  try {
+    const response = await publicApi.get(`/api/category/subcategory-content/${categoryid}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 79
+// Update Category/SubCategory
+export const handleUpdateCategorySubCategory = async (id, data, isFormData = false) => {
+  try {
+    let response;
+    if (isFormData) {
+      response = await publicApi.put(`/api/category/update/${id}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    } else {
+      response = await publicApi.put(`/api/category/update/${id}`, data);
+    }
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 80
+// Update Category/SubCategory Status
+export const handleUpdateCategoryPageStatus = async (data, id) => {
+  try {
+    const response = await publicApi.patch(`/api/category/status/${id}`, data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// S.No 81
+// Delete Category/SubCategory
+export const handleDeleteCategoryPage = async (id) => {
+  try {
+    const response = await publicApi.delete(`/api/category/delete/${id}`);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 
 
 

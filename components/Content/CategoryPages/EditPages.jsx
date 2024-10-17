@@ -10,7 +10,7 @@ import ContentBox from "./ContentBox";
 import Faqs from "./Faqs";
 import UpdatesSection from "./UpdatesSection";
 
-const EditPages = ({type, sectionType, handleCategoryPage }) => {
+const EditPages = ({editData, handleCategoryID, handleSectionType, handleCategoryPage, sectionType, categoryID, fetchData }) => {
   const [selectedSection, setSelectedSection] = useState("header");
   const [activeTab, setActiveTab] = useState("generalInfo");
   const [formData, setFormData] = useState({
@@ -63,6 +63,8 @@ const EditPages = ({type, sectionType, handleCategoryPage }) => {
   const handleSeoSubmit = (formData) => {
     console.log("Submitting data for Sitepages", formData);
   };
+
+  console.log("editData", editData);
 
   return (
     <Fragment>
@@ -128,6 +130,8 @@ const EditPages = ({type, sectionType, handleCategoryPage }) => {
                 size="md"
                 radius="sm"
                 name="pageTitle"
+                readOnly
+                value={editData.title}
                 // onChange={handleFormChange}
               />
             </div>
@@ -153,22 +157,23 @@ const EditPages = ({type, sectionType, handleCategoryPage }) => {
           </div>
           <div className=" my-2 no-scrollbar md:min-h-[40vh]">
             {selectedSection === "header" && (
-              <HeaderSection handleCategoryPage={handleCategoryPage} />
+              <HeaderSection fetchData={fetchData} sectionType={sectionType} editData={editData} handleCategoryPage={handleCategoryPage} />
             )}
             {selectedSection === "contentBox" && (
-              <ContentBox handleCategoryPage={handleCategoryPage} />
+              <ContentBox  fetchData={fetchData} editData={editData} handleCategoryPage={handleCategoryPage} />
             )}
             {selectedSection === "faqs" && (
-              <Faqs handleCategoryPage={handleCategoryPage} />
+              <Faqs  fetchData={fetchData} sectionData={editData} handleCategoryPage={handleCategoryPage} />
             )}
             {selectedSection === "updates" && (
-              <UpdatesSection handleCategoryPage={handleCategoryPage} />
+              <UpdatesSection  fetchData={fetchData} editData={editData} handleCategoryPage={handleCategoryPage} />
             )}
           </div>
         </section>
       )}
       {activeTab === "seoAttributes" && (
         <SeoAttributes
+          editData={editData.seo}
           onSubmit={handleSeoSubmit}
           handler={handleCategoryPage}
         />

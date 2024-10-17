@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
 import DragAndDropImage from "../DragDropImage";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { FiSave } from "react-icons/fi";
@@ -7,16 +7,25 @@ import RequiredSymbol from "../RequiredSymbol";
 import { validateImageDimensions } from "@/lib/imageValidator";
 import { toast } from "react-toastify";
 import { FormateImageURL } from "@/lib/FormateImageURL";
+import { handleUpdateCategorySubCategory } from "@/API/api";
 
-const ContentBox = ({ handleCategoryPage }) => {
+const ContentBox = ({ handleCategoryPage, editData, fetchData }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    moduleId: null,
   });
 
   const [errors, setError] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if(editData){
+      setFormData({
+        title: editData.contentBox.title,
+        description: editData.contentBox.description
+      });
+    }
+  },[editData])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -50,18 +59,31 @@ const ContentBox = ({ handleCategoryPage }) => {
     return has;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let validateResponse = handleVadilation();
-    console.log("validationresponse", validateResponse);
-    if (validateResponse) {
-      toast.error("Please fill required details correctly !");
-      return null;
+    try {
+      let validateResponse = handleVadilation();
+      console.log("validationresponse", validateResponse);
+      if (validateResponse) {
+        toast.error("Please fill required details correctly !");
+        return null;
+      }
+
+      const body = {
+        contentBox: formData
+      }
+      const response = await handleUpdateCategorySubCategory(editData._id, body);
+      
+      if (response.status >= 200 && response.status < 300) {
+        toast.success(response.data.message);
+        fetchData();
+      } else {
+        toast.error(response.response.data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("An error occurred while submitting the form. Please try again.");
     }
-
-    // API Call Here
-
-    console.log("Form submitted with data:", formData);
   };
 
   return (
@@ -94,6 +116,7 @@ const ContentBox = ({ handleCategoryPage }) => {
                 radius="sm"
                 name="title"
                 onChange={handleFormChange}
+                value={formData.title}
               />
             </div>
             <div className="flex flex-col gap-3">
@@ -118,6 +141,7 @@ const ContentBox = ({ handleCategoryPage }) => {
                 size="lg"
                 radius="sm"
                 name="description"
+                value={formData.description}
                 onChange={handleFormChange}
               />
             </div>
